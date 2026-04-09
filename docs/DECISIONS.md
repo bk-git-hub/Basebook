@@ -156,3 +156,57 @@
   - `docs/planning/BACKEND_FUNCTIONAL_SPEC.md`
 - Related Milestones:
   - `docs/milestones/backend.md`
+
+### DECISION-006
+
+- Date: `2026-04-09`
+- Time: `18:04`
+- Agenda: Persistence model for diary entries and local demo data seeding
+- Participants: User, Codex
+- Options Considered:
+  - Store `photos` inside `DiaryEntry` as a single JSON blob
+  - Use a separate `Photo` table linked to `DiaryEntry`
+  - Leave the database empty until a manual seed command is run
+  - Automatically seed demo entries when the database is empty
+- Decision:
+  - Use a separate `Photo` table linked to `DiaryEntry`
+  - Automatically seed demo entries when the database is empty
+- Rationale: The product ultimately needs image metadata that can evolve toward upload and hosting, and the user wants local demo execution to work immediately without extra setup steps.
+- Impact:
+  - `DiaryEntry` persistence now supports multiple photos as first-class records
+  - local startup can populate visible demo content for dashboard and detail flows
+  - future upload and season-book features can reuse the same photo structure
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/BACKEND_FUNCTIONAL_SPEC.md`
+  - `docs/planning/CONTRACT_SPEC.md`
+- Related Milestones:
+  - `docs/milestones/backend.md`
+
+### DECISION-007
+
+- Date: `2026-04-09`
+- Time: `18:04`
+- Agenda: Local execution reliability for database initialization and environment variable layout
+- Participants: User, Codex
+- Options Considered:
+  - Keep a single root `.env` for all apps
+  - Split frontend and backend environment files by app
+  - Keep relying on Prisma `db push`
+  - Use a deterministic `db:init` SQL execution path for local startup
+- Decision:
+  - Split frontend and backend environment examples by app
+  - Prefer a deterministic `db:init` command over `db push` for local setup
+- Rationale: The user wants administrator review on another computer to succeed reliably, and this favors explicit app-level configuration plus a database init path that already works in the current environment.
+- Impact:
+  - backend execution now expects `apps/api/.env`
+  - frontend execution can use its own env file without mixing secrets
+  - local setup can create the SQLite schema through a repeatable script
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `.env.example`
+  - `README.md`
+- Related Milestones:
+  - `docs/milestones/backend.md`

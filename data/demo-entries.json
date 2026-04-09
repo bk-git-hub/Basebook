@@ -1,1 +1,77 @@
-[]
+[
+  {
+    "id": "entry-lg-2025-09-18",
+    "ownerId": "demo-user-001",
+    "gameId": "game-lg-2025-09-18",
+    "seasonYear": 2025,
+    "date": "2025-09-18",
+    "favoriteTeam": "LG",
+    "opponentTeam": "KT",
+    "scoreFor": 6,
+    "scoreAgainst": 2,
+    "result": "WIN",
+    "watchType": "STADIUM",
+    "stadium": "Jamsil Baseball Stadium",
+    "seat": "1루 내야 지정석 113블록 7열",
+    "playerOfTheDay": "문보경",
+    "highlight": "9회말 쐐기 적시타가 나오자 잠실이 완전히 뒤집혔다.",
+    "rawMemo": "오랜만에 친구랑 직관 갔는데 경기 흐름이 너무 좋았다. 응원가 따라 부르다가 목이 쉬었다.",
+    "photos": [
+      {
+        "id": "photo-entry-lg-2025-09-18-1",
+        "url": "https://placehold.co/1200x900/png?text=LG+Win+Night",
+        "fileName": "lg-win-night.png"
+      }
+    ],
+    "createdAt": "2025-09-18T12:30:00.000Z",
+    "updatedAt": "2025-09-18T12:30:00.000Z"
+  },
+  {
+    "id": "entry-lg-2026-03-22",
+    "ownerId": "demo-user-001",
+    "gameId": "game-lg-2026-03-22",
+    "seasonYear": 2026,
+    "date": "2026-03-22",
+    "favoriteTeam": "LG",
+    "opponentTeam": "DOOSAN",
+    "scoreFor": 5,
+    "scoreAgainst": 3,
+    "result": "WIN",
+    "watchType": "TV",
+    "stadium": "Jamsil Baseball Stadium",
+    "playerOfTheDay": "오스틴",
+    "highlight": "선발이 6이닝을 버텨주고 중심타선이 제때 쳐준 개막 시리즈 느낌의 경기였다.",
+    "rawMemo": "집에서 가족이랑 봤는데 7회 역전 분위기가 정말 좋았다.",
+    "photos": [],
+    "createdAt": "2026-03-22T08:00:00.000Z",
+    "updatedAt": "2026-03-22T08:00:00.000Z"
+  },
+  {
+    "id": "entry-lg-2026-04-02",
+    "ownerId": "demo-user-001",
+    "seasonYear": 2026,
+    "date": "2026-04-02",
+    "favoriteTeam": "LG",
+    "opponentTeam": "SSG",
+    "scoreFor": 4,
+    "scoreAgainst": 4,
+    "result": "DRAW",
+    "watchType": "MOBILE",
+    "highlight": "퇴근길에 휴대폰으로 보던 경기였는데, 마지막 이닝 동점 상황이 끝까지 손에 땀을 쥐게 했다.",
+    "rawMemo": "지하철에서 끝까지 보다가 내릴 역을 놓칠 뻔했다.",
+    "photos": [
+      {
+        "id": "photo-entry-lg-2026-04-02-1",
+        "url": "https://placehold.co/1200x900/png?text=Mobile+Game+Recap",
+        "fileName": "mobile-game-recap.png"
+      },
+      {
+        "id": "photo-entry-lg-2026-04-02-2",
+        "url": "https://placehold.co/1200x900/png?text=Subway+Watching",
+        "fileName": "subway-watching.png"
+      }
+    ],
+    "createdAt": "2026-04-02T10:15:00.000Z",
+    "updatedAt": "2026-04-02T10:15:00.000Z"
+  }
+]

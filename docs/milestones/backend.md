@@ -80,3 +80,40 @@
   - user verification pending
 - Next Step:
   - move to the entries slice after user confirmation
+
+### BE-MILESTONE-004
+
+- Date: `2026-04-09`
+- Time: `18:04`
+- Milestone: Local SQLite persistence and automatic demo seeding established
+- Status: `ready_for_review`
+- Summary:
+  - Prisma client and SQLite schema were introduced for diary persistence
+  - local database initialization now uses a deterministic `db:init` command
+  - demo entries are automatically seeded when the database is empty
+  - frontend and backend env examples are now split by app
+- Related Decision IDs:
+  - `DECISION-006`
+  - `DECISION-007`
+- Blocking Items:
+  - user verification pending
+- Next Step:
+  - verify entries endpoints on top of the initialized database
+
+### BE-MILESTONE-005
+
+- Date: `2026-04-09`
+- Time: `18:04`
+- Milestone: Entries API implemented on SQLite-backed persistence
+- Status: `ready_for_review`
+- Summary:
+  - `GET /entries`, `GET /entries/:id`, `POST /entries`, and `PATCH /entries/:id` are implemented
+  - request validation is enabled through Nest validation pipes
+  - unit test, e2e test, and build all passed with the new database flow
+- Related Decision IDs:
+  - `DECISION-006`
+  - `DECISION-007`
+- Blocking Items:
+  - user verification pending
+- Next Step:
+  - prepare local frontend-backend integration and CORS review

@@ -3,9 +3,12 @@ import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from './../src/app.module';
+import { configureApp } from './../src/app.config';
+import { PrismaSeedService } from './../src/prisma/prisma-seed.service';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication<App>;
+  let prismaSeedService: PrismaSeedService;
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -13,7 +16,10 @@ describe('AppController (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    configureApp(app);
     await app.init();
+    prismaSeedService = app.get(PrismaSeedService);
+    await prismaSeedService.resetDemoEntries();
   });
 
   it('/health (GET)', () => {
@@ -46,6 +52,86 @@ describe('AppController (e2e)', () => {
 
   it('/games (GET) rejects requests without favoriteTeam', () => {
     return request(app.getHttpServer()).get('/games').expect(400);
+  });
+
+  it('/entries (GET) returns seeded entries and summary', () => {
+    return request(app.getHttpServer())
+      .get('/entries')
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body.entries).toHaveLength(3);
+        expect(body.summary).toEqual({
+          totalGames: 3,
+          wins: 2,
+          losses: 0,
+          draws: 1,
+        });
+      });
+  });
+
+  it('/entries/:id (GET) returns a single entry', () => {
+    return request(app.getHttpServer())
+      .get('/entries/entry-lg-2025-09-18')
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body.entry.id).toBe('entry-lg-2025-09-18');
+        expect(body.entry.photos).toHaveLength(1);
+      });
+  });
+
+  it('/entries (POST) creates a new diary entry for the demo owner', () => {
+    return request(app.getHttpServer())
+      .post('/entries')
+      .send({
+        seasonYear: 2026,
+        date: '2026-04-11',
+        favoriteTeam: 'LG',
+        opponentTeam: 'SSG',
+        scoreFor: 7,
+        scoreAgainst: 4,
+        result: 'WIN',
+        watchType: 'STADIUM',
+        stadium: 'Jamsil Baseball Stadium',
+        highlight: '연장 승부 끝에 이겨서 귀가길까지 기분이 좋았다.',
+        rawMemo: '응원석 분위기가 최고였다.',
+        photos: [
+          {
+            id: 'photo-created-1',
+            url: 'https://placehold.co/1200x900/png?text=Created+Entry',
+            fileName: 'created-entry.png',
+          },
+        ],
+      })
+      .expect(201)
+      .expect(({ body }) => {
+        expect(body.entry.ownerId).toBe('demo-user-001');
+        expect(body.entry.favoriteTeam).toBe('LG');
+        expect(body.entry.photos).toHaveLength(1);
+      });
+  });
+
+  it('/entries/:id (PATCH) updates an existing entry', () => {
+    return request(app.getHttpServer())
+      .patch('/entries/entry-lg-2026-03-22')
+      .send({
+        highlight: '집관이었지만 끝내기 장면 때문에 소리 질렀다.',
+        photos: [
+          {
+            id: 'photo-updated-1',
+            url: 'https://placehold.co/1200x900/png?text=Updated+Entry',
+            fileName: 'updated-entry.png',
+          },
+        ],
+      })
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body.entry.highlight).toContain('끝내기');
+        expect(body.entry.photos).toEqual([
+          expect.objectContaining({
+            id: 'photo-updated-1',
+          }),
+        ]);
+      });
   });
 
   afterEach(async () => {
