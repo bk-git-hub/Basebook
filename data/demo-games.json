@@ -1,2 +1,66 @@
-[]
+[
+  {
+    "id": "game-lg-2025-09-18",
+    "seasonYear": 2025,
+    "date": "2025-09-18",
+    "favoriteTeam": "LG",
+    "opponentTeam": "KT",
+    "stadium": "Jamsil Baseball Stadium",
+    "scoreFor": 6,
+    "scoreAgainst": 2,
+    "result": "WIN",
+    "status": "FINAL",
+    "source": "SEED"
+  },
+  {
+    "id": "game-lg-2026-03-22",
+    "seasonYear": 2026,
+    "date": "2026-03-22",
+    "favoriteTeam": "LG",
+    "opponentTeam": "DOOSAN",
+    "stadium": "Jamsil Baseball Stadium",
+    "scoreFor": 5,
+    "scoreAgainst": 3,
+    "result": "WIN",
+    "status": "FINAL",
+    "source": "SEED"
+  },
+  {
+    "id": "game-lg-2026-04-09",
+    "seasonYear": 2026,
+    "date": "2026-04-09",
+    "favoriteTeam": "LG",
+    "opponentTeam": "SSG",
+    "stadium": "Jamsil Baseball Stadium",
+    "scoreFor": 2,
+    "scoreAgainst": 1,
+    "result": "UNKNOWN",
+    "status": "IN_PROGRESS",
+    "source": "SEED"
+  },
+  {
+    "id": "game-lg-2026-04-10",
+    "seasonYear": 2026,
+    "date": "2026-04-10",
+    "favoriteTeam": "LG",
+    "opponentTeam": "SSG",
+    "stadium": "Jamsil Baseball Stadium",
+    "result": "UNKNOWN",
+    "status": "SCHEDULED",
+    "source": "SEED"
+  },
+  {
+    "id": "game-kia-2026-04-10",
+    "seasonYear": 2026,
+    "date": "2026-04-10",
+    "favoriteTeam": "KIA",
+    "opponentTeam": "SAMSUNG",
+    "stadium": "Gwangju-Kia Champions Field",
+    "scoreFor": 4,
+    "scoreAgainst": 5,
+    "result": "LOSE",
+    "status": "FINAL",
+    "source": "SEED"
+  }
+]
 

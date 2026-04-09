@@ -51,6 +51,14 @@
 - `DRAW`
 - `UNKNOWN`
 
+### 경기 상태
+
+`GameStatus`
+
+- `SCHEDULED`
+- `IN_PROGRESS`
+- `FINAL`
+
 ### 관람 형태
 
 `WatchType`

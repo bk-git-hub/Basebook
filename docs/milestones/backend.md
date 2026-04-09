@@ -45,3 +45,38 @@
   - worktree creation pending
 - Next Step:
   - scaffold backend worktree and start Nest module implementation
+
+### BE-MILESTONE-002
+
+- Date: `2026-04-09`
+- Time: `14:10`
+- Milestone: Health endpoint implemented as a dedicated Nest module
+- Status: `ready_for_review`
+- Summary:
+  - `GET /health` now returns the contract-aligned payload
+  - health routing moved out of the Nest starter files into a dedicated module
+  - unit test, e2e test, and build all passed
+- Related Decision IDs:
+  - `DECISION-004`
+- Blocking Items:
+  - user verification pending
+- Next Step:
+  - start the `GET /games` slice
+
+### BE-MILESTONE-003
+
+- Date: `2026-04-09`
+- Time: `14:10`
+- Milestone: Games query endpoint implemented with seed-backed filtering
+- Status: `ready_for_review`
+- Summary:
+  - `GET /games` now serves contract-aligned game candidates from `data/demo-games.json`
+  - filtering by `favoriteTeam`, `date`, and `seasonYear` is in place
+  - demo data now includes `SCHEDULED`, `IN_PROGRESS`, and `FINAL` examples
+  - unit test, e2e test, and build all passed
+- Related Decision IDs:
+  - `DECISION-005`
+- Blocking Items:
+  - user verification pending
+- Next Step:
+  - move to the entries slice after user confirmation

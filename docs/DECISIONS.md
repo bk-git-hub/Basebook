@@ -110,3 +110,49 @@
 - Related Milestones:
   - `docs/milestones/frontend.md`
   - `docs/milestones/backend.md`
+
+### DECISION-004
+
+- Date: `2026-04-09`
+- Time: `14:08`
+- Agenda: Health endpoint implementation structure for the first backend slice
+- Participants: User, Codex
+- Options Considered:
+  - Reuse the default Nest `AppController` and `AppService`
+  - Introduce a dedicated `health` module and controller
+- Decision: Implement the health check as a dedicated `health` module instead of reusing the Nest starter files.
+- Rationale: The user preferred a structure-first approach so the backend can grow by domain module without an early cleanup pass.
+- Impact:
+  - the Nest starter controller/service were removed
+  - `GET /health` now lives in a dedicated module
+  - future domain slices can follow the same module pattern
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/CONTRACT_SPEC.md`
+  - `docs/planning/BACKEND_FUNCTIONAL_SPEC.md`
+- Related Milestones:
+  - `docs/milestones/backend.md`
+
+### DECISION-005
+
+- Date: `2026-04-09`
+- Time: `14:10`
+- Agenda: Game candidate status granularity for the `GET /games` contract
+- Participants: User, Codex
+- Options Considered:
+  - Keep `GameStatus` as `SCHEDULED | FINAL`
+  - Expand `GameStatus` to `SCHEDULED | IN_PROGRESS | FINAL`
+- Decision: Expand `GameStatus` to three states: `SCHEDULED`, `IN_PROGRESS`, and `FINAL`.
+- Rationale: The user wants pre-game, live-game, and completed-game states to be represented separately in the contract and future UI.
+- Impact:
+  - `packages/contracts` now exposes a three-state `GameStatus`
+  - `GET /games` responses can distinguish scheduled, live, and completed games
+  - frontend status rendering can align to a more realistic product model
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/CONTRACT_SPEC.md`
+  - `docs/planning/BACKEND_FUNCTIONAL_SPEC.md`
+- Related Milestones:
+  - `docs/milestones/backend.md`

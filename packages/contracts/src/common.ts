@@ -14,7 +14,7 @@ export type WatchType = "STADIUM" | "TV" | "MOBILE" | "OTHER";
 
 export type GameResult = "WIN" | "LOSE" | "DRAW" | "UNKNOWN";
 
-export type GameStatus = "SCHEDULED" | "FINAL";
+export type GameStatus = "SCHEDULED" | "IN_PROGRESS" | "FINAL";
 
 export type DataSource = "SEED" | "MANUAL" | "SYNC";
 
