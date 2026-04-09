@@ -1,5 +1,11 @@
 # 문서 구조
 
+## root
+
+- `BASEBOOK_TEAM_PLAYBOOK.md`
+
+새 Codex thread를 개발 팀원처럼 운영하기 위한 팀 플레이북입니다.
+
 ## planning
 
 - `docs/planning/BASEBOOK_PLAN.md`
