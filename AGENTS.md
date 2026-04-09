@@ -37,3 +37,26 @@
 ## Communication Preference
 - Keep rough brainstorming separate from polished submission wording.
 - When a note is saved, prefer factual bullets over final-form prose so the final answers stay honest and easy to rewrite later.
+
+## Commit Discipline
+- Every meaningful change should end with a git commit.
+- Commit in feature-sized slices; do not batch unrelated frontend, backend, docs, and refactor work into one commit.
+- Prefer one functional change per commit, such as one API endpoint, one UI flow, one contract update, or one documentation update.
+- If a change grows too large to explain in one sentence, split it into smaller commits.
+
+## Commit Prefix Rules
+- Use commit messages in the format: `<prefix>: <summary>`.
+- Allowed prefixes:
+- `feat`: new user-facing or developer-facing functionality
+- `fix`: bug fix or broken behavior correction
+- `refactor`: structural improvement without intended behavior change
+- `docs`: documentation-only change
+- `test`: tests added or updated
+- `chore`: setup, tooling, configuration, or maintenance work
+- `design`: visual or UX-only improvement
+
+## Commit Planning Rule
+- Before starting a larger task, think in terms of the commit slices that should exist at the end.
+- For parallel frontend/backend work, each side should commit independently using the same prefix rules.
+- Contract changes should usually land in their own commit unless they are inseparable from the implementation they unblock.
+- Avoid "catch-all" commits like `feat: update project` or `fix: various fixes`.
