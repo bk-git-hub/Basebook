@@ -60,3 +60,37 @@
 - For parallel frontend/backend work, each side should commit independently using the same prefix rules.
 - Contract changes should usually land in their own commit unless they are inseparable from the implementation they unblock.
 - Avoid "catch-all" commits like `feat: update project` or `fix: various fixes`.
+
+## Development Lifecycle
+- All development follows this sequence:
+- `plan -> technical meeting with user -> implementation -> test -> review -> user verification`
+- Do not skip directly from planning to implementation for meaningful work.
+- Do not treat implementation as complete until testing and review have happened.
+
+## User Verification Gate
+- All completed development must pass explicit user verification.
+- Before user verification, do not present work as final, complete, merged, or ready to move on from.
+- If a feature is implemented and tested but not yet verified by the user, describe it as awaiting user validation.
+- Do not merge milestone-level work into a "done" state without user confirmation.
+
+## Decision Logging
+- Technical decisions made during user meetings must be recorded in `docs/DECISIONS.md`.
+- Use a structured format that includes at minimum:
+- decision id
+- date
+- time
+- agenda
+- decision
+- rationale
+- impact
+- owner
+- status
+- If a later conversation changes a prior decision, add a new decision entry instead of silently rewriting history.
+
+## Milestone Logging
+- Maintain milestone logs separately for frontend and backend.
+- Use:
+- `docs/milestones/frontend.md`
+- `docs/milestones/backend.md`
+- Log meaningful progress changes such as milestone start, milestone completion, blockers, scope changes, and integration readiness.
+- Keep milestone entries factual and concise.

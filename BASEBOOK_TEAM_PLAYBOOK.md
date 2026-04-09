@@ -30,6 +30,12 @@
 
 새 thread는 여러 역할을 동시에 맡지 않는다. 역할이 섞이면 통합 비용이 커지고 충돌이 생긴다.
 
+모든 팀원은 아래 공통 개발 순서를 따른다.
+
+`plan -> technical meeting with user -> implementation -> test -> review -> user verification`
+
+사용자 검증 전에는 어떤 기능도 최종 완료로 간주하지 않는다.
+
 ---
 
 ## Worktree Assignment
@@ -233,6 +239,7 @@ Backend engineer 필수:
 - 내가 건드릴 파일 범위가 명확한가?
 - 이 변경은 한 문장으로 설명 가능한가?
 - 커밋을 하나 더 쪼개야 하는가?
+- 이번 작업 전에 사용자와의 기술 결정이 필요한가?
 
 ---
 
@@ -300,6 +307,39 @@ merge 요청 전에 아래를 확인한다.
 3. 작은 커밋 단위가 유지됐는가
 4. 빌드 또는 최소 검증을 했는가
 5. 변경 내용을 한 문장으로 설명할 수 있는가
+6. 관련 결정이 있다면 `docs/DECISIONS.md`에 기록했는가
+7. 관련 마일스톤 상태를 `docs/milestones/*.md`에 기록했는가
+8. 사용자 검증 전이라면 아직 완료 처리하지 않았는가
+
+---
+
+## 의사결정 및 마일스톤 기록 규칙
+
+사용자와의 기술 회의에서 정해진 내용은 `docs/DECISIONS.md`에 기록한다.
+
+기록 항목:
+
+- decision id
+- date
+- time
+- agenda
+- options considered
+- decision
+- rationale
+- impact
+- owner
+- status
+
+프론트엔드 진행 로그는 `docs/milestones/frontend.md`, 백엔드 진행 로그는 `docs/milestones/backend.md`에 기록한다.
+
+이 로그는 아래 상황에서 갱신한다.
+
+- 새 기능 슬라이스 시작
+- 슬라이스 구현 완료
+- 테스트 완료
+- 통합 준비 완료
+- blocker 발생
+- scope 변경
 
 ---
 

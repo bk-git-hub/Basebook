@@ -6,6 +6,12 @@
 
 새 Codex thread를 개발 팀원처럼 운영하기 위한 팀 플레이북입니다.
 
+## docs
+
+- `docs/DECISIONS.md`
+
+사용자와의 기술 회의에서 확정된 결정사항을 기록하는 문서입니다.
+
 ## planning
 
 - `docs/planning/BASEBOOK_PLAN.md`
@@ -32,3 +38,10 @@
 - `docs/reference/스위트북_개발과제_안내문.pdf`
 
 과제 참고 문서입니다.
+
+## milestones
+
+- `docs/milestones/frontend.md`
+- `docs/milestones/backend.md`
+
+프론트엔드와 백엔드의 주요 마일스톤과 진행 상태를 분리 기록하는 문서입니다.
