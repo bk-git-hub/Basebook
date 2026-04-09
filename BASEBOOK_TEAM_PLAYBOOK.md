@@ -24,7 +24,7 @@
 
 각 thread는 실제 팀원처럼 아래 역할 중 하나만 맡는다.
 
-- Integration engineer
+- CTO
 - Frontend engineer
 - Backend engineer
 
@@ -42,11 +42,12 @@
 
 아래 worktree와 branch 조합을 기본 규칙으로 사용한다.
 
-### 1. Integration engineer
+### 1. CTO
 
 - Worktree: `C:\Users\bksoft\Documents\Sweetbook`
 - Branch: `main`
 - 역할:
+  - 기술 의사결정 조율
   - 머지
   - 통합 테스트
   - 루트 설정 관리
@@ -114,7 +115,7 @@ Backend engineer 필수:
 
 ## 파일 소유 범위
 
-### Integration engineer
+### CTO
 
 주로 수정 가능한 범위:
 
@@ -174,7 +175,7 @@ Backend engineer 필수:
 
 - Backend engineer가 먼저 문서와 contracts를 바꾼다
 - Frontend engineer는 그 기준에 맞춘다
-- Integration engineer는 통합 시 계약과 구현이 맞는지 확인한다
+- CTO는 통합 시 계약과 구현이 맞는지 확인한다
 
 ---
 
@@ -290,7 +291,7 @@ Backend engineer 필수:
 3. `games`, `diary`, `upload`, `season-book`, `sweetbook` 모듈 골격 생성
 4. `GET /games`와 `GET /entries`부터 구현
 
-### Integration engineer first tasks
+### CTO first tasks
 
 1. 루트 실행 스크립트 정리
 2. README 실행 방법 보강
@@ -353,6 +354,6 @@ merge 요청 전에 아래를 확인한다.
 
 `AGENTS.md와 BASEBOOK_TEAM_PLAYBOOK.md, docs/planning/CONTRACT_SPEC.md, docs/planning/BACKEND_FUNCTIONAL_SPEC.md를 읽고 C:\Users\bksoft\Documents\Basebook-api worktree의 codex/api 브랜치에서 apps/api와 필요한 경우 data 범위만 작업해줘.`
 
-### Integration engineer
+### CTO
 
-`AGENTS.md와 BASEBOOK_TEAM_PLAYBOOK.md를 읽고 C:\Users\bksoft\Documents\Sweetbook worktree의 main 브랜치에서 통합, 테스트, 루트 설정만 담당해줘.`
+`AGENTS.md와 BASEBOOK_TEAM_PLAYBOOK.md를 읽고 C:\Users\bksoft\Documents\Sweetbook worktree의 main 브랜치에서 CTO 역할로 기술 조율, 통합, 테스트, 루트 설정만 담당해줘.`

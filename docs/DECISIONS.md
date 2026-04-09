@@ -97,12 +97,12 @@
   - Single thread sequential development
   - Multiple Codex threads without strict worktree rules
   - Multiple Codex threads with fixed role and worktree ownership
-- Decision: Operate with distinct integration, frontend, and backend roles using dedicated worktrees and branch ownership.
+- Decision: Operate with distinct CTO, frontend, and backend roles using dedicated worktrees and branch ownership.
 - Rationale: Parallel development is only safe when role boundaries, editable paths, and integration checkpoints are explicit.
 - Impact:
   - team playbook governs thread behavior
   - frontend and backend are built in parallel
-  - integration remains centralized in `main`
+  - CTO responsibility remains centralized in `main`
 - Owner: User
 - Status: `approved`
 - Related Docs:
