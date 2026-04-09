@@ -5,6 +5,9 @@
 - `docs/planning/BASEBOOK_PLAN.md`
 - `docs/planning/BOOK_PRINT_API_ANALYSIS.md`
 - `docs/planning/SWEETBOOK_EXISTING_SERVICES_ANALYSIS.md`
+- `docs/planning/CONTRACT_SPEC.md`
+- `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+- `docs/planning/BACKEND_FUNCTIONAL_SPEC.md`
 
 제품 기획, API 분석, 기존 서비스 분석 문서입니다.
 
