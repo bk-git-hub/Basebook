@@ -80,3 +80,21 @@
   - 별도 QA thread에서 통합 테스트 예정
 - Next Step:
   - user validation 후 `/entries/[id]` 조회 API 연동으로 이동
+
+### FE-MILESTONE-004
+
+- Date: `2026-04-10`
+- Time: `12:15`
+- Milestone: `/entries/[id]` `GET /entries/:id` API integration baseline implemented
+- Status: `ready_for_review`
+- Summary:
+  - `entries` API client에 상세 조회 함수 추가
+  - `/entries/[id]` 상세 페이지와 로딩 상태 추가
+  - 404와 일반 에러를 분리해 표시하고 대시보드 최근 기록에서 상세 페이지로 이동 가능하게 함
+- Related Decision IDs:
+  - `DECISION-006`
+- Blocking Items:
+  - backend `GET /entries/:id` 구현 및 실제 id 응답 확인 필요
+  - 별도 QA thread에서 통합 테스트 예정
+- Next Step:
+  - user validation 후 `/entries/[id]/edit`의 `PATCH /entries/:id` 연동으로 이동

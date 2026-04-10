@@ -157,3 +157,26 @@
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
 - Related Milestones:
   - `docs/milestones/frontend.md`
+
+### DECISION-006
+
+- Date: `2026-04-10`
+- Time: `12:15`
+- Agenda: `/entries/[id]`의 `GET /entries/:id` 연동 시 상세 조회 실패 상태를 어떻게 처리할지 결정
+- Participants: User, Codex
+- Options Considered:
+  - 상세 페이지에서 모든 실패를 하나의 에러 화면으로 표시
+  - `404`는 `not-found`로 처리하고, 그 외 실패만 에러 상태 카드로 표시
+- Decision: `404`는 `/entries/[id]/not-found.tsx`로 처리하고, 그 외 실패는 상세 페이지 안의 에러 상태 카드로 표시한다.
+- Rationale: 존재하지 않는 id와 서버 오류를 같은 메시지로 합치면 디버깅과 사용자 이해가 모두 어려워진다. 상세 조회 API 연동 단계에서는 두 경우를 분리해두는 편이 이후 QA와 백엔드 협업에도 유리하다.
+- Impact:
+  - `/entries/[id]`는 404 응답과 일반 에러를 구분해서 표시한다
+  - 최근 기록 리스트에서 상세 페이지로 직접 이동하는 검증 흐름이 생긴다
+  - 이후 `PATCH /entries/:id` 연동 시 같은 상세 페이지를 기준 화면으로 재사용할 수 있다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/CONTRACT_SPEC.md`
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+- Related Milestones:
+  - `docs/milestones/frontend.md`
