@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import type {
   DiaryEntry,
   GameResult,
@@ -147,41 +149,44 @@ export function SeasonDashboard({ dashboard }: SeasonDashboardProps) {
 
         <div className="mt-4 space-y-3">
           {recentEntries.map((entry) => (
-            <article
+            <Link
               key={entry.id}
-              className="rounded-[22px] border border-stone-100 bg-stone-50/80 px-5 py-4"
+              href={`/entries/${entry.id}`}
+              className="block rounded-[22px] border border-stone-100 bg-stone-50/80 px-5 py-4 transition hover:border-stone-200 hover:bg-stone-50 hover:shadow-sm"
             >
-              <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
-                <div className="space-y-2">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span
-                      className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ring-inset ${RESULT_TONE[entry.result]}`}
-                    >
-                      {RESULT_LABELS[entry.result]}
-                    </span>
-                    <span className="text-sm font-medium text-stone-500">
-                      {formatEntryDate(entry.date)}
-                    </span>
+              <article>
+                <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+                  <div className="space-y-2">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span
+                        className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ring-inset ${RESULT_TONE[entry.result]}`}
+                      >
+                        {RESULT_LABELS[entry.result]}
+                      </span>
+                      <span className="text-sm font-medium text-stone-500">
+                        {formatEntryDate(entry.date)}
+                      </span>
+                    </div>
+                    <h3 className="text-lg font-semibold text-stone-950">
+                      {TEAM_LABELS[entry.favoriteTeam]} vs{" "}
+                      {TEAM_LABELS[entry.opponentTeam]}
+                    </h3>
+                    <p className="text-sm leading-6 text-stone-600">
+                      {entry.highlight}
+                    </p>
                   </div>
-                  <h3 className="text-lg font-semibold text-stone-950">
-                    {TEAM_LABELS[entry.favoriteTeam]} vs{" "}
-                    {TEAM_LABELS[entry.opponentTeam]}
-                  </h3>
-                  <p className="text-sm leading-6 text-stone-600">
-                    {entry.highlight}
-                  </p>
-                </div>
 
-                <div className="rounded-2xl bg-white px-4 py-3 text-right shadow-sm ring-1 ring-stone-200">
-                  <p className="text-xs font-medium tracking-[0.16em] text-stone-400 uppercase">
-                    Final Score
-                  </p>
-                  <p className="mt-1 text-lg font-semibold tracking-tight text-stone-950">
-                    {formatScore(entry)}
-                  </p>
+                  <div className="rounded-2xl bg-white px-4 py-3 text-right shadow-sm ring-1 ring-stone-200">
+                    <p className="text-xs font-medium tracking-[0.16em] text-stone-400 uppercase">
+                      Final Score
+                    </p>
+                    <p className="mt-1 text-lg font-semibold tracking-tight text-stone-950">
+                      {formatScore(entry)}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            </article>
+              </article>
+            </Link>
           ))}
         </div>
       </section>
