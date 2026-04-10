@@ -9,6 +9,7 @@ import type {
   GameCandidate,
   GameResult,
   GameStatus,
+  PhotoAsset,
   TeamCode,
   WatchType,
 } from "@basebook/contracts";
@@ -16,6 +17,7 @@ import type {
 import { createEntry } from "@/lib/api/entries";
 import { getGames } from "@/lib/api/games";
 import { ApiClientError } from "@/lib/api/http";
+import { uploadImage } from "@/lib/api/uploads";
 
 type FieldErrors = Partial<Record<EntryFormField, string>>;
 
@@ -155,7 +157,10 @@ function validateValues(values: EntryFormValues): FieldErrors {
   return errors;
 }
 
-function buildCreatePayload(values: EntryFormValues): CreateDiaryEntryInput {
+function buildCreatePayload(
+  values: EntryFormValues,
+  photos: PhotoAsset[],
+): CreateDiaryEntryInput {
   return {
     gameId: toOptionalString(values.gameId),
     seasonYear: Number(values.seasonYear),
@@ -171,7 +176,7 @@ function buildCreatePayload(values: EntryFormValues): CreateDiaryEntryInput {
     playerOfTheDay: toOptionalString(values.playerOfTheDay),
     highlight: values.highlight.trim(),
     rawMemo: toOptionalString(values.rawMemo),
-    photos: [],
+    photos,
   };
 }
 
@@ -212,10 +217,15 @@ export function EntryCreateForm() {
   const [gameCandidates, setGameCandidates] = useState<GameCandidate[]>([]);
   const [hasRequestedGames, setHasRequestedGames] = useState(false);
   const [isLoadingGames, setIsLoadingGames] = useState(false);
+  const [uploadedPhotos, setUploadedPhotos] = useState<PhotoAsset[]>([]);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [uploadNote, setUploadNote] = useState<string | null>(null);
+  const [isUploadingImages, setIsUploadingImages] = useState(false);
+  const [uploadingFileNames, setUploadingFileNames] = useState<string[]>([]);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const payloadPreview = buildCreatePayload(values);
+  const payloadPreview = buildCreatePayload(values, uploadedPhotos);
 
   function setFieldValue<K extends keyof EntryFormValues>(
     field: K,
@@ -289,6 +299,81 @@ export function EntryCreateForm() {
     });
   }
 
+  async function handleUploadImages(
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) {
+    const selectedFiles = Array.from(event.target.files ?? []);
+    event.target.value = "";
+
+    if (selectedFiles.length === 0) {
+      return;
+    }
+
+    setUploadError(null);
+    setUploadNote(null);
+    setIsUploadingImages(true);
+    setUploadingFileNames(selectedFiles.map((file) => file.name));
+
+    try {
+      const results = await Promise.allSettled(
+        selectedFiles.map((file) => uploadImage(file)),
+      );
+      const nextAssets = results.flatMap((result) =>
+        result.status === "fulfilled" ? [result.value.asset] : [],
+      );
+      const failures = results.filter(
+        (result) => result.status === "rejected",
+      );
+
+      if (nextAssets.length > 0) {
+        setUploadedPhotos((current) => {
+          const nextById = new Map(current.map((asset) => [asset.id, asset]));
+
+          for (const asset of nextAssets) {
+            nextById.set(asset.id, asset);
+          }
+
+          return Array.from(nextById.values());
+        });
+      }
+
+      if (failures.length === 0) {
+        setUploadNote(
+          `${nextAssets.length}개의 사진을 업로드했습니다. 저장 시 photos에 함께 포함됩니다.`,
+        );
+        return;
+      }
+
+      const firstFailure = failures[0].reason;
+      const fallbackMessage =
+        failures.length === selectedFiles.length
+          ? "사진 업로드가 모두 실패했습니다. POST /uploads/image 응답을 확인해 주세요."
+          : `${failures.length}개의 사진 업로드가 실패했습니다. 성공한 사진은 그대로 유지됩니다.`;
+
+      if (firstFailure instanceof ApiClientError) {
+        setUploadError(firstFailure.message);
+      } else {
+        setUploadError(fallbackMessage);
+      }
+
+      if (nextAssets.length > 0) {
+        setUploadNote(
+          `${nextAssets.length}개의 사진은 업로드에 성공했습니다. 실패한 파일은 다시 시도해 주세요.`,
+        );
+      }
+    } finally {
+      setIsUploadingImages(false);
+      setUploadingFileNames([]);
+    }
+  }
+
+  function handleRemoveUploadedPhoto(photoId: string) {
+    setUploadedPhotos((current) =>
+      current.filter((photo) => photo.id !== photoId),
+    );
+    setUploadNote("선택한 사진을 이번 기록 생성 payload에서 제외했습니다.");
+  }
+
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
@@ -339,8 +424,9 @@ export function EntryCreateForm() {
                 POST /entries 생성 흐름
               </h1>
               <p className="max-w-2xl text-sm leading-7 text-stone-300">
-                이번 단계에서는 수동 입력으로 기록을 생성합니다. 경기 후보 조회와
-                사진 업로드는 다음 API 슬라이스에서 이어 붙일 예정입니다.
+                경기 후보 조회와 사진 업로드를 먼저 마친 뒤 기록 생성 payload를
+                저장하는 흐름입니다. 아직 저장 전 단계에서는 값과 첨부 자산을
+                계속 수정할 수 있습니다.
               </p>
             </div>
           </div>
@@ -734,7 +820,94 @@ export function EntryCreateForm() {
             </div>
           </article>
 
-          <article className="rounded-[28px] border border-stone-200 bg-white p-6 shadow-sm">
+          <article className="space-y-4 rounded-[28px] border border-stone-200 bg-white p-6 shadow-sm">
+            <div>
+              <h2 className="text-xl font-semibold tracking-tight text-stone-950">
+                사진 업로드
+              </h2>
+              <p className="mt-2 text-sm leading-6 text-stone-500">
+                파일을 고르면 즉시 `POST /uploads/image`로 업로드합니다. 업로드된
+                사진은 저장 전에 제거할 수 있고, 최종적으로 `POST /entries`의
+                `photos`에 함께 들어갑니다.
+              </p>
+            </div>
+
+            <label className="flex cursor-pointer flex-col items-center justify-center rounded-[24px] border border-dashed border-stone-300 bg-stone-50 px-5 py-8 text-center transition hover:border-stone-400 hover:bg-stone-100">
+              <span className="text-sm font-semibold text-stone-800">
+                사진 선택
+              </span>
+              <span className="mt-2 text-sm leading-6 text-stone-500">
+                여러 장을 한 번에 선택할 수 있습니다.
+              </span>
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleUploadImages}
+                className="sr-only"
+              />
+            </label>
+
+            {isUploadingImages ? (
+              <p className="rounded-2xl border border-stone-200 bg-stone-50 px-4 py-3 text-sm text-stone-600">
+                업로드 중: {uploadingFileNames.join(", ")}
+              </p>
+            ) : null}
+
+            {uploadError ? (
+              <p className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+                {uploadError}
+              </p>
+            ) : null}
+
+            {uploadNote ? (
+              <p className="rounded-2xl border border-stone-200 bg-stone-50 px-4 py-3 text-sm text-stone-600">
+                {uploadNote}
+              </p>
+            ) : null}
+
+            {uploadedPhotos.length > 0 ? (
+              <ul className="space-y-3">
+                {uploadedPhotos.map((photo) => (
+                  <li
+                    key={photo.id}
+                    className="rounded-[24px] border border-stone-200 bg-stone-50 px-4 py-4"
+                  >
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                      <div className="space-y-1">
+                        <p className="text-sm font-semibold text-stone-900">
+                          {photo.fileName || "업로드된 사진"}
+                        </p>
+                        <a
+                          href={photo.url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-sm font-medium text-stone-600 underline underline-offset-4 hover:text-stone-900"
+                        >
+                          업로드 결과 열기
+                        </a>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveUploadedPhoto(photo.id)}
+                        className="inline-flex items-center justify-center rounded-full border border-stone-300 bg-white px-4 py-2 text-sm font-semibold text-stone-700 transition hover:border-stone-400 hover:bg-stone-100"
+                      >
+                        이 사진 제외
+                      </button>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <div className="rounded-[24px] border border-dashed border-stone-200 bg-stone-50/70 px-4 py-5 text-sm leading-7 text-stone-500">
+                아직 업로드된 사진이 없습니다. 이번 슬라이스에서는 업로드 즉시
+                asset을 받아 `photos` payload에 쌓는 흐름까지 구현합니다.
+              </div>
+            )}
+          </article>
+
+          <article className="rounded-[28px] border border-stone-200 bg-white p-6 shadow-sm lg:col-span-2">
             <h2 className="text-xl font-semibold tracking-tight text-stone-950">
               생성 요청 미리보기
             </h2>
@@ -746,9 +919,10 @@ export function EntryCreateForm() {
               {JSON.stringify(payloadPreview, null, 2)}
             </pre>
             <div className="mt-6 rounded-[24px] border border-dashed border-stone-200 bg-stone-50/70 px-4 py-4 text-sm leading-7 text-stone-500">
-              사진은 아직 업로드 API가 연결되지 않아 빈 배열로 전송합니다.
               `GET /games`는 버튼 기반 후보 조회로 먼저 연결했고, 추후 자동
-              조회로 확장할 수 있도록 로직을 분리해 두었습니다.
+              조회로 확장할 수 있도록 로직을 분리해 두었습니다. 사진도 지금은
+              `POST /uploads/image`로 먼저 올린 뒤 응답 asset을 payload에
+              포함하는 방식으로 연결했습니다.
             </div>
           </article>
         </section>
@@ -768,10 +942,14 @@ export function EntryCreateForm() {
         <div className="flex flex-wrap gap-3">
           <button
             type="submit"
-            disabled={isSubmitting}
+            disabled={isSubmitting || isUploadingImages}
             className="inline-flex items-center justify-center rounded-full bg-stone-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-stone-800 disabled:cursor-not-allowed disabled:bg-stone-400"
           >
-            {isSubmitting ? "저장 중..." : "새 기록 저장"}
+            {isUploadingImages
+              ? "사진 업로드 완료 후 저장 가능"
+              : isSubmitting
+                ? "저장 중..."
+                : "새 기록 저장"}
           </button>
           <Link
             href="/season"
