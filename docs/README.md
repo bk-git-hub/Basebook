@@ -10,7 +10,14 @@
 
 - `docs/DECISIONS.md`
 
-사용자와의 기술 회의에서 확정된 결정사항을 기록하는 문서입니다.
+과거 공용 결정사항을 보관하는 아카이브 문서입니다.
+
+## app decision logs
+
+- `apps/web/DECISIONS.md`
+- `apps/api/DECISIONS.md`
+
+앞으로의 프론트엔드/백엔드 주요 기술 결정은 각 앱의 decision log에 분리 기록합니다.
 
 ## planning
 

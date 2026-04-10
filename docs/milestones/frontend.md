@@ -7,6 +7,7 @@
 - 시작, 완료, blocker, scope change, integration ready 상태를 기록한다.
 - 길게 서술하지 말고 사실 중심으로 적는다.
 - 사용자 검증 전에는 `done`으로 표기하지 않는다.
+- 앞으로의 `Related Decision IDs`는 `apps/web/DECISIONS.md`의 `WEB-*` id를 사용한다.
 
 ---
 

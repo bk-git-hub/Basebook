@@ -1,13 +1,19 @@
-# Basebook Decision Log
+# Basebook Shared Decision Archive
 
-이 문서는 사용자와의 기술 회의에서 확정된 주요 결정을 기록한다.
+이 문서는 과거에 공용으로 기록했던 결정을 보관하는 아카이브다.
+
+새 결정은 이 문서에 추가하지 않는다.
+
+앞으로는 아래 파일을 사용한다.
+
+- `apps/web/DECISIONS.md`
+- `apps/api/DECISIONS.md`
 
 규칙:
 
-- 결정은 사용자와의 회의 후에만 기록한다.
-- 기존 결정을 조용히 덮어쓰지 않는다.
-- 변경이 생기면 새로운 decision entry를 추가한다.
-- 시간은 `Asia/Seoul` 기준으로 기록한다.
+- 이 문서는 역사 보존용이다.
+- 기존 decision id 참조를 깨지 않기 위해 유지한다.
+- 새로운 entry는 추가하지 않는다.
 
 ---
 

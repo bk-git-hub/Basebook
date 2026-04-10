@@ -113,15 +113,18 @@ docs/reference           # assignment references
 Frontend engineer 필수:
 
 - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+- `apps/web/DECISIONS.md`
 
 Frontend QA engineer 필수:
 
 - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
 - `docs/planning/FRONTEND_QA_SPEC.md`
+- `apps/web/DECISIONS.md`
 
 Backend engineer 필수:
 
 - `docs/planning/BACKEND_FUNCTIONAL_SPEC.md`
+- `apps/api/DECISIONS.md`
 
 전체 맥락 참고:
 
@@ -346,7 +349,7 @@ merge 요청 전에 아래를 확인한다.
 3. 작은 커밋 단위가 유지됐는가
 4. 빌드 또는 최소 검증을 했는가
 5. 변경 내용을 한 문장으로 설명할 수 있는가
-6. 관련 결정이 있다면 `docs/DECISIONS.md`에 기록했는가
+6. 관련 결정이 있다면 역할에 맞는 `apps/web/DECISIONS.md` 또는 `apps/api/DECISIONS.md`에 기록했는가
 7. 관련 마일스톤 상태를 `docs/milestones/*.md`에 기록했는가
 8. 사용자 검증 전이라면 아직 완료 처리하지 않았는가
 
@@ -354,7 +357,14 @@ merge 요청 전에 아래를 확인한다.
 
 ## 의사결정 및 마일스톤 기록 규칙
 
-사용자와의 기술 회의에서 정해진 내용은 `docs/DECISIONS.md`에 기록한다.
+사용자와의 기술 회의에서 정해진 내용은 역할에 맞는 decision log에 기록한다.
+
+기본 규칙:
+
+- Frontend engineer와 Frontend QA engineer는 `apps/web/DECISIONS.md`
+- Backend engineer는 `apps/api/DECISIONS.md`
+- CTO는 구현 소유권이 있는 쪽의 decision log에 기록하고 필요하면 다른 쪽과 교차 참조한다
+- `docs/DECISIONS.md`는 과거 공용 결정의 아카이브로만 유지한다
 
 기록 항목:
 
@@ -405,15 +415,15 @@ Backend engineer와 Frontend QA engineer는 아래 상황에서 소통한다.
 
 ### Frontend engineer
 
-`AGENTS.md와 BASEBOOK_TEAM_PLAYBOOK.md, docs/planning/CONTRACT_SPEC.md, docs/planning/FRONTEND_FUNCTIONAL_SPEC.md를 읽고 C:\Users\bksoft\Documents\Basebook-web worktree의 codex/web 브랜치에서 apps/web 범위만 작업해줘.`
+`AGENTS.md와 BASEBOOK_TEAM_PLAYBOOK.md, docs/planning/CONTRACT_SPEC.md, docs/planning/FRONTEND_FUNCTIONAL_SPEC.md, apps/web/DECISIONS.md를 읽고 C:\Users\bksoft\Documents\Basebook-web worktree의 codex/web 브랜치에서 apps/web 범위만 작업해줘.`
 
 ### Frontend QA engineer
 
-`AGENTS.md와 BASEBOOK_TEAM_PLAYBOOK.md, docs/planning/FRONTEND_FUNCTIONAL_SPEC.md, docs/planning/FRONTEND_QA_SPEC.md를 읽고 C:\Users\bksoft\Documents\Basebook-web-qa worktree의 codex/web-qa 브랜치에서 프론트엔드 테스트와 QA를 담당해줘. apps/web 범위에서 테스트 코드와 QA 수정만 작업해줘.`
+`AGENTS.md와 BASEBOOK_TEAM_PLAYBOOK.md, docs/planning/FRONTEND_FUNCTIONAL_SPEC.md, docs/planning/FRONTEND_QA_SPEC.md, apps/web/DECISIONS.md를 읽고 C:\Users\bksoft\Documents\Basebook-web-qa worktree의 codex/web-qa 브랜치에서 프론트엔드 테스트와 QA를 담당해줘. apps/web 범위에서 테스트 코드와 QA 수정만 작업해줘.`
 
 ### Backend engineer
 
-`AGENTS.md와 BASEBOOK_TEAM_PLAYBOOK.md, docs/planning/CONTRACT_SPEC.md, docs/planning/BACKEND_FUNCTIONAL_SPEC.md를 읽고 C:\Users\bksoft\Documents\Basebook-api worktree의 codex/api 브랜치에서 apps/api와 필요한 경우 data 범위만 작업해줘.`
+`AGENTS.md와 BASEBOOK_TEAM_PLAYBOOK.md, docs/planning/CONTRACT_SPEC.md, docs/planning/BACKEND_FUNCTIONAL_SPEC.md, apps/api/DECISIONS.md를 읽고 C:\Users\bksoft\Documents\Basebook-api worktree의 codex/api 브랜치에서 apps/api와 필요한 경우 data 범위만 작업해줘.`
 
 ### CTO
 

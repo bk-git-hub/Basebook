@@ -74,7 +74,11 @@
 - Do not merge milestone-level work into a "done" state without user confirmation.
 
 ## Decision Logging
-- Technical decisions made during user meetings must be recorded in `docs/DECISIONS.md`.
+- Technical decisions made during user meetings must be recorded in the area-owned decision log.
+- Use:
+- `apps/web/DECISIONS.md` for frontend and frontend QA decisions
+- `apps/api/DECISIONS.md` for backend decisions
+- `docs/DECISIONS.md` is archive-only and should not receive new decision entries.
 - Use a structured format that includes at minimum:
 - decision id
 - date
