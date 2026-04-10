@@ -212,3 +212,27 @@
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
 - Related Milestones:
   - `docs/milestones/frontend.md`
+
+### WEB-009
+
+- Date: `2026-04-10`
+- Time: `14:17`
+- Agenda: 프론트엔드 테스트 코드를 어디에 둘지 결정
+- Participants: User, Codex
+- Options Considered:
+  - `apps/web` 내부에 단위 테스트와 e2e 테스트를 함께 둔다
+  - 별도 `tests/web` 워크스페이스를 만들고 `apps/web`는 앱 코드만 유지한다
+- Decision: 프론트엔드 테스트와 QA 자동화 코드는 별도 `tests/web` 워크스페이스에 두고, `apps/web`는 프론트엔드 앱 코드와 결정 로그만 유지한다.
+- Rationale: 앱 코드와 QA 인프라를 분리하면 프론트 구현 워크트리의 책임 범위가 선명해지고, 테스트 의존성과 실행 설정도 독립적으로 관리할 수 있다.
+- Impact:
+  - `tests/web`가 `vitest`와 `playwright` 기반의 프론트 QA 워크스페이스가 된다
+  - `apps/web`는 테스트 전용 파일 없이 프론트 소스 중심으로 유지된다
+  - 이후 프론트-백 연동 e2e도 같은 워크스페이스에서 확장한다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `AGENTS.md`
+  - `BASEBOOK_TEAM_PLAYBOOK.md`
+  - `docs/planning/FRONTEND_QA_SPEC.md`
+- Related Milestones:
+  - `docs/milestones/frontend.md`

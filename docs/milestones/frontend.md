@@ -137,3 +137,21 @@
   - 별도 QA thread에서 통합 테스트 예정
 - Next Step:
   - user validation 후 `/games` 또는 업로드 연동 범위를 별도 회의로 결정
+
+### FE-MILESTONE-007
+
+- Date: `2026-04-10`
+- Time: `14:17`
+- Milestone: Frontend QA workspace isolated from `apps/web`
+- Status: `ready_for_review`
+- Summary:
+  - `tests/web` 워크스페이스를 추가해 프론트 테스트 실행 경로를 분리함
+  - 현재 구현된 `/season`, `/entries/new`, `/entries/[id]`, `/entries/[id]/edit` 흐름에 대한 단위 테스트와 e2e smoke를 추가함
+  - `apps/web` 자체 lint/build 기준은 유지한 채 QA 인프라를 루트 워크스페이스로 연결함
+- Related Decision IDs:
+  - `WEB-009`
+- Blocking Items:
+  - `/season-book/new`, `/order/[projectId]`는 아직 앱 구현이 없어 테스트 범위에 포함되지 않음
+  - 실제 백엔드 연동 e2e는 main 안정화 후 별도 검증 필요
+- Next Step:
+  - user validation 후 API-connected e2e와 미구현 라우트 회귀 테스트를 순차적으로 확장
