@@ -134,3 +134,26 @@
   - `docs/planning/FRONTEND_QA_SPEC.md`
 - Related Milestones:
   - `docs/milestones/frontend.md`
+
+### DECISION-005
+
+- Date: `2026-04-10`
+- Time: `12:09`
+- Agenda: `/season`의 `GET /entries` 연동 방식을 어떻게 구성할지 결정
+- Participants: User, Codex
+- Options Considered:
+  - `/season` 페이지에서 직접 `fetch`
+  - `entries` 전용 API client 계층을 두고 페이지가 이를 사용
+- Decision: `entries` 전용 API client 계층을 먼저 만들고, `/season` 페이지는 그 계층을 통해 `GET /entries`를 호출한다.
+- Rationale: 같은 `/entries` 도메인을 앞으로 상세 조회, 수정, 생성 화면에서도 재사용할 예정이라 페이지마다 직접 fetch를 퍼뜨리는 것보다 교체 범위와 중복을 줄이는 편이 안전하다.
+- Impact:
+  - `apps/web/src/lib/api` 아래에 재사용 가능한 HTTP client와 `entries` client가 생긴다
+  - `/season`은 mock 데이터가 아니라 API 응답을 받는 서버 컴포넌트 구조로 바뀐다
+  - 이후 `GET /entries/:id`, `PATCH /entries/:id`, `POST /entries` 연동도 같은 계층을 따라갈 수 있다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/CONTRACT_SPEC.md`
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+- Related Milestones:
+  - `docs/milestones/frontend.md`
