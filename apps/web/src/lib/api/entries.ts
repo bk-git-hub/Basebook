@@ -1,7 +1,8 @@
 import type {
+  GetEntryResponse,
   GetEntriesQuery,
   GetEntriesResponse,
-  GetEntryResponse,
+  UpdateDiaryEntryInput,
 } from "@basebook/contracts";
 
 import { fetchJson } from "./http";
@@ -14,4 +15,19 @@ export async function getEntries(
 
 export async function getEntry(id: string): Promise<GetEntryResponse> {
   return fetchJson<GetEntryResponse>(`/entries/${id}`);
+}
+
+export async function updateEntry(
+  id: string,
+  payload: UpdateDiaryEntryInput,
+): Promise<GetEntryResponse> {
+  return fetchJson<GetEntryResponse>(`/entries/${id}`, {
+    init: {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    },
+  });
 }
