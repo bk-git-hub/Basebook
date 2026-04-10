@@ -1,4 +1,5 @@
 import type {
+  CreateDiaryEntryInput,
   GetEntryResponse,
   GetEntriesQuery,
   GetEntriesResponse,
@@ -24,6 +25,20 @@ export async function updateEntry(
   return fetchJson<GetEntryResponse>(`/entries/${id}`, {
     init: {
       method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    },
+  });
+}
+
+export async function createEntry(
+  payload: CreateDiaryEntryInput,
+): Promise<GetEntryResponse> {
+  return fetchJson<GetEntryResponse>("/entries", {
+    init: {
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
