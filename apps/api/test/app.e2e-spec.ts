@@ -146,6 +146,32 @@ describe('AppController (e2e)', () => {
       });
   });
 
+  it('/uploads/image (POST) stores a local image asset and exposes a retrievable URL', async () => {
+    const pngBuffer = Buffer.from(
+      'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Wn0X3sAAAAASUVORK5CYII=',
+      'base64',
+    );
+
+    const uploadResponse = await request(baseUrl)
+      .post('/uploads/image')
+      .attach('file', pngBuffer, {
+        filename: 'entry-photo.png',
+        contentType: 'image/png',
+      })
+      .expect(201);
+
+    expect(uploadResponse.body.asset.id).toBeTruthy();
+    expect(uploadResponse.body.asset.fileName).toMatch(/\.png$/);
+    expect(uploadResponse.body.asset.url).toContain('/uploads/local/');
+
+    const assetUrl = new URL(uploadResponse.body.asset.url);
+
+    await request(baseUrl)
+      .get(assetUrl.pathname)
+      .expect(200)
+      .expect('Content-Type', /image\/png/);
+  });
+
   afterAll(async () => {
     await app.close();
   });

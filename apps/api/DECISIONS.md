@@ -255,3 +255,29 @@
   - `apps/api/.env.example`
 - Related Milestones:
   - `docs/milestones/backend.md`
+
+### API-010
+
+- Date: `2026-04-10`
+- Time: `15:12`
+- Agenda: Image upload storage strategy for the first upload slice
+- Participants: User, Codex
+- Options Considered:
+  - Implement remote object storage immediately
+  - Implement local file storage first with no abstraction
+  - Implement local file storage first behind a replaceable storage interface
+- Decision:
+  - Start with local file storage for `POST /uploads/image`
+  - Keep the storage logic behind a replaceable service boundary so remote storage can be added later
+- Rationale: The user wants local execution to work immediately while still preserving a realistic path toward future remote deployment.
+- Impact:
+  - uploaded files are stored locally during current development
+  - backend now has a storage adapter boundary that can later switch to a blob provider
+  - frontend can begin real multipart upload integration without waiting for remote infrastructure
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/BACKEND_FUNCTIONAL_SPEC.md`
+  - `docs/planning/CONTRACT_SPEC.md`
+- Related Milestones:
+  - `docs/milestones/backend.md`
