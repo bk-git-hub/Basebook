@@ -210,3 +210,30 @@
   - `README.md`
 - Related Milestones:
   - `docs/milestones/backend.md`
+
+### DECISION-008
+
+- Date: `2026-04-10`
+- Time: `10:10`
+- Agenda: Local frontend-backend integration defaults for browser-based testing
+- Participants: User, Codex
+- Options Considered:
+  - Keep backend on port `3000` and move the frontend
+  - Move backend default port to `4000` and keep frontend on `3000`
+  - Leave CORS disabled until integration testing starts
+  - Enable local CORS for the frontend origin now
+- Decision:
+  - Use backend default port `4000`
+  - Allow local browser requests from `http://localhost:3000`
+- Rationale: The user expects the frontend to run on `localhost:3000`, and separating the backend to `4000` avoids local port collisions while unblocking browser-based integration tests.
+- Impact:
+  - backend local startup defaults now align to `PORT=4000`
+  - frontend can call the backend from `localhost:3000` without browser CORS rejection
+  - future deployment can still override origin and port through app-level env files
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `apps/api/.env.example`
+  - `README.md`
+- Related Milestones:
+  - `docs/milestones/backend.md`

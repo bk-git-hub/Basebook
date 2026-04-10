@@ -117,3 +117,20 @@
   - user verification pending
 - Next Step:
   - prepare local frontend-backend integration and CORS review
+
+### BE-MILESTONE-006
+
+- Date: `2026-04-10`
+- Time: `10:10`
+- Milestone: Local frontend-backend integration defaults configured
+- Status: `ready_for_review`
+- Summary:
+  - backend local default port is set to `4000`
+  - local browser CORS now allows the frontend origin `http://localhost:3000`
+  - API env example documents the integration defaults
+- Related Decision IDs:
+  - `DECISION-008`
+- Blocking Items:
+  - user verification pending
+- Next Step:
+  - run the frontend against the local backend and verify browser requests
