@@ -259,3 +259,26 @@
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
 - Related Milestones:
   - `docs/milestones/frontend.md`
+
+### WEB-011
+
+- Date: `2026-04-10`
+- Time: `15:15`
+- Agenda: `/entries/new`의 `POST /uploads/image`를 저장 직전 일괄 업로드로 둘지, 파일 선택 즉시 업로드로 둘지 결정
+- Participants: User, Codex
+- Options Considered:
+  - 저장 버튼을 눌렀을 때 `POST /entries` 직전에 업로드를 함께 처리
+  - 파일을 고르는 즉시 `POST /uploads/image`를 먼저 호출하고 업로드된 asset을 폼 state에 보관
+- Decision: `/entries/new`는 파일 선택 즉시 업로드를 수행하고, 업로드 응답 asset을 폼 state에 저장한 뒤 최종 `POST /entries` payload의 `photos`로 전달한다.
+- Rationale: 업로드 실패와 기록 저장 실패를 분리하면 디버깅과 사용자 피드백이 쉬워지고, 생성 화면에서도 첨부 사진을 먼저 확인하거나 제외할 수 있다. 또한 업로드 응답 shape가 `PhotoAsset`과 바로 호환되어 payload 조립이 단순하다.
+- Impact:
+  - 사용자는 저장 전에 업로드 성공 여부를 바로 확인할 수 있다
+  - 업로드된 사진을 생성 payload에서 개별적으로 제외할 수 있다
+  - `/entries/new` 생성 흐름이 `GET /games` + `POST /uploads/image` + `POST /entries` 기준으로 거의 완성된다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/CONTRACT_SPEC.md`
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+- Related Milestones:
+  - `docs/milestones/frontend.md`

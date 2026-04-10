@@ -174,3 +174,22 @@
   - 별도 QA thread에서 통합 테스트 예정
 - Next Step:
   - user validation 후 `/uploads/image` 연동 또는 `GET /games` 자동 조회 전환 범위를 회의로 결정
+
+### FE-MILESTONE-009
+
+- Date: `2026-04-10`
+- Time: `15:15`
+- Milestone: `/entries/new` `POST /uploads/image` attachment flow integrated
+- Status: `ready_for_review`
+- Summary:
+  - `uploads` API client를 추가하고 `/entries/new`에서 파일 선택 즉시 `POST /uploads/image`를 호출하도록 연결함
+  - 업로드된 asset을 폼 state에 보관하고, 저장 전 제거할 수 있는 첨부 목록 UI를 추가함
+  - 최종 `POST /entries` payload preview가 실제 업로드된 `photos`를 포함하도록 갱신됨
+- Related Decision IDs:
+  - `WEB-011`
+- Blocking Items:
+  - backend `POST /uploads/image` 구현 및 multipart 응답 확인 필요
+  - 이미지 미리보기와 업로드 재시도 UX는 후속 polish 범위로 남음
+  - 별도 QA thread에서 통합 테스트 예정
+- Next Step:
+  - user validation 후 `/entries/new` 최종 polish 또는 미구현 라우트 작업 범위를 회의로 결정
