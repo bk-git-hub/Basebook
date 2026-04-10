@@ -4,14 +4,17 @@
   "workspaces": [
     "apps/web",
     "apps/api",
-    "packages/contracts"
+    "packages/contracts",
+    "tests/web"
   ],
   "scripts": {
     "dev": "concurrently \"npm run dev:web\" \"npm run dev:api\"",
     "dev:web": "npm run dev -w apps/web",
     "dev:api": "npm run start:dev -w apps/api",
     "build": "npm run build -w apps/web && npm run build -w apps/api",
-    "test": "npm run test -w apps/web && npm run test -w apps/api"
+    "test": "npm run test -w tests/web && npm run test -w apps/api",
+    "test:web": "npm run test -w tests/web",
+    "test:web:e2e": "npm run test:e2e -w tests/web"
   },
   "devDependencies": {
     "concurrently": "^9.2.1"
