@@ -61,6 +61,14 @@
 - Contract changes should usually land in their own commit unless they are inseparable from the implementation they unblock.
 - Avoid "catch-all" commits like `feat: update project` or `fix: various fixes`.
 
+## Single-Repo Main-Only Rule
+- All active agents work in the same repository at `C:\Users\bksoft\Documents\Sweetbook`.
+- Do not create, require, or rely on git worktrees for day-to-day collaboration.
+- Do not require branch switching for normal agent work.
+- The operational source of truth is the local `main` branch in the shared repository.
+- Parallel agents must coordinate by file ownership and decision logs, not by separate worktrees.
+- If a coordination rule conflicts with an older worktree-based note, follow this section.
+
 ## Development Lifecycle
 - All development follows this sequence:
 - `plan -> technical meeting with user -> implementation -> test -> review -> user verification`

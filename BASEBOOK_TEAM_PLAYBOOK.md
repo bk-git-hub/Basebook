@@ -4,9 +4,9 @@
 
 가장 중요한 원칙은 아래 한 줄이다.
 
-`한 Codex thread = 한 팀원 = 한 worktree = 한 branch`
+`모든 Codex thread는 같은 저장소의 main에서 작업하고, 역할은 파일 소유 범위로만 구분한다`
 
-새 thread는 이 문서를 읽고 자신이 어떤 팀원인지, 어떤 폴더를 열어야 하는지, 어디까지 수정할 수 있는지 먼저 확인한다.
+새 thread는 이 문서를 읽고 자신이 어떤 팀원인지, 어떤 파일 범위를 맡는지 먼저 확인한다.
 
 ---
 
@@ -39,14 +39,17 @@
 
 ---
 
-## Worktree Assignment
+## Single-Repo Main-Only Assignment
 
-아래 worktree와 branch 조합을 기본 규칙으로 사용한다.
+모든 팀원은 아래 공통 작업 공간을 사용한다.
+
+- Repository: `C:\Users\bksoft\Documents\Sweetbook`
+- Branch: `main`
+
+별도 worktree를 운영 기준으로 사용하지 않는다. 기존 worktree가 있더라도 현재 협업 규칙의 기준은 이 저장소와 `main` 브랜치다.
 
 ### 1. CTO
 
-- Worktree: `C:\Users\bksoft\Documents\Sweetbook`
-- Branch: `main`
 - 역할:
   - 기술 의사결정 조율
   - 머지
@@ -56,8 +59,6 @@
 
 ### 2. Frontend engineer
 
-- Worktree: `C:\Users\bksoft\Documents\Basebook-web`
-- Branch: `codex/web`
 - 역할:
   - 사용자 화면 개발
   - 폼/상태/UX 구현
@@ -65,8 +66,6 @@
 
 ### 3. Frontend QA engineer
 
-- Worktree: `C:\Users\bksoft\Documents\Basebook-web-qa`
-- Branch: `codex/web-qa`
 - 역할:
   - 프론트엔드 테스트 코드 작성
   - 프론트엔드 QA
@@ -75,15 +74,13 @@
 
 ### 4. Backend engineer
 
-- Worktree: `C:\Users\bksoft\Documents\Basebook-api`
-- Branch: `codex/api`
 - 역할:
   - API 엔드포인트
   - DB/Prisma
   - 업로드
   - Sweetbook SDK orchestration
 
-새 thread는 자신에게 할당된 worktree에서만 작업한다. 잘못된 worktree를 열었으면 바로 멈추고 맞는 폴더로 이동한다.
+새 thread는 같은 저장소를 사용하되, 자신에게 할당된 파일 범위 안에서만 작업한다.
 
 ---
 
@@ -260,8 +257,8 @@ Backend engineer 필수:
 
 새 thread는 시작 직후 아래를 확인한다.
 
-1. 현재 worktree 경로 확인
-2. 현재 브랜치 확인
+1. 현재 저장소가 `C:\Users\bksoft\Documents\Sweetbook`인지 확인
+2. 현재 브랜치가 `main`인지 확인
 3. 자신의 역할 확인
 4. 자신이 수정 가능한 폴더 확인
 5. 관련 planning 문서 확인
@@ -269,7 +266,7 @@ Backend engineer 필수:
 
 질문:
 
-- 내가 지금 올바른 worktree를 열었는가?
+- 내가 지금 올바른 저장소와 `main` 브랜치에 있는가?
 - 내가 건드릴 파일 범위가 명확한가?
 - 이 변경은 한 문장으로 설명 가능한가?
 - 커밋을 하나 더 쪼개야 하는가?
@@ -409,22 +406,28 @@ Backend engineer와 Frontend QA engineer는 아래 상황에서 소통한다.
 - 에러 응답 shape나 empty state 조건이 테스트에 필요할 때
 - mock 데이터와 실제 응답이 다를 때
 
+모든 역할 공통:
+
+- 같은 `main` 브랜치에서 작업하므로 파일 소유 범위를 넘는 수정은 금지한다
+- 다른 역할이 소유한 파일을 건드려야 하면 먼저 사용자와 기술 결정 또는 역할 간 합의를 거친다
+- 작은 커밋 후 바로 상태를 공유해 충돌 가능 시간을 줄인다
+
 ---
 
 ## 새 Codex thread에 바로 줄 수 있는 시작 지시문
 
 ### Frontend engineer
 
-`AGENTS.md와 BASEBOOK_TEAM_PLAYBOOK.md, docs/planning/CONTRACT_SPEC.md, docs/planning/FRONTEND_FUNCTIONAL_SPEC.md, apps/web/DECISIONS.md를 읽고 C:\Users\bksoft\Documents\Basebook-web worktree의 codex/web 브랜치에서 apps/web 범위만 작업해줘.`
+`AGENTS.md와 BASEBOOK_TEAM_PLAYBOOK.md, docs/planning/CONTRACT_SPEC.md, docs/planning/FRONTEND_FUNCTIONAL_SPEC.md, apps/web/DECISIONS.md를 읽고 C:\Users\bksoft\Documents\Sweetbook 저장소의 main 브랜치에서 apps/web 범위만 작업해줘.`
 
 ### Frontend QA engineer
 
-`AGENTS.md와 BASEBOOK_TEAM_PLAYBOOK.md, docs/planning/FRONTEND_FUNCTIONAL_SPEC.md, docs/planning/FRONTEND_QA_SPEC.md, apps/web/DECISIONS.md를 읽고 C:\Users\bksoft\Documents\Basebook-web-qa worktree의 codex/web-qa 브랜치에서 프론트엔드 테스트와 QA를 담당해줘. apps/web 범위에서 테스트 코드와 QA 수정만 작업해줘.`
+`AGENTS.md와 BASEBOOK_TEAM_PLAYBOOK.md, docs/planning/FRONTEND_FUNCTIONAL_SPEC.md, docs/planning/FRONTEND_QA_SPEC.md, apps/web/DECISIONS.md를 읽고 C:\Users\bksoft\Documents\Sweetbook 저장소의 main 브랜치에서 프론트엔드 테스트와 QA를 담당해줘. apps/web 범위에서 테스트 코드와 QA 수정만 작업해줘.`
 
 ### Backend engineer
 
-`AGENTS.md와 BASEBOOK_TEAM_PLAYBOOK.md, docs/planning/CONTRACT_SPEC.md, docs/planning/BACKEND_FUNCTIONAL_SPEC.md, apps/api/DECISIONS.md를 읽고 C:\Users\bksoft\Documents\Basebook-api worktree의 codex/api 브랜치에서 apps/api와 필요한 경우 data 범위만 작업해줘.`
+`AGENTS.md와 BASEBOOK_TEAM_PLAYBOOK.md, docs/planning/CONTRACT_SPEC.md, docs/planning/BACKEND_FUNCTIONAL_SPEC.md, apps/api/DECISIONS.md를 읽고 C:\Users\bksoft\Documents\Sweetbook 저장소의 main 브랜치에서 apps/api와 필요한 경우 data 범위만 작업해줘.`
 
 ### CTO
 
-`AGENTS.md와 BASEBOOK_TEAM_PLAYBOOK.md를 읽고 C:\Users\bksoft\Documents\Sweetbook worktree의 main 브랜치에서 CTO 역할로 기술 조율, 통합, 테스트, 루트 설정만 담당해줘.`
+`AGENTS.md와 BASEBOOK_TEAM_PLAYBOOK.md를 읽고 C:\Users\bksoft\Documents\Sweetbook 저장소의 main 브랜치에서 CTO 역할로 기술 조율, 통합, 테스트, 루트 설정만 담당해줘.`
