@@ -26,6 +26,7 @@
 
 - CTO
 - Frontend engineer
+- Frontend QA engineer
 - Backend engineer
 
 새 thread는 여러 역할을 동시에 맡지 않는다. 역할이 섞이면 통합 비용이 커지고 충돌이 생긴다.
@@ -62,7 +63,17 @@
   - 폼/상태/UX 구현
   - API client 연결
 
-### 3. Backend engineer
+### 3. Frontend QA engineer
+
+- Worktree: `C:\Users\bksoft\Documents\Basebook-web-qa`
+- Branch: `codex/web-qa`
+- 역할:
+  - 프론트엔드 테스트 코드 작성
+  - 프론트엔드 QA
+  - QA 중 발견한 버그 재현 및 수정
+  - 회귀 방지용 테스트 보강
+
+### 4. Backend engineer
 
 - Worktree: `C:\Users\bksoft\Documents\Basebook-api`
 - Branch: `codex/api`
@@ -102,6 +113,11 @@ docs/reference           # assignment references
 Frontend engineer 필수:
 
 - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+
+Frontend QA engineer 필수:
+
+- `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+- `docs/planning/FRONTEND_QA_SPEC.md`
 
 Backend engineer 필수:
 
@@ -143,6 +159,19 @@ Backend engineer 필수:
 - 루트 설정 파일
 - `packages/contracts/**`
 
+### Frontend QA engineer
+
+주로 수정 가능한 범위:
+
+- `apps/web/**`
+- 프론트엔드 테스트 파일
+
+가급적 직접 수정하지 않는 범위:
+
+- `apps/api/**`
+- 루트 설정 파일
+- `packages/contracts/**`
+
 ### Backend engineer
 
 주로 수정 가능한 범위:
@@ -175,6 +204,7 @@ Backend engineer 필수:
 
 - Backend engineer가 먼저 문서와 contracts를 바꾼다
 - Frontend engineer는 그 기준에 맞춘다
+- Frontend QA engineer는 그 기준에 맞춰 테스트를 작성한다
 - CTO는 통합 시 계약과 구현이 맞는지 확인한다
 
 ---
@@ -284,6 +314,14 @@ Backend engineer 필수:
 3. `packages/contracts` 기준 mock client 작성
 4. Season Dashboard와 Entry Editor 화면부터 구현
 
+### Frontend QA engineer first tasks
+
+1. `docs/planning/FRONTEND_QA_SPEC.md` 확인
+2. 프론트엔드 테스트 대상 흐름 정리
+3. 컴포넌트/페이지 테스트 구조 생성
+4. 해피패스와 핵심 에러 상태 기준 테스트 작성
+5. QA 중 발견한 이슈를 재현 가능한 형태로 정리
+
 ### Backend engineer first tasks
 
 1. `apps/api`에 health module 정리
@@ -342,6 +380,25 @@ merge 요청 전에 아래를 확인한다.
 - blocker 발생
 - scope 변경
 
+Frontend QA engineer도 프론트엔드 관련 테스트/QA 진행 상황을 `docs/milestones/frontend.md`에 함께 기록한다.
+
+---
+
+## 역할 간 소통 규칙
+
+Frontend engineer와 Frontend QA engineer는 아래 상황에서 반드시 소통한다.
+
+- 테스트 대상 화면이나 흐름이 바뀌었을 때
+- 선택자, 접근성 라벨, 테스트용 hook이 필요할 때
+- QA 중 발견한 버그가 단순 테스트 보강이 아니라 UI 로직 수정이 필요할 때
+- 테스트가 현재 구현과 충돌할 때
+
+Backend engineer와 Frontend QA engineer는 아래 상황에서 소통한다.
+
+- 프론트 화면이 API 상태에 따라 달라질 때
+- 에러 응답 shape나 empty state 조건이 테스트에 필요할 때
+- mock 데이터와 실제 응답이 다를 때
+
 ---
 
 ## 새 Codex thread에 바로 줄 수 있는 시작 지시문
@@ -349,6 +406,10 @@ merge 요청 전에 아래를 확인한다.
 ### Frontend engineer
 
 `AGENTS.md와 BASEBOOK_TEAM_PLAYBOOK.md, docs/planning/CONTRACT_SPEC.md, docs/planning/FRONTEND_FUNCTIONAL_SPEC.md를 읽고 C:\Users\bksoft\Documents\Basebook-web worktree의 codex/web 브랜치에서 apps/web 범위만 작업해줘.`
+
+### Frontend QA engineer
+
+`AGENTS.md와 BASEBOOK_TEAM_PLAYBOOK.md, docs/planning/FRONTEND_FUNCTIONAL_SPEC.md, docs/planning/FRONTEND_QA_SPEC.md를 읽고 C:\Users\bksoft\Documents\Basebook-web-qa worktree의 codex/web-qa 브랜치에서 프론트엔드 테스트와 QA를 담당해줘. apps/web 범위에서 테스트 코드와 QA 수정만 작업해줘.`
 
 ### Backend engineer
 

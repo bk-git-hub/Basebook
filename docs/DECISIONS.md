@@ -110,3 +110,27 @@
 - Related Milestones:
   - `docs/milestones/frontend.md`
   - `docs/milestones/backend.md`
+
+### DECISION-004
+
+- Date: `2026-04-10`
+- Time: `09:10`
+- Agenda: Add a dedicated frontend QA role to the parallel development team
+- Participants: User, Codex
+- Options Considered:
+  - Keep QA and frontend implementation in one thread
+  - Let CTO do all frontend QA
+  - Add a dedicated frontend QA engineer thread
+- Decision: Add a dedicated `Frontend QA engineer` role with its own worktree and branch.
+- Rationale: Frontend implementation and frontend QA can progress in parallel, and test ownership becomes explicit instead of being treated as leftover work.
+- Impact:
+  - frontend testing and QA become an owned responsibility
+  - a new worktree and onboarding path are required
+  - frontend and QA communication points must be documented
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `BASEBOOK_TEAM_PLAYBOOK.md`
+  - `docs/planning/FRONTEND_QA_SPEC.md`
+- Related Milestones:
+  - `docs/milestones/frontend.md`

@@ -45,3 +45,20 @@
   - worktree creation pending
 - Next Step:
   - scaffold frontend worktree and start page shell implementation
+
+### FE-MILESTONE-002
+
+- Date: `2026-04-10`
+- Time: `09:15`
+- Milestone: Frontend QA role and testing ownership added
+- Status: `verified`
+- Summary:
+  - dedicated frontend QA role added to team playbook
+  - frontend QA onboarding spec added
+  - frontend QA will share the frontend milestone log for progress updates
+- Related Decision IDs:
+  - `DECISION-004`
+- Blocking Items:
+  - frontend QA worktree creation pending
+- Next Step:
+  - create QA worktree and start smoke tests for dashboard and entry form
