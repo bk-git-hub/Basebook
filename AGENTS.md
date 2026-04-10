@@ -43,6 +43,15 @@
 - Commit in feature-sized slices; do not batch unrelated frontend, backend, docs, and refactor work into one commit.
 - Prefer one functional change per commit, such as one API endpoint, one UI flow, one contract update, or one documentation update.
 - If a change grows too large to explain in one sentence, split it into smaller commits.
+- Never include unrelated files in a commit.
+- Untracked files are not staged. Do not describe them as staged unless the staged file list has been explicitly checked.
+- Before every commit, explicitly verify:
+- staged files
+- unstaged files
+- untracked files
+- If any unrelated file appears in the staged set, stop and fix the staging set before committing.
+- Prefer path-specific commits for small changes, such as `git commit --only <path>`, when the repository contains other in-progress work.
+- After every commit, immediately verify the committed file list before reporting success.
 
 ## Commit Prefix Rules
 - Use commit messages in the format: `<prefix>: <summary>`.
@@ -69,6 +78,69 @@
 - Parallel agents must coordinate by file ownership and decision logs, not by separate worktrees.
 - If a coordination rule conflicts with an older worktree-based note, follow this section.
 
+## Agent Access Boundaries
+- All agents work from the shared local `main` branch, but write access is restricted by role.
+- Treat every path outside the role's write scope as read-only unless the user explicitly overrides the rule.
+- Do not make "small exception" edits outside the assigned write scope without explicit user approval.
+- If an agent is blocked by another area's file ownership, report the blocker and request the owning agent or CTO to make the change.
+
+## Agent Write Scope
+- `CTO`
+- May coordinate across the whole repository when required for integration, rule updates, or conflict resolution.
+- `DevOps`
+- Read-only across the repository unless the user explicitly grants a temporary write task.
+- `Frontend`
+- Write access: `apps/web/**`
+- Read-only: every other path in the repository
+- `Backend`
+- Write access: `apps/api/**`
+- Read-only: every other path in the repository
+- `QA`
+- Write access: `tests/**`
+- Read-only: every other path in the repository
+
+## Cross-Area Change Rule
+- If frontend work requires backend changes, the frontend agent must leave a clear blocker note instead of editing `apps/api/**`.
+- If backend work requires frontend changes, the backend agent must leave a clear blocker note instead of editing `apps/web/**`.
+- If QA finds an issue that requires product code changes in `apps/web/**`, QA should document the failure and request a frontend or CTO follow-up instead of changing the app code directly.
+- If DevOps finds a needed configuration or pipeline change, DevOps should document the recommendation and wait for explicit write approval before editing files.
+- Agents must never cross their write boundary first and explain later. The boundary must be respected at all times.
+
+## Inter-Agent Communication Rule
+- Agents do not communicate directly with each other through hidden state or implicit assumptions.
+- Cross-agent coordination must happen through:
+- direct notice to the user in chat
+- the shared coordination log at `docs/AGENT_SYNC.md`
+- the owning area's decision log or milestone log when relevant
+- If an agent is blocked by another area's ownership, it must do all of the following in the same work cycle:
+- stop before editing the other area's files
+- tell the user what is blocked
+- add or update an entry in `docs/AGENT_SYNC.md`
+- wait for the owning agent or CTO to handle the requested change
+
+## Shared Coordination Log
+- Use `docs/AGENT_SYNC.md` as the shared handoff, blocker, and readiness log for all agents.
+- Every agent must read `docs/AGENT_SYNC.md` at the start of its work.
+- Every agent must update `docs/AGENT_SYNC.md` when:
+- a task is ready for another agent
+- a blocker is discovered
+- another area must change something
+- an integration dependency becomes available
+- a previously open blocker is resolved
+- Entries in `docs/AGENT_SYNC.md` must be factual and append-only. Do not silently rewrite another agent's log entry.
+- Each sync entry must include at minimum:
+- id
+- date
+- time
+- source role
+- target role
+- type (`handoff`, `blocker`, `request`, `ready`, `resolved`)
+- related area or path
+- summary
+- required action
+- user notified (`yes` or `no`)
+- status
+
 ## Development Lifecycle
 - All development follows this sequence:
 - `plan -> technical meeting with user -> implementation -> test -> review -> user verification`
@@ -87,6 +159,7 @@
 - `apps/web/DECISIONS.md` for frontend and frontend QA decisions
 - `apps/api/DECISIONS.md` for backend decisions
 - `docs/DECISIONS.md` is archive-only and should not receive new decision entries.
+- If a role cannot write to its area's decision log because of the current access boundary, it should hand the decision note to the owning agent or CTO for recording.
 - Use a structured format that includes at minimum:
 - decision id
 - date
