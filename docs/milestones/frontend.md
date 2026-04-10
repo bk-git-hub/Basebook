@@ -98,3 +98,22 @@
   - 별도 QA thread에서 통합 테스트 예정
 - Next Step:
   - user validation 후 `/entries/[id]/edit`의 `PATCH /entries/:id` 연동으로 이동
+
+### FE-MILESTONE-005
+
+- Date: `2026-04-10`
+- Time: `12:40`
+- Milestone: `/entries/[id]/edit` `PATCH /entries/:id` API integration baseline implemented
+- Status: `ready_for_review`
+- Summary:
+  - 수정 화면이 `GET /entries/:id` 초기값을 받아 실제 폼으로 렌더링됨
+  - `PATCH /entries/:id` client 추가 및 diff payload 저장 흐름 구현
+  - 저장 성공 시 상세 화면으로 복귀하고, 실패 시 에러 상태를 화면에서 확인할 수 있게 함
+- Related Decision IDs:
+  - `DECISION-007`
+- Blocking Items:
+  - backend `PATCH /entries/:id` 구현 및 실제 저장 반영 확인 필요
+  - 사진 편집은 업로드 API 연동 범위 밖이라 이번 PATCH에서 제외됨
+  - 별도 QA thread에서 통합 테스트 예정
+- Next Step:
+  - user validation 후 `/entries/new`의 `POST /entries` 연동으로 이동

@@ -180,3 +180,26 @@
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
 - Related Milestones:
   - `docs/milestones/frontend.md`
+
+### DECISION-007
+
+- Date: `2026-04-10`
+- Time: `12:40`
+- Agenda: `/entries/[id]/edit`의 `PATCH /entries/:id` 요청 body를 어떤 방식으로 만들지 결정
+- Participants: User, Codex
+- Options Considered:
+  - 폼 전체 값을 매번 PATCH body로 전송
+  - 실제로 바뀐 필드만 diff 형태로 PATCH body에 전송
+- Decision: 수정 폼은 `GET /entries/:id`로 받은 초기값과 현재 폼 값을 비교해서, 바뀐 필드만 `PATCH /entries/:id` body에 담아 전송한다.
+- Rationale: contracts가 `Partial<CreateDiaryEntryInput>`를 전제로 하고 있어서 PATCH의 의미와 가장 잘 맞고, 변경되지 않은 선택 필드나 미구현 사진 편집 필드를 불필요하게 다시 보내지 않게 된다.
+- Impact:
+  - `/entries/[id]/edit`는 diff 계산 로직을 가진 클라이언트 폼이 된다
+  - 수정 요청 payload를 화면에서 바로 확인할 수 있어 백엔드 협업과 디버깅이 쉬워진다
+  - 이후 `POST /entries` 연동과도 역할이 명확히 구분된다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/CONTRACT_SPEC.md`
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+- Related Milestones:
+  - `docs/milestones/frontend.md`
