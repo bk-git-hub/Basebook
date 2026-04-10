@@ -118,3 +118,22 @@
   - 별도 QA thread에서 통합 테스트 예정
 - Next Step:
   - user validation 후 `/entries/new`의 `POST /entries` 연동으로 이동
+
+### FE-MILESTONE-006
+
+- Date: `2026-04-10`
+- Time: `12:52`
+- Milestone: `/entries/new` `POST /entries` API integration baseline implemented
+- Status: `ready_for_review`
+- Summary:
+  - `entries` API client에 생성 함수 추가
+  - `/entries/new`가 실제 생성 폼과 `POST /entries` 저장 흐름을 갖추게 됨
+  - 저장 성공 시 생성된 상세 화면으로 이동하고, `/games`와 업로드는 후속 연동 대상으로 분리함
+- Related Decision IDs:
+  - `WEB-008`
+- Blocking Items:
+  - backend `POST /entries` 구현 및 실제 생성 응답 확인 필요
+  - `GET /games`와 `POST /uploads/image`는 아직 미연동
+  - 별도 QA thread에서 통합 테스트 예정
+- Next Step:
+  - user validation 후 `/games` 또는 업로드 연동 범위를 별도 회의로 결정

@@ -189,3 +189,26 @@
   - `docs/README.md`
 - Related Milestones:
   - `docs/milestones/frontend.md`
+
+### WEB-008
+
+- Date: `2026-04-10`
+- Time: `12:52`
+- Agenda: `/entries/new`의 `POST /entries` 연동 범위를 어디까지 포함할지 결정
+- Participants: User, Codex
+- Options Considered:
+  - `GET /games`, `POST /uploads/image`, `POST /entries`를 한 번에 모두 연결
+  - 이번 슬라이스는 `POST /entries`만 붙이고 경기 조회와 업로드는 다음 의존성 슬라이스로 분리
+- Decision: `/entries/new`는 이번 단계에서 수동 입력 기반으로 `POST /entries`만 먼저 연동하고, `gameId`는 선택 입력으로 열어두며 사진은 빈 배열로 전송한다.
+- Rationale: 사장님이 API 연동을 하나씩 atomic하게 진행하자고 정한 만큼, 아직 준비되지 않은 `/games`와 업로드 의존성을 같이 묶으면 생성 흐름 검증 범위가 불필요하게 커진다.
+- Impact:
+  - `/entries/new`는 즉시 `POST /entries` 통신 테스트가 가능해진다
+  - `/games` 자동 채움과 사진 업로드는 후속 슬라이스로 분리된다
+  - 생성 요청 payload를 화면에서 직접 확인할 수 있게 된다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/CONTRACT_SPEC.md`
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+- Related Milestones:
+  - `docs/milestones/frontend.md`
