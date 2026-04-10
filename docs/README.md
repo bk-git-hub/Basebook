@@ -10,7 +10,14 @@
 
 - `docs/DECISIONS.md`
 
-사용자와의 기술 회의에서 확정된 결정사항을 기록하는 문서입니다.
+사용자와의 기술 회의에서 확정된 공통 또는 프론트엔드 관련 결정사항을 기록하는 문서입니다.
+
+## apps/api/docs
+
+- `apps/api/docs/DECISIONS.md`
+- `apps/api/docs/MILESTONES.md`
+
+백엔드 전용 기술 결정과 마일스톤을 기록하는 문서입니다.
 
 ## planning
 
@@ -44,4 +51,4 @@
 - `docs/milestones/frontend.md`
 - `docs/milestones/backend.md`
 
-프론트엔드와 백엔드의 주요 마일스톤과 진행 상태를 분리 기록하는 문서입니다.
+프론트엔드 마일스톤과 기존 백엔드 기록 보관본을 담는 문서입니다. 신규 백엔드 기록은 `apps/api/docs/MILESTONES.md`를 사용합니다.

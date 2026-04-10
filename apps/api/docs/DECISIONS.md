@@ -1,18 +1,14 @@
-# Basebook Decision Log
+# Basebook API Decision Log
 
-이 문서는 사용자와의 기술 회의에서 확정된 주요 결정을 기록한다.
-
-참고:
-
-- `apps/api` 전용 백엔드 구현 결정은 `2026-04-10`부터 `apps/api/docs/DECISIONS.md`를 기준 문서로 사용한다.
-- 아래의 백엔드 관련 항목은 기존 기록 보관본으로 남기며, 신규 업데이트는 새 경로에서 이어간다.
+이 문서는 `apps/api` 범위의 백엔드 전용 기술 결정을 기록한다.
 
 규칙:
 
-- 결정은 사용자와의 회의 후에만 기록한다.
+- 결정은 사용자와의 기술 회의 후에만 기록한다.
 - 기존 결정을 조용히 덮어쓰지 않는다.
 - 변경이 생기면 새로운 decision entry를 추가한다.
 - 시간은 `Asia/Seoul` 기준으로 기록한다.
+- 프론트엔드 전용 또는 전사 공통 결정은 루트 `docs` 문서에 기록한다.
 
 ---
 
@@ -37,85 +33,6 @@
 
 ## Decisions
 
-### DECISION-001
-
-- Date: `2026-04-09`
-- Time: `13:00`
-- Agenda: Basebook product direction and core architecture
-- Participants: User, Codex
-- Options Considered:
-  - Next.js full-stack only
-  - Next.js frontend + Express API
-  - Next.js frontend + Nest.js API
-- Decision: Use a monorepo with `Next.js` for web and `Nest.js` for API.
-- Rationale: This preserves a clear full-stack architecture and makes backend domain ownership and orchestration more explicit.
-- Impact:
-  - `apps/web` and `apps/api` are developed separately
-  - API orchestration and persistence stay in Nest.js
-  - integration requires shared contracts
-- Owner: User
-- Status: `approved`
-- Related Docs:
-  - `docs/planning/BASEBOOK_PLAN.md`
-  - `docs/planning/CONTRACT_SPEC.md`
-- Related Milestones:
-  - `docs/milestones/frontend.md`
-  - `docs/milestones/backend.md`
-
-### DECISION-002
-
-- Date: `2026-04-09`
-- Time: `13:10`
-- Agenda: Basebook MVP scope boundaries
-- Participants: User, Codex
-- Options Considered:
-  - Include AI writing assistance
-  - Exclude AI writing assistance from MVP
-  - Depend on automatic external KBO data ingestion
-  - Use manual or semi-automatic metadata enrichment
-- Decision:
-  - Exclude LLM text generation from MVP
-  - Use manual or semi-automatic game metadata enrichment
-  - Keep auth/admin as future-ready architecture, not MVP UI
-- Rationale: The MVP should emphasize reliable journaling and Sweetbook ordering, not optional AI or unstable external dependencies.
-- Impact:
-  - journaling UX remains the product core
-  - contracts reserve future auth/admin expansion
-  - KBO enrichment stays optional and non-blocking
-- Owner: User
-- Status: `approved`
-- Related Docs:
-  - `docs/planning/BASEBOOK_PLAN.md`
-  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
-  - `docs/planning/BACKEND_FUNCTIONAL_SPEC.md`
-- Related Milestones:
-  - `docs/milestones/frontend.md`
-  - `docs/milestones/backend.md`
-
-### DECISION-003
-
-- Date: `2026-04-09`
-- Time: `13:35`
-- Agenda: Team operating model for multi-thread parallel development
-- Participants: User, Codex
-- Options Considered:
-  - Single thread sequential development
-  - Multiple Codex threads without strict worktree rules
-  - Multiple Codex threads with fixed role and worktree ownership
-- Decision: Operate with distinct integration, frontend, and backend roles using dedicated worktrees and branch ownership.
-- Rationale: Parallel development is only safe when role boundaries, editable paths, and integration checkpoints are explicit.
-- Impact:
-  - team playbook governs thread behavior
-  - frontend and backend are built in parallel
-  - integration remains centralized in `main`
-- Owner: User
-- Status: `approved`
-- Related Docs:
-  - `BASEBOOK_TEAM_PLAYBOOK.md`
-- Related Milestones:
-  - `docs/milestones/frontend.md`
-  - `docs/milestones/backend.md`
-
 ### DECISION-004
 
 - Date: `2026-04-09`
@@ -137,7 +54,7 @@
   - `docs/planning/CONTRACT_SPEC.md`
   - `docs/planning/BACKEND_FUNCTIONAL_SPEC.md`
 - Related Milestones:
-  - `docs/milestones/backend.md`
+  - `apps/api/docs/MILESTONES.md`
 
 ### DECISION-005
 
@@ -160,7 +77,7 @@
   - `docs/planning/CONTRACT_SPEC.md`
   - `docs/planning/BACKEND_FUNCTIONAL_SPEC.md`
 - Related Milestones:
-  - `docs/milestones/backend.md`
+  - `apps/api/docs/MILESTONES.md`
 
 ### DECISION-006
 
@@ -187,7 +104,7 @@
   - `docs/planning/BACKEND_FUNCTIONAL_SPEC.md`
   - `docs/planning/CONTRACT_SPEC.md`
 - Related Milestones:
-  - `docs/milestones/backend.md`
+  - `apps/api/docs/MILESTONES.md`
 
 ### DECISION-007
 
@@ -214,7 +131,7 @@
   - `.env.example`
   - `README.md`
 - Related Milestones:
-  - `docs/milestones/backend.md`
+  - `apps/api/docs/MILESTONES.md`
 
 ### DECISION-008
 
@@ -241,4 +158,30 @@
   - `apps/api/.env.example`
   - `README.md`
 - Related Milestones:
-  - `docs/milestones/backend.md`
+  - `apps/api/docs/MILESTONES.md`
+
+### DECISION-009
+
+- Date: `2026-04-10`
+- Time: `10:25`
+- Agenda: Separate backend decision and milestone logs from frontend-facing project docs
+- Participants: User, Codex
+- Options Considered:
+  - Keep backend implementation logs in the root `docs` directory
+  - Create backend-only logs inside `apps/api/docs`
+- Decision:
+  - Record backend-only decisions in `apps/api/docs/DECISIONS.md`
+  - Record backend-only progress in `apps/api/docs/MILESTONES.md`
+- Rationale: The user wants backend work logs to stay clearly separated from frontend work and from shared project documentation.
+- Impact:
+  - backend documentation ownership is now scoped under `apps/api`
+  - future backend slices can update their own log files without mixing with frontend tracking
+  - shared root docs can stay focused on cross-cutting product material
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `AGENTS.md`
+  - `BASEBOOK_TEAM_PLAYBOOK.md`
+  - `docs/README.md`
+- Related Milestones:
+  - `apps/api/docs/MILESTONES.md`

@@ -1,11 +1,6 @@
-# Basebook Backend Milestones
+# Basebook API Milestones
 
-이 문서는 백엔드 마일스톤과 주요 상태 변화를 기록한다.
-
-참고:
-
-- `apps/api` 전용 신규 백엔드 진행 로그는 `2026-04-10`부터 `apps/api/docs/MILESTONES.md`를 기준 문서로 사용한다.
-- 이 문서는 기존 기록 보관본으로 유지한다.
+이 문서는 `apps/api` 범위의 백엔드 마일스톤과 주요 상태 변화를 기록한다.
 
 규칙:
 

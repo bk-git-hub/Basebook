@@ -307,15 +307,18 @@ merge 요청 전에 아래를 확인한다.
 3. 작은 커밋 단위가 유지됐는가
 4. 빌드 또는 최소 검증을 했는가
 5. 변경 내용을 한 문장으로 설명할 수 있는가
-6. 관련 결정이 있다면 `docs/DECISIONS.md`에 기록했는가
-7. 관련 마일스톤 상태를 `docs/milestones/*.md`에 기록했는가
+6. 관련 결정이 있다면 역할 범위에 맞는 문서에 기록했는가
+7. 관련 마일스톤 상태를 역할 범위에 맞는 문서에 기록했는가
 8. 사용자 검증 전이라면 아직 완료 처리하지 않았는가
 
 ---
 
 ## 의사결정 및 마일스톤 기록 규칙
 
-사용자와의 기술 회의에서 정해진 내용은 `docs/DECISIONS.md`에 기록한다.
+사용자와의 기술 회의에서 정해진 내용은 역할별 결정 로그에 기록한다.
+
+- 백엔드 전용 결정: `apps/api/docs/DECISIONS.md`
+- 프론트엔드 전용 또는 공통 결정: `docs/DECISIONS.md`
 
 기록 항목:
 
@@ -330,7 +333,7 @@ merge 요청 전에 아래를 확인한다.
 - owner
 - status
 
-프론트엔드 진행 로그는 `docs/milestones/frontend.md`, 백엔드 진행 로그는 `docs/milestones/backend.md`에 기록한다.
+프론트엔드 진행 로그는 `docs/milestones/frontend.md`, 백엔드 진행 로그는 `apps/api/docs/MILESTONES.md`에 기록한다.
 
 이 로그는 아래 상황에서 갱신한다.
 

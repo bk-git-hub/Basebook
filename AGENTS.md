@@ -74,7 +74,9 @@
 - Do not merge milestone-level work into a "done" state without user confirmation.
 
 ## Decision Logging
-- Technical decisions made during user meetings must be recorded in `docs/DECISIONS.md`.
+- Technical decisions made during user meetings must be recorded in the role-owned log.
+- Backend-only decisions for this worktree must be recorded in `apps/api/docs/DECISIONS.md`.
+- Shared or cross-functional product decisions may still live in `docs/DECISIONS.md`.
 - Use a structured format that includes at minimum:
 - decision id
 - date
@@ -91,6 +93,6 @@
 - Maintain milestone logs separately for frontend and backend.
 - Use:
 - `docs/milestones/frontend.md`
-- `docs/milestones/backend.md`
+- `apps/api/docs/MILESTONES.md`
 - Log meaningful progress changes such as milestone start, milestone completion, blockers, scope changes, and integration readiness.
 - Keep milestone entries factual and concise.
