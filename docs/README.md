@@ -12,6 +12,10 @@
 
 과거 공용 결정사항을 보관하는 아카이브 문서입니다.
 
+- `docs/AGENT_SYNC.md`
+
+병렬 작업 중인 에이전트들이 blocker, handoff, readiness를 공통으로 남기는 coordination log입니다.
+
 ## app decision logs
 
 - `apps/web/DECISIONS.md`

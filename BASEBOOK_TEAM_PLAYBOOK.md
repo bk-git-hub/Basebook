@@ -104,6 +104,7 @@ docs/reference           # assignment references
 
 - `AGENTS.md`
 - `BASEBOOK_TEAM_PLAYBOOK.md`
+- `docs/AGENT_SYNC.md`
 - `docs/planning/BASEBOOK_PLAN.md`
 - `docs/planning/CONTRACT_SPEC.md`
 
@@ -163,11 +164,11 @@ Backend engineer 필수:
 
 주로 수정 가능한 범위:
 
-- `apps/web/**`
-- 프론트엔드 테스트 파일
+- `tests/**`
 
 가급적 직접 수정하지 않는 범위:
 
+- `apps/web/**`
 - `apps/api/**`
 - 루트 설정 파일
 - `packages/contracts/**`
@@ -206,6 +207,25 @@ Backend engineer 필수:
 - Frontend engineer는 그 기준에 맞춘다
 - Frontend QA engineer는 그 기준에 맞춰 테스트를 작성한다
 - CTO는 통합 시 계약과 구현이 맞는지 확인한다
+
+---
+
+## 에이전트 간 소통 방식
+
+에이전트는 서로 직접 대화하지 않는다. 대신 아래 세 가지를 통해서만 협업한다.
+
+- 사용자에게 직접 알림
+- `docs/AGENT_SYNC.md`
+- 해당 영역의 `DECISIONS.md` 또는 milestone log
+
+다른 바운더리의 파일 변경이 필요하면 반드시 이 순서를 따른다.
+
+1. 자기 범위 밖 파일은 수정하지 않는다
+2. 사용자에게 blocker 또는 요청 사항을 알린다
+3. `docs/AGENT_SYNC.md`에 handoff 또는 blocker를 남긴다
+4. 해당 영역의 소유자나 CTO가 후속 처리한다
+
+특히 QA는 `tests/**`만 수정한다. 프론트엔드 제품 코드 수정이 필요하면 `docs/AGENT_SYNC.md`에 요청을 남기고, Frontend engineer 또는 CTO가 처리한다.
 
 ---
 
