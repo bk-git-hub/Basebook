@@ -104,3 +104,154 @@
   - `docs/README.md`
 - Related Milestones:
   - `docs/milestones/backend.md`
+
+### API-004
+
+- Date: `2026-04-09`
+- Time: `14:08`
+- Agenda: Health endpoint implementation structure for the first backend slice
+- Participants: User, Codex
+- Options Considered:
+  - Reuse the default Nest `AppController` and `AppService`
+  - Introduce a dedicated `health` module and controller
+- Decision: Implement the health check as a dedicated `health` module instead of reusing the Nest starter files.
+- Rationale: The user preferred a structure-first approach so the backend can grow by domain module without an early cleanup pass.
+- Impact:
+  - the Nest starter controller/service were removed
+  - `GET /health` now lives in a dedicated module
+  - future domain slices can follow the same module pattern
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/CONTRACT_SPEC.md`
+  - `docs/planning/BACKEND_FUNCTIONAL_SPEC.md`
+- Related Milestones:
+  - `docs/milestones/backend.md`
+
+### API-005
+
+- Date: `2026-04-09`
+- Time: `14:10`
+- Agenda: Game candidate status granularity for the `GET /games` contract
+- Participants: User, Codex
+- Options Considered:
+  - Keep `GameStatus` as `SCHEDULED | FINAL`
+  - Expand `GameStatus` to `SCHEDULED | IN_PROGRESS | FINAL`
+- Decision: Expand `GameStatus` to three states: `SCHEDULED`, `IN_PROGRESS`, and `FINAL`.
+- Rationale: The user wants pre-game, live-game, and completed-game states to be represented separately in the contract and future UI.
+- Impact:
+  - `packages/contracts` now exposes a three-state `GameStatus`
+  - `GET /games` responses can distinguish scheduled, live, and completed games
+  - frontend status rendering can align to a more realistic product model
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/CONTRACT_SPEC.md`
+  - `docs/planning/BACKEND_FUNCTIONAL_SPEC.md`
+- Related Milestones:
+  - `docs/milestones/backend.md`
+
+### API-006
+
+- Date: `2026-04-09`
+- Time: `18:04`
+- Agenda: Persistence model for diary entries and local demo data seeding
+- Participants: User, Codex
+- Options Considered:
+  - Store `photos` inside `DiaryEntry` as a single JSON blob
+  - Use a separate `Photo` table linked to `DiaryEntry`
+  - Leave the database empty until a manual seed command is run
+  - Automatically seed demo entries when the database is empty
+- Decision:
+  - Use a separate `Photo` table linked to `DiaryEntry`
+  - Automatically seed demo entries when the database is empty
+- Rationale: The product ultimately needs image metadata that can evolve toward upload and hosting, and the user wants local demo execution to work immediately without extra setup steps.
+- Impact:
+  - `DiaryEntry` persistence now supports multiple photos as first-class records
+  - local startup can populate visible demo content for dashboard and detail flows
+  - future upload and season-book features can reuse the same photo structure
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/BACKEND_FUNCTIONAL_SPEC.md`
+  - `docs/planning/CONTRACT_SPEC.md`
+- Related Milestones:
+  - `docs/milestones/backend.md`
+
+### API-007
+
+- Date: `2026-04-09`
+- Time: `18:04`
+- Agenda: Local execution reliability for database initialization and environment variable layout
+- Participants: User, Codex
+- Options Considered:
+  - Keep a single root `.env` for all apps
+  - Split frontend and backend environment files by app
+  - Keep relying on Prisma `db push`
+  - Use a deterministic `db:init` SQL execution path for local startup
+- Decision:
+  - Split frontend and backend environment examples by app
+  - Prefer a deterministic `db:init` command over `db push` for local setup
+- Rationale: The user wants administrator review on another computer to succeed reliably, and this favors explicit app-level configuration plus a database init path that already works in the current environment.
+- Impact:
+  - backend execution now expects `apps/api/.env`
+  - frontend execution can use its own env file without mixing secrets
+  - local setup can create the SQLite schema through a repeatable script
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `apps/api/.env.example`
+  - `README.md`
+- Related Milestones:
+  - `docs/milestones/backend.md`
+
+### API-008
+
+- Date: `2026-04-10`
+- Time: `10:10`
+- Agenda: Local frontend-backend integration defaults for browser-based testing
+- Participants: User, Codex
+- Options Considered:
+  - Keep backend on port `3000` and move the frontend
+  - Move backend default port to `4000` and keep frontend on `3000`
+  - Leave CORS disabled until integration testing starts
+  - Enable local CORS for the frontend origin now
+- Decision:
+  - Use backend default port `4000`
+  - Allow local browser requests from `http://localhost:3000`
+- Rationale: The user expects the frontend to run on `localhost:3000`, and separating the backend to `4000` avoids local port collisions while unblocking browser-based integration tests.
+- Impact:
+  - backend local startup defaults now align to `PORT=4000`
+  - frontend can call the backend from `localhost:3000` without browser CORS rejection
+  - future deployment can still override origin and port through app-level env files
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `apps/api/.env.example`
+  - `README.md`
+- Related Milestones:
+  - `docs/milestones/backend.md`
+
+### API-009
+
+- Date: `2026-04-10`
+- Time: `10:55`
+- Agenda: Local CORS range for multi-agent frontend work on one machine
+- Participants: User, Codex
+- Options Considered:
+  - Keep local CORS locked to `http://localhost:3000` only
+  - Allow a small local port range for parallel frontend agents
+- Decision:
+  - Allow local browser origins from `http://localhost:3000` through `http://localhost:3010`
+  - Apply the same range to `http://127.0.0.1`
+- Rationale: The user expects multiple local agents to run in parallel on one machine, so pinning CORS to one frontend port would create unnecessary collisions during integration testing.
+- Impact:
+  - local frontend agents can move across a small port range without reopening backend CORS each time
+  - deployed or non-local frontends can still be allowed explicitly through `WEB_ORIGIN`
+  - integration testing stays stable even when `3000` is already occupied
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `apps/api/.env.example`
+- Related Milestones:
+  - `docs/milestones/backend.md`

@@ -1,0 +1,72 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum TeamCode {
+  LG
+  DOOSAN
+  SSG
+  KIWOOM
+  KT
+  NC
+  KIA
+  LOTTE
+  SAMSUNG
+  HANWHA
+}
+
+enum GameResult {
+  WIN
+  LOSE
+  DRAW
+  UNKNOWN
+}
+
+enum WatchType {
+  STADIUM
+  TV
+  MOBILE
+  OTHER
+}
+
+model DiaryEntry {
+  id             String     @id
+  ownerId        String
+  gameId         String?
+  seasonYear     Int
+  date           String
+  favoriteTeam   TeamCode
+  opponentTeam   TeamCode
+  scoreFor       Int?
+  scoreAgainst   Int?
+  result         GameResult
+  watchType      WatchType
+  stadium        String?
+  seat           String?
+  playerOfTheDay String?
+  highlight      String
+  rawMemo        String?
+  photos         Photo[]
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  @@index([ownerId, seasonYear])
+  @@index([favoriteTeam, date])
+}
+
+model Photo {
+  id        String     @id
+  entryId   String
+  entry     DiaryEntry @relation(fields: [entryId], references: [id], onDelete: Cascade)
+  url       String
+  fileName  String?
+  sortOrder Int        @default(0)
+  createdAt DateTime   @default(now())
+
+  @@index([entryId, sortOrder])
+}
