@@ -236,3 +236,26 @@
   - `docs/planning/FRONTEND_QA_SPEC.md`
 - Related Milestones:
   - `docs/milestones/frontend.md`
+
+### WEB-010
+
+- Date: `2026-04-10`
+- Time: `14:58`
+- Agenda: `/entries/new`의 `GET /games` 조회 방식을 버튼 기반으로 시작할지 자동 조회로 시작할지 결정
+- Participants: User, Codex
+- Options Considered:
+  - 날짜나 응원 팀이 바뀔 때마다 자동으로 `GET /games`를 호출
+  - 사용자가 명시적으로 버튼을 눌렀을 때만 `GET /games`를 호출
+- Decision: 지금은 버튼 기반 조회로 시작하되, 조회 query 생성과 후보 반영 로직을 분리해서 추후 자동 조회로 확장할 수 있게 구현한다.
+- Rationale: 현재 단계에서는 API 연동 범위를 작게 유지해 디버깅과 검증을 단순하게 가져가는 편이 유리하다. 다만 이후 UX를 개선할 때 자동 조회로 전환할 수 있도록 데이터 조회 경계는 처음부터 분리해 두는 것이 맞다.
+- Impact:
+  - `/entries/new`에서 사용자가 버튼으로 경기 후보를 조회하고 선택하면 폼이 자동으로 채워진다
+  - 조회 trigger만 바꾸면 같은 query/apply 로직으로 자동 조회를 붙일 수 있다
+  - `gameId` 수동 입력 의존도가 낮아지고 생성 UX가 실제 사용 흐름에 가까워진다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/CONTRACT_SPEC.md`
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+- Related Milestones:
+  - `docs/milestones/frontend.md`

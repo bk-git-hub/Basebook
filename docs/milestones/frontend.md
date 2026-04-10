@@ -155,3 +155,22 @@
   - 실제 백엔드 연동 e2e는 main 안정화 후 별도 검증 필요
 - Next Step:
   - user validation 후 API-connected e2e와 미구현 라우트 회귀 테스트를 순차적으로 확장
+
+### FE-MILESTONE-008
+
+- Date: `2026-04-10`
+- Time: `14:58`
+- Milestone: `/entries/new` `GET /games` candidate lookup integrated with future auto-fetch path preserved
+- Status: `ready_for_review`
+- Summary:
+  - `games` API client를 추가하고 `/entries/new`에서 버튼 기반 `GET /games` 조회를 연결함
+  - 조회 조건 생성과 후보 선택 반영 로직을 분리해 추후 자동 조회 trigger로 바꾸기 쉬운 구조를 마련함
+  - 경기 후보를 선택하면 `gameId`, 날짜, 상대 팀, 점수, 구장 정보가 폼에 자동 반영되게 함
+- Related Decision IDs:
+  - `WEB-010`
+- Blocking Items:
+  - backend `GET /games` 구현 및 실제 후보 응답 shape 확인 필요
+  - 자동 조회 UX와 사진 업로드는 후속 슬라이스에서 이어서 검토 예정
+  - 별도 QA thread에서 통합 테스트 예정
+- Next Step:
+  - user validation 후 `/uploads/image` 연동 또는 `GET /games` 자동 조회 전환 범위를 회의로 결정
