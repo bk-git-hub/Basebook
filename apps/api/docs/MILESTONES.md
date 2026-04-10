@@ -134,3 +134,20 @@
   - user verification pending
 - Next Step:
   - run the frontend against the local backend and verify browser requests
+
+### BE-MILESTONE-007
+
+- Date: `2026-04-10`
+- Time: `10:55`
+- Milestone: Local CORS widened for parallel frontend agents
+- Status: `ready_for_review`
+- Summary:
+  - backend CORS now accepts `localhost` and `127.0.0.1` origins on ports `3000` through `3010`
+  - non-local frontend hosts can still be allowed explicitly with `WEB_ORIGIN`
+  - unit coverage was added for the local CORS allowlist helper
+- Related Decision IDs:
+  - `DECISION-010`
+- Blocking Items:
+  - user verification pending
+- Next Step:
+  - re-run browser integration against the frontend on whichever local port is active

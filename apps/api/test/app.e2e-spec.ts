@@ -9,8 +9,9 @@ import { PrismaSeedService } from './../src/prisma/prisma-seed.service';
 describe('AppController (e2e)', () => {
   let app: INestApplication<App>;
   let prismaSeedService: PrismaSeedService;
+  let baseUrl: string;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
@@ -18,12 +19,23 @@ describe('AppController (e2e)', () => {
     app = moduleFixture.createNestApplication();
     configureApp(app);
     await app.init();
+    await app.listen(0);
+    const address = app.getHttpServer().address();
+
+    if (!address || typeof address === 'string') {
+      throw new Error('Failed to resolve test server address');
+    }
+
+    baseUrl = `http://127.0.0.1:${address.port}`;
     prismaSeedService = app.get(PrismaSeedService);
+  });
+
+  beforeEach(async () => {
     await prismaSeedService.resetDemoEntries();
   });
 
   it('/health (GET)', () => {
-    return request(app.getHttpServer())
+    return request(baseUrl)
       .get('/health')
       .expect(200)
       .expect({
@@ -33,7 +45,7 @@ describe('AppController (e2e)', () => {
   });
 
   it('/games (GET) returns filtered game candidates', () => {
-    return request(app.getHttpServer())
+    return request(baseUrl)
       .get('/games')
       .query({
         favoriteTeam: 'LG',
@@ -51,11 +63,11 @@ describe('AppController (e2e)', () => {
   });
 
   it('/games (GET) rejects requests without favoriteTeam', () => {
-    return request(app.getHttpServer()).get('/games').expect(400);
+    return request(baseUrl).get('/games').expect(400);
   });
 
   it('/entries (GET) returns seeded entries and summary', () => {
-    return request(app.getHttpServer())
+    return request(baseUrl)
       .get('/entries')
       .expect(200)
       .expect(({ body }) => {
@@ -70,7 +82,7 @@ describe('AppController (e2e)', () => {
   });
 
   it('/entries/:id (GET) returns a single entry', () => {
-    return request(app.getHttpServer())
+    return request(baseUrl)
       .get('/entries/entry-lg-2025-09-18')
       .expect(200)
       .expect(({ body }) => {
@@ -80,7 +92,7 @@ describe('AppController (e2e)', () => {
   });
 
   it('/entries (POST) creates a new diary entry for the demo owner', () => {
-    return request(app.getHttpServer())
+    return request(baseUrl)
       .post('/entries')
       .send({
         seasonYear: 2026,
@@ -111,7 +123,7 @@ describe('AppController (e2e)', () => {
   });
 
   it('/entries/:id (PATCH) updates an existing entry', () => {
-    return request(app.getHttpServer())
+    return request(baseUrl)
       .patch('/entries/entry-lg-2026-03-22')
       .send({
         highlight: '집관이었지만 끝내기 장면 때문에 소리 질렀다.',
@@ -134,7 +146,7 @@ describe('AppController (e2e)', () => {
       });
   });
 
-  afterEach(async () => {
+  afterAll(async () => {
     await app.close();
   });
 });

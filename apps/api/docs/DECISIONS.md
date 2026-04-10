@@ -185,3 +185,27 @@
   - `docs/README.md`
 - Related Milestones:
   - `apps/api/docs/MILESTONES.md`
+
+### DECISION-010
+
+- Date: `2026-04-10`
+- Time: `10:55`
+- Agenda: Local CORS range for multi-agent frontend work on one machine
+- Participants: User, Codex
+- Options Considered:
+  - Keep local CORS locked to `http://localhost:3000` only
+  - Allow a small local port range for parallel frontend agents
+- Decision:
+  - Allow local browser origins from `http://localhost:3000` through `http://localhost:3010`
+  - Apply the same range to `http://127.0.0.1`
+- Rationale: The user expects multiple local agents and worktrees to run in parallel on one machine, so pinning CORS to one frontend port would create unnecessary collisions during integration testing.
+- Impact:
+  - local frontend agents can move across a small port range without reopening backend CORS each time
+  - deployed or non-local frontends can still be allowed explicitly through `WEB_ORIGIN`
+  - integration testing stays stable even when `3000` is already occupied
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `apps/api/.env.example`
+- Related Milestones:
+  - `apps/api/docs/MILESTONES.md`
