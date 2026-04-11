@@ -27,6 +27,7 @@ export class PrismaSeedService implements OnModuleInit {
   async resetDemoEntries() {
     const demoEntries = this.readDemoEntries();
 
+    await this.prisma.seasonBookProject.deleteMany();
     await this.prisma.photo.deleteMany();
     await this.prisma.diaryEntry.deleteMany();
 

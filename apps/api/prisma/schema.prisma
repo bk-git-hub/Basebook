@@ -34,6 +34,23 @@ enum WatchType {
   OTHER
 }
 
+enum SeasonBookProjectStatus {
+  DRAFT
+  ESTIMATED
+  ORDERED
+  FAILED
+}
+
+enum SeasonBookOrderStatus {
+  UNPLACED
+  PAID
+  CONFIRMED
+  IN_PRODUCTION
+  SHIPPED
+  DELIVERED
+  UNKNOWN
+}
+
 model DiaryEntry {
   id             String     @id
   ownerId        String
@@ -69,4 +86,27 @@ model Photo {
   createdAt DateTime   @default(now())
 
   @@index([entryId, sortOrder])
+}
+
+model SeasonBookProject {
+  id               String                  @id
+  ownerId          String
+  seasonYear       Int
+  title            String
+  introText        String?
+  coverPhotoUrl    String
+  selectedEntryIds String
+  bookUid          String?
+  orderUid         String?
+  pageCount        Int?
+  totalPrice       Int?
+  currency         String?
+  projectStatus    SeasonBookProjectStatus @default(DRAFT)
+  orderStatus      SeasonBookOrderStatus   @default(UNPLACED)
+  createdAt        DateTime                @default(now())
+  updatedAt        DateTime                @updatedAt
+
+  @@index([ownerId, seasonYear])
+  @@index([bookUid])
+  @@index([orderUid])
 }

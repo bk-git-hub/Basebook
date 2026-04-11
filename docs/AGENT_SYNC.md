@@ -39,3 +39,15 @@
 - Required action: All agents must read this file at the start of work and use it for cross-boundary requests.
 - User notified: yes
 - Status: resolved
+
+## SYNC-002
+- Date: 2026-04-11
+- Time: 16:16
+- Source role: Backend
+- Target role: Frontend
+- Type: ready
+- Related area: `POST /season-books/estimate`
+- Summary: Backend season-book estimate endpoint is available with local deterministic estimate and project persistence.
+- Required action: Frontend can integrate against `POST /season-books/estimate` using `seasonYear`, `title`, optional `introText`, `coverPhotoUrl`, and `selectedEntryIds`.
+- User notified: yes
+- Status: open

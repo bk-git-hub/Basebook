@@ -281,3 +281,28 @@
   - `docs/planning/CONTRACT_SPEC.md`
 - Related Milestones:
   - `docs/milestones/backend.md`
+
+### API-011
+
+- Date: `2026-04-11`
+- Time: `16:12`
+- Agenda: First season-book estimate strategy before full Sweetbook API wiring
+- Participants: User, Codex
+- Options Considered:
+  - Wait until the real Sweetbook API flow is fully verified before exposing a frontend endpoint
+  - Expose a local deterministic estimate endpoint first, then replace the estimator behind a service boundary
+- Decision:
+  - Implement `POST /season-books/estimate` with local deterministic pricing and project persistence first
+  - Keep estimate calculation behind a replaceable backend service boundary for later Sweetbook API integration
+- Rationale: Frontend integration can proceed immediately while the backend still keeps a clear path toward real Book Print API orchestration.
+- Impact:
+  - frontend can create an estimated season-book project through the backend now
+  - the backend stores estimate inputs and generated project metadata
+  - future work can swap the local estimator with the real Sweetbook API adapter without changing the frontend contract
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/BACKEND_FUNCTIONAL_SPEC.md`
+  - `docs/planning/CONTRACT_SPEC.md`
+- Related Milestones:
+  - `docs/milestones/backend.md`

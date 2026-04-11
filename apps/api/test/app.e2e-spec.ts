@@ -172,6 +172,40 @@ describe('AppController (e2e)', () => {
       .expect('Content-Type', /image\/png/);
   });
 
+  it('/season-books/estimate (POST) creates a local season-book estimate project', () => {
+    return request(baseUrl)
+      .post('/season-books/estimate')
+      .send({
+        seasonYear: 2026,
+        title: '2026 LG 직관 기록',
+        introText: '올해의 야구 기록을 한 권으로 남긴다.',
+        coverPhotoUrl: 'http://localhost:4000/uploads/local/cover-photo.png',
+        selectedEntryIds: ['entry-lg-2026-03-22', 'entry-lg-2026-04-02'],
+      })
+      .expect(201)
+      .expect(({ body }) => {
+        expect(body.projectId).toBeTruthy();
+        expect(body.bookUid).toMatch(/^local-book-/);
+        expect(body.pageCount).toBeGreaterThanOrEqual(24);
+        expect(body.totalPrice).toBeGreaterThan(0);
+        expect(body.currency).toBe('KRW');
+        expect(body.projectStatus).toBe('ESTIMATED');
+        expect(body.creditSufficient).toBe(true);
+      });
+  });
+
+  it('/season-books/estimate (POST) rejects missing selected entries', () => {
+    return request(baseUrl)
+      .post('/season-books/estimate')
+      .send({
+        seasonYear: 2026,
+        title: '없는 경기 기록',
+        coverPhotoUrl: 'http://localhost:4000/uploads/local/cover-photo.png',
+        selectedEntryIds: ['missing-entry-id'],
+      })
+      .expect(404);
+  });
+
   afterAll(async () => {
     await app.close();
   });

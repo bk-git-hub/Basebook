@@ -43,3 +43,31 @@ CREATE INDEX IF NOT EXISTS "DiaryEntry_favoriteTeam_date_idx"
 
 CREATE INDEX IF NOT EXISTS "Photo_entryId_sortOrder_idx"
   ON "Photo" ("entryId", "sortOrder");
+
+CREATE TABLE IF NOT EXISTS "SeasonBookProject" (
+  "id" TEXT NOT NULL PRIMARY KEY,
+  "ownerId" TEXT NOT NULL,
+  "seasonYear" INTEGER NOT NULL,
+  "title" TEXT NOT NULL,
+  "introText" TEXT,
+  "coverPhotoUrl" TEXT NOT NULL,
+  "selectedEntryIds" TEXT NOT NULL,
+  "bookUid" TEXT,
+  "orderUid" TEXT,
+  "pageCount" INTEGER,
+  "totalPrice" INTEGER,
+  "currency" TEXT,
+  "projectStatus" TEXT NOT NULL DEFAULT 'DRAFT',
+  "orderStatus" TEXT NOT NULL DEFAULT 'UNPLACED',
+  "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "updatedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS "SeasonBookProject_ownerId_seasonYear_idx"
+  ON "SeasonBookProject" ("ownerId", "seasonYear");
+
+CREATE INDEX IF NOT EXISTS "SeasonBookProject_bookUid_idx"
+  ON "SeasonBookProject" ("bookUid");
+
+CREATE INDEX IF NOT EXISTS "SeasonBookProject_orderUid_idx"
+  ON "SeasonBookProject" ("orderUid");
