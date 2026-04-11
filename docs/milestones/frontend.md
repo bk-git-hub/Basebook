@@ -193,3 +193,22 @@
   - 별도 QA thread에서 통합 테스트 예정
 - Next Step:
   - user validation 후 `/entries/new` 최종 polish 또는 미구현 라우트 작업 범위를 회의로 결정
+
+### FE-MILESTONE-010
+
+- Date: `2026-04-11`
+- Time: `16:10`
+- Milestone: `/season-book/new` entry selection screen implemented
+- Status: `ready_for_review`
+- Summary:
+  - `/season-book/new` 라우트를 추가하고 `GET /entries` 기반 기록 선택 화면으로 구성함
+  - 선택 상태를 `SeasonBookEntrySelection` 클라이언트 컴포넌트로 분리해 다음 estimate 연동에 재사용하기 쉽게 만듦
+  - 선택 요약, 첨부 사진 수, `selectedEntryIds` preview, 로딩/에러/빈 상태를 추가함
+- Related Decision IDs:
+  - `WEB-012`
+- Blocking Items:
+  - backend `POST /season-books/estimate` 구현 및 응답 확인 필요
+  - 책 제목, 소개문, 커버 사진 선택은 다음 estimate 슬라이스에서 결정 예정
+  - 별도 QA thread에서 통합 테스트 예정
+- Next Step:
+  - user validation 후 `/season-book/new`의 `POST /season-books/estimate` 연동 범위를 회의로 결정

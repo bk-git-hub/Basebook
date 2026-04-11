@@ -282,3 +282,26 @@
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
 - Related Milestones:
   - `docs/milestones/frontend.md`
+
+### WEB-012
+
+- Date: `2026-04-11`
+- Time: `16:10`
+- Agenda: `/season-book/new` 기록 선택 UI를 페이지 내부 상태로 둘지 별도 컴포넌트로 분리할지 결정
+- Participants: User, Codex
+- Options Considered:
+  - 페이지에서 `GET /entries` 조회와 선택 상태를 모두 직접 관리
+  - 페이지는 `GET /entries` 조회와 상태 분기만 맡고, 선택 UI는 전용 클라이언트 컴포넌트로 분리
+- Decision: `/season-book/new`는 서버 페이지가 기록 목록을 불러오고, 선택 상태는 `SeasonBookEntrySelection` 클라이언트 컴포넌트에서 관리한다.
+- Rationale: 시즌북 화면은 이후 `POST /season-books/estimate`와 옵션 입력으로 이어질 가능성이 높다. 지금부터 선택 패널을 분리하면 다음 슬라이스에서 `selectedEntryIds`를 estimate 요청으로 넘기는 구조를 유지하기 쉽다.
+- Impact:
+  - `/season-book/new`가 `GET /entries` 기반 기록 선택 화면으로 전환된다
+  - 선택 요약과 `selectedEntryIds` preview가 생겨 다음 estimate 연동 범위가 선명해진다
+  - 견적 생성 API는 이번 슬라이스에서 제외하고 다음 작업으로 분리된다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/CONTRACT_SPEC.md`
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+- Related Milestones:
+  - `docs/milestones/frontend.md`
