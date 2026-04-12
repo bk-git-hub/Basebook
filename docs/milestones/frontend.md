@@ -231,3 +231,22 @@
   - 별도 QA thread에서 통합 테스트 예정
 - Next Step:
   - user validation 후 `/order/[projectId]` 주문 화면 구현 범위를 회의로 결정
+
+### FE-MILESTONE-012
+
+- Date: `2026-04-12`
+- Time: `15:13`
+- Milestone: `/order/[projectId]` `POST /season-books/order` integration implemented
+- Status: `ready_for_review`
+- Summary:
+  - `/order/[projectId]` 라우트와 로딩 화면을 추가함
+  - `SeasonBookOrderForm`을 추가해 수령인/전화번호/주소 입력과 주문 요청 상태를 관리함
+  - `season-books` API client에 `POST /season-books/order` 호출을 추가하고 성공 응답의 주문 ID, 금액, 주문 상태를 표시함
+- Related Decision IDs:
+  - `WEB-014`
+- Blocking Items:
+  - backend `POST /season-books/order` 구현 및 실제 주문 응답 확인 필요
+  - 프로젝트 상세 재조회, 결제, 배송 추적은 아직 미구현
+  - 별도 QA thread에서 통합 테스트 예정
+- Next Step:
+  - user validation 후 홈 랜딩/전체 polish 또는 미구현 API 의존성 정리 범위를 회의로 결정

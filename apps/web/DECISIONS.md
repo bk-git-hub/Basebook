@@ -328,3 +328,26 @@
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
 - Related Milestones:
   - `docs/milestones/frontend.md`
+
+### WEB-014
+
+- Date: `2026-04-12`
+- Time: `15:13`
+- Agenda: `/order/[projectId]` 주문 화면을 클라이언트 폼 중심으로 만들지, 서버 페이지와 클라이언트 폼으로 분리할지 결정
+- Participants: User, Codex
+- Options Considered:
+  - 주문 화면 전체를 클라이언트 폼 중심으로 구현
+  - 라우트 페이지는 `projectId` 전달과 화면 프레임을 담당하고, 주문 입력과 `POST /season-books/order` 호출은 전용 클라이언트 폼으로 분리
+- Decision: `/order/[projectId]`는 서버 라우트 페이지와 `SeasonBookOrderForm` 클라이언트 컴포넌트로 분리한다.
+- Rationale: 현재는 프로젝트 상세 조회 API가 없어 페이지가 `projectId`만 전달하지만, 이후 견적 상세 재조회나 결제 상태 표시가 생기면 서버 페이지에 확장하기 쉽다. 주문 입력과 요청 상태는 클라이언트 폼에 두는 편이 역할이 명확하다.
+- Impact:
+  - `/order/[projectId]`가 실제 주문 입력 화면으로 동작한다
+  - `POST /season-books/order` API client가 추가된다
+  - 결제, 배송 추적, 프로젝트 상세 재조회는 후속 슬라이스로 남긴다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/CONTRACT_SPEC.md`
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+- Related Milestones:
+  - `docs/milestones/frontend.md`
