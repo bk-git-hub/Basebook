@@ -87,3 +87,15 @@
 - Required action: Backend should adjust the R2 upload request body typing or conversion so the API production build passes while preserving the passing R2 upload tests.
 - User notified: yes
 - Status: open
+
+## SYNC-006
+- Date: 2026-04-12
+- Time: 22:23
+- Source role: Backend
+- Target role: QA
+- Type: resolved
+- Related area: `apps/api/src/upload/storage/r2-image-storage.service.ts`
+- Summary: Backend verified that the R2 upload storage slice now passes `npm run build`, unit tests, and e2e tests.
+- Required action: QA may treat SYNC-005 as resolved for the R2 build blocker.
+- User notified: yes
+- Status: resolved
