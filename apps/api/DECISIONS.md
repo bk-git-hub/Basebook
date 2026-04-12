@@ -306,3 +306,30 @@
   - `docs/planning/CONTRACT_SPEC.md`
 - Related Milestones:
   - `docs/milestones/backend.md`
+
+### API-012
+
+- Date: `2026-04-12`
+- Time: `15:05`
+- Agenda: Sweetbook API integration path after local season-book estimate
+- Participants: User, Codex
+- Options Considered:
+  - Continue with local-only order flow and replace it later
+  - Move directly toward real Sweetbook API integration, starting with the smallest safe sandbox check
+- Decision:
+  - Add a backend Sweetbook client boundary now
+  - Validate sandbox readiness through read-only Sweetbook APIs before implementing real book/order creation
+  - Keep the existing local estimate endpoint available while the real book assembly pipeline is added in later slices
+- Rationale: This reduces future replacement work while avoiding a risky one-shot implementation of book creation, finalization, estimate, and order creation before the sandbox account shape is verified.
+- Impact:
+  - backend can now verify Sandbox API key, book specs, templates, and credits without exposing secrets to the browser
+  - next season-book slices can use the Sweetbook client instead of inventing another local-only abstraction
+  - real order estimate still depends on a finalized Sweetbook `bookUid`, so it remains a follow-up after book assembly is connected
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/BOOK_PRINT_API_ANALYSIS.md`
+  - `docs/planning/BACKEND_FUNCTIONAL_SPEC.md`
+  - `docs/planning/CONTRACT_SPEC.md`
+- Related Milestones:
+  - `docs/milestones/backend.md`

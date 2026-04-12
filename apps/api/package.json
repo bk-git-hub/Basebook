@@ -11,6 +11,7 @@
     "db:init": "node scripts/run-with-env.cjs prisma db execute --file prisma/init.sql --schema prisma/schema.prisma",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "postinstall": "npm run db:generate",
+    "sweetbook:check": "node scripts/check-sweetbook-sandbox.cjs",
     "start": "npm run db:init && nest start",
     "start:dev": "npm run db:init && nest start --watch",
     "start:debug": "npm run db:init && nest start --debug --watch",
