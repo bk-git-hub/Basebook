@@ -40,7 +40,7 @@ function toOptionalString(value: string): string | undefined {
   return trimmed ? trimmed : undefined;
 }
 
-function buildOrderPayload(
+function buildOrderInput(
   projectId: string,
   values: OrderFormValues,
 ): SeasonBookOrderRequest {
@@ -87,7 +87,6 @@ export function SeasonBookOrderForm({ projectId }: SeasonBookOrderFormProps) {
   const [orderResult, setOrderResult] =
     useState<SeasonBookOrderResponse | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const payloadPreview = buildOrderPayload(projectId, values);
 
   function setFieldValue<K extends OrderFormField>(
     field: K,
@@ -125,14 +124,15 @@ export function SeasonBookOrderForm({ projectId }: SeasonBookOrderFormProps) {
     setIsSubmitting(true);
 
     try {
-      const response = await createSeasonBookOrder(payloadPreview);
+      const orderInput = buildOrderInput(projectId, values);
+      const response = await createSeasonBookOrder(orderInput);
       setOrderResult(response);
     } catch (error) {
       if (error instanceof ApiClientError) {
         setOrderError(error.message);
       } else {
         setOrderError(
-          "예상하지 못한 오류가 발생했습니다. POST /season-books/order 응답을 다시 확인해 주세요.",
+          "예상하지 못한 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.",
         );
       }
     } finally {
@@ -151,8 +151,7 @@ export function SeasonBookOrderForm({ projectId }: SeasonBookOrderFormProps) {
             배송 정보
           </h2>
           <p className="mt-2 text-sm leading-6 text-stone-500">
-            `POST /season-books/order` 요청에 필요한 최소 배송 정보를
-            입력합니다. 결제와 배송 추적은 이번 슬라이스 범위가 아닙니다.
+            시즌북을 받을 수령인과 주소를 입력해 주세요.
           </p>
         </div>
 
@@ -245,12 +244,11 @@ export function SeasonBookOrderForm({ projectId }: SeasonBookOrderFormProps) {
       <aside className="h-fit space-y-6 rounded-[28px] border border-stone-200 bg-white p-6 shadow-sm lg:sticky lg:top-6">
         <div>
           <p className="text-sm font-medium text-stone-500">주문 대상</p>
-          <h2 className="mt-2 break-all text-2xl font-semibold tracking-tight text-stone-950">
-            {projectId}
+          <h2 className="mt-2 text-2xl font-semibold tracking-tight text-stone-950">
+            견적 확인 완료
           </h2>
           <p className="mt-3 text-sm leading-6 text-stone-500">
-            견적 화면에서 전달된 `projectId`로 주문을 생성합니다. 프로젝트 상세
-            재조회 API는 아직 연결하지 않았습니다.
+            이전 단계에서 만든 시즌북 견적을 바탕으로 주문을 이어갑니다.
           </p>
         </div>
 
@@ -262,7 +260,7 @@ export function SeasonBookOrderForm({ projectId }: SeasonBookOrderFormProps) {
 
         {orderResult ? (
           <div className="space-y-4 rounded-[24px] border border-emerald-200 bg-emerald-50 px-4 py-4 text-sm text-emerald-900">
-            <p className="font-semibold">주문 요청이 완료되었습니다.</p>
+            <p className="font-semibold">주문이 접수되었습니다.</p>
             <dl className="grid gap-2">
               <div className="flex justify-between gap-4">
                 <dt>주문 ID</dt>
@@ -288,16 +286,12 @@ export function SeasonBookOrderForm({ projectId }: SeasonBookOrderFormProps) {
           </div>
         ) : null}
 
-        <pre className="max-h-64 overflow-auto rounded-[20px] bg-stone-950 px-4 py-4 text-xs leading-6 text-stone-100">
-          {JSON.stringify(payloadPreview, null, 2)}
-        </pre>
-
         <button
           type="submit"
           disabled={isSubmitting}
           className="inline-flex w-full items-center justify-center rounded-full bg-stone-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-stone-800 disabled:cursor-not-allowed disabled:bg-stone-400"
         >
-          {isSubmitting ? "주문 요청 중..." : "시즌북 주문 요청"}
+          {isSubmitting ? "주문 접수 중..." : "시즌북 주문 접수"}
         </button>
 
         <Link

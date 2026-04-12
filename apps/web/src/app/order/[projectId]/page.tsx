@@ -5,7 +5,7 @@ import { SeasonBookOrderForm } from "@/components/season-book-order-form";
 
 export const metadata: Metadata = {
   title: "시즌북 주문 | Sweetbook",
-  description: "POST /season-books/order 요청을 수행하는 시즌북 주문 화면",
+  description: "시즌북을 받을 배송 정보를 입력하고 주문을 접수하는 화면",
 };
 
 type OrderPageProps = {
@@ -34,9 +34,8 @@ export default async function OrderPage({ params }: OrderPageProps) {
                   시즌북을 받을 배송 정보를 입력하세요
                 </h1>
                 <p className="max-w-2xl text-sm leading-7 text-stone-300">
-                  `POST /season-books/order`로 주문 요청을 생성합니다. 결제와
-                  배송 추적은 이번 슬라이스 범위에서 제외하고, 주문 API 통신
-                  흐름을 먼저 연결합니다.
+                  견적을 확인한 시즌북의 수령인과 주소를 입력해 제작 주문을
+                  이어갑니다.
                 </p>
               </div>
             </div>
