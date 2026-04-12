@@ -31,18 +31,16 @@ function EntryEditStateCard({
 
 type EntryEditErrorStateProps = {
   message: string;
-  apiBaseUrl: string;
 };
 
 export function EntryEditErrorState({
   message,
-  apiBaseUrl,
 }: EntryEditErrorStateProps) {
   return (
     <EntryEditStateCard
       title="수정 화면을 준비하지 못했습니다"
       description={message}
-      hint={`현재 수정 요청 대상 API 주소는 ${apiBaseUrl} 입니다. GET /entries/:id와 PATCH /entries/:id 구현 상태를 함께 확인해 주세요.`}
+      hint="잠시 후 다시 시도하거나, 상세 화면에서 기록을 다시 열어 주세요."
     />
   );
 }

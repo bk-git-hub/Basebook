@@ -4,11 +4,11 @@ import { notFound } from "next/navigation";
 import { EntryEditForm } from "@/components/entry-edit-form";
 import { EntryEditErrorState } from "@/components/entry-edit-state";
 import { getEntry } from "@/lib/api/entries";
-import { ApiClientError, getApiBaseUrl } from "@/lib/api/http";
+import { ApiClientError } from "@/lib/api/http";
 
 export const metadata: Metadata = {
   title: "직관 기록 수정 | Sweetbook",
-  description: "GET /entries/:id와 PATCH /entries/:id를 사용하는 기록 수정 화면",
+  description: "저장한 직관 기록의 경기 정보와 감상을 수정하는 화면",
 };
 
 export const dynamic = "force-dynamic";
@@ -40,7 +40,7 @@ async function loadEntry(id: string) {
     return {
       status: "error" as const,
       message:
-        "예상하지 못한 오류가 발생했습니다. 백엔드의 GET /entries/:id 응답을 다시 확인해 주세요.",
+        "예상하지 못한 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.",
     };
   }
 }
@@ -53,10 +53,7 @@ export default async function EntryEditPage({ params }: EntryEditPageProps) {
     <main className="min-h-screen bg-stone-100 px-6 py-10 text-stone-950 sm:px-10">
       <div className="mx-auto max-w-6xl">
         {result.status === "error" ? (
-          <EntryEditErrorState
-            message={result.message}
-            apiBaseUrl={getApiBaseUrl()}
-          />
+          <EntryEditErrorState message={result.message} />
         ) : (
           <EntryEditForm entry={result.data.entry} />
         )}

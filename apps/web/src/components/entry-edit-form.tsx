@@ -148,11 +148,11 @@ function validateValues(values: EntryFormValues): FieldErrors {
   return errors;
 }
 
-function buildUpdatePayload(
+function buildUpdateInput(
   initialEntry: DiaryEntry,
   values: EntryFormValues,
 ): UpdateDiaryEntryInput {
-  const payload: UpdateDiaryEntryInput = {};
+  const updateInput: UpdateDiaryEntryInput = {};
   const seasonYear = Number(values.seasonYear);
   const scoreFor = toOptionalNumber(values.scoreFor);
   const scoreAgainst = toOptionalNumber(values.scoreAgainst);
@@ -163,58 +163,58 @@ function buildUpdatePayload(
   const rawMemo = toOptionalString(values.rawMemo);
 
   if (seasonYear !== initialEntry.seasonYear) {
-    payload.seasonYear = seasonYear;
+    updateInput.seasonYear = seasonYear;
   }
 
   if (values.date !== initialEntry.date) {
-    payload.date = values.date;
+    updateInput.date = values.date;
   }
 
   if (values.favoriteTeam !== initialEntry.favoriteTeam) {
-    payload.favoriteTeam = values.favoriteTeam;
+    updateInput.favoriteTeam = values.favoriteTeam;
   }
 
   if (values.opponentTeam !== initialEntry.opponentTeam) {
-    payload.opponentTeam = values.opponentTeam;
+    updateInput.opponentTeam = values.opponentTeam;
   }
 
   if (scoreFor !== initialEntry.scoreFor) {
-    payload.scoreFor = scoreFor;
+    updateInput.scoreFor = scoreFor;
   }
 
   if (scoreAgainst !== initialEntry.scoreAgainst) {
-    payload.scoreAgainst = scoreAgainst;
+    updateInput.scoreAgainst = scoreAgainst;
   }
 
   if (values.result !== initialEntry.result) {
-    payload.result = values.result;
+    updateInput.result = values.result;
   }
 
   if (values.watchType !== initialEntry.watchType) {
-    payload.watchType = values.watchType;
+    updateInput.watchType = values.watchType;
   }
 
   if (stadium !== initialEntry.stadium) {
-    payload.stadium = stadium;
+    updateInput.stadium = stadium;
   }
 
   if (seat !== initialEntry.seat) {
-    payload.seat = seat;
+    updateInput.seat = seat;
   }
 
   if (playerOfTheDay !== initialEntry.playerOfTheDay) {
-    payload.playerOfTheDay = playerOfTheDay;
+    updateInput.playerOfTheDay = playerOfTheDay;
   }
 
   if (highlight !== initialEntry.highlight) {
-    payload.highlight = highlight;
+    updateInput.highlight = highlight;
   }
 
   if (rawMemo !== initialEntry.rawMemo) {
-    payload.rawMemo = rawMemo;
+    updateInput.rawMemo = rawMemo;
   }
 
-  return payload;
+  return updateInput;
 }
 
 type EntryEditFormProps = {
@@ -230,8 +230,6 @@ export function EntryEditForm({ entry }: EntryEditFormProps) {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const payloadPreview = buildUpdatePayload(entry, values);
 
   function setFieldValue<K extends keyof EntryFormValues>(
     field: K,
@@ -264,17 +262,17 @@ export function EntryEditForm({ entry }: EntryEditFormProps) {
       return;
     }
 
-    const payload = buildUpdatePayload(entry, values);
+    const updateInput = buildUpdateInput(entry, values);
 
-    if (Object.keys(payload).length === 0) {
-      setStatusMessage("변경된 항목이 없어 저장 요청을 보내지 않았습니다.");
+    if (Object.keys(updateInput).length === 0) {
+      setStatusMessage("변경된 항목이 없어 저장하지 않았습니다.");
       return;
     }
 
     setIsSubmitting(true);
 
     try {
-      const response = await updateEntry(entry.id, payload);
+      const response = await updateEntry(entry.id, updateInput);
       setStatusMessage("수정 내용을 저장했습니다. 상세 화면으로 이동합니다.");
       startTransition(() => {
         router.push(`/entries/${response.entry.id}`);
@@ -285,7 +283,7 @@ export function EntryEditForm({ entry }: EntryEditFormProps) {
         setSubmitError(error.message);
       } else {
         setSubmitError(
-          "예상하지 못한 오류가 발생했습니다. PATCH /entries/:id 응답을 다시 확인해 주세요.",
+          "예상하지 못한 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.",
         );
       }
     } finally {
@@ -309,8 +307,8 @@ export function EntryEditForm({ entry }: EntryEditFormProps) {
                 {entry.highlight}
               </h1>
               <p className="max-w-2xl text-sm leading-7 text-stone-300">
-                GET /entries/:id로 초기값을 채우고, 바뀐 필드만 PATCH /entries/:id로
-                보내는 수정 흐름입니다.
+                경기 정보와 감상을 다시 다듬고, 저장 후 상세 화면에서 확인할 수
+                있습니다.
               </p>
             </div>
           </div>
@@ -520,7 +518,7 @@ export function EntryEditForm({ entry }: EntryEditFormProps) {
           </article>
         </section>
 
-        <section className="grid gap-4 lg:grid-cols-[1.3fr_0.9fr]">
+        <section className="grid gap-4">
           <article className="rounded-[28px] border border-stone-200 bg-white p-6 shadow-sm">
             <h2 className="text-xl font-semibold tracking-tight text-stone-950">
               감상 수정
@@ -570,21 +568,6 @@ export function EntryEditForm({ entry }: EntryEditFormProps) {
                   className="w-full rounded-[24px] border border-stone-200 bg-white px-4 py-3 text-sm leading-7 text-stone-950 outline-none transition focus:border-stone-400"
                 />
               </label>
-            </div>
-          </article>
-
-          <article className="rounded-[28px] border border-stone-200 bg-white p-6 shadow-sm">
-            <h2 className="text-xl font-semibold tracking-tight text-stone-950">
-              PATCH 미리보기
-            </h2>
-            <p className="mt-2 text-sm leading-6 text-stone-500">
-              이번 저장에서 실제로 변경된 필드만 요청 body에 담깁니다.
-            </p>
-            <pre className="mt-6 overflow-x-auto rounded-[24px] bg-stone-950 px-4 py-4 text-xs leading-6 text-stone-100">
-              {JSON.stringify(payloadPreview, null, 2)}
-            </pre>
-            <div className="mt-6 rounded-[24px] border border-dashed border-stone-200 bg-stone-50/70 px-4 py-4 text-sm leading-7 text-stone-500">
-              사진은 아직 업로드 편집 API가 붙지 않았기 때문에 이번 PATCH 범위에서 제외했습니다.
             </div>
           </article>
         </section>

@@ -14,8 +14,7 @@ export default function EntryEditLoading() {
           <div className="h-96 animate-pulse rounded-[28px] bg-white" />
         </section>
 
-        <section className="grid gap-4 lg:grid-cols-[1.3fr_0.9fr]">
-          <div className="h-96 animate-pulse rounded-[28px] bg-white" />
+        <section className="grid gap-4">
           <div className="h-96 animate-pulse rounded-[28px] bg-white" />
         </section>
       </div>
