@@ -46,12 +46,6 @@ const routeCards = [
     title: "시즌북 만들기",
     description: "기록을 선택하고 시즌북 견적을 생성합니다.",
   },
-  {
-    href: "/order/demo-project",
-    label: "주문",
-    title: "주문 정보 입력",
-    description: "견적 생성 뒤 배송 정보를 입력하는 주문 화면입니다.",
-  },
 ];
 
 export default function Home() {
@@ -82,7 +76,7 @@ export default function Home() {
           <div className="flex flex-col justify-between rounded-[36px] bg-stone-950 px-8 py-10 text-white shadow-xl shadow-stone-950/10 sm:px-10">
             <div className="space-y-8">
               <span className="inline-flex rounded-full bg-white/12 px-3 py-1 text-xs font-semibold tracking-[0.2em] text-stone-200 uppercase">
-                Baseball memory to book
+                Season memory book
               </span>
               <div className="space-y-5">
                 <h1 className="max-w-3xl text-4xl font-semibold tracking-tight text-balance sm:text-6xl">
@@ -98,7 +92,7 @@ export default function Home() {
                   href="/season"
                   className="inline-flex items-center justify-center rounded-full bg-white px-5 py-3 text-sm font-semibold text-stone-950 transition hover:bg-stone-100"
                 >
-                  데모 흐름 시작
+                  시즌 기록 보기
                 </Link>
                 <Link
                   href="/entries/new"
@@ -111,21 +105,21 @@ export default function Home() {
 
             <div className="mt-12 grid gap-3 border-t border-white/10 pt-6 sm:grid-cols-3">
               <div>
-                <p className="text-2xl font-semibold">7</p>
+                <p className="text-2xl font-semibold">기록</p>
                 <p className="mt-1 text-xs font-medium tracking-[0.16em] text-stone-400 uppercase">
-                  Routes
+                  Game notes
                 </p>
               </div>
               <div>
-                <p className="text-2xl font-semibold">6</p>
+                <p className="text-2xl font-semibold">사진</p>
                 <p className="mt-1 text-xs font-medium tracking-[0.16em] text-stone-400 uppercase">
-                  API flows
+                  Photo moments
                 </p>
               </div>
               <div>
-                <p className="text-2xl font-semibold">1</p>
+                <p className="text-2xl font-semibold">책</p>
                 <p className="mt-1 text-xs font-medium tracking-[0.16em] text-stone-400 uppercase">
-                  Book order path
+                  Printed season
                 </p>
               </div>
             </div>
@@ -136,10 +130,10 @@ export default function Home() {
             <div className="relative flex h-full min-h-[32rem] flex-col justify-between">
               <div className="space-y-3">
                 <p className="text-sm font-semibold tracking-[0.2em] text-stone-400 uppercase">
-                  Current flow
+                  Season flow
                 </p>
                 <h2 className="max-w-md text-3xl font-semibold tracking-tight text-stone-950">
-                  기록 작성부터 시즌북 주문까지 이어지는 MVP
+                  기록 작성부터 시즌북 주문까지 자연스럽게 이어집니다.
                 </h2>
               </div>
 
@@ -166,18 +160,18 @@ export default function Home() {
 
               <div className="rounded-[28px] bg-stone-950 px-5 py-5 text-white">
                 <p className="text-xs font-semibold tracking-[0.18em] text-stone-400 uppercase">
-                  Next validation
+                  Ready to make
                 </p>
                 <p className="mt-3 text-sm leading-6 text-stone-200">
-                  백엔드 API가 준비되면 QA 팀이 전체 사용자 흐름을 한 번에 검증할 수
-                  있도록 주요 화면은 실제 요청 구조로 연결되어 있습니다.
+                  시즌북에 담을 기록을 고른 뒤 견적을 확인하고, 배송 정보 입력까지
+                  같은 흐름 안에서 이어갈 수 있습니다.
                 </p>
               </div>
             </div>
           </div>
         </section>
 
-        <section className="grid gap-3 pb-8 md:grid-cols-2 xl:grid-cols-4">
+        <section className="grid gap-3 pb-8 md:grid-cols-3">
           {routeCards.map((route) => (
             <Link
               key={route.href}
