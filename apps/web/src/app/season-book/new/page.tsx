@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 
-import { SeasonBookEntrySelection } from "@/components/season-book-entry-selection";
+import { SeasonBookBuilderForm } from "@/components/season-book-builder-form";
 import { getEntries } from "@/lib/api/entries";
 import { ApiClientError, getApiBaseUrl } from "@/lib/api/http";
 
@@ -58,9 +58,9 @@ export default async function NewSeasonBookPage() {
                   시즌북에 담을 경기 기록을 고르세요
                 </h1>
                 <p className="max-w-2xl text-sm leading-7 text-stone-300">
-                  이번 슬라이스는 `GET /entries`로 기록을 불러와 선택 상태를
-                  만드는 것까지만 담당합니다. 견적 생성은 다음 단계에서
-                  `POST /season-books/estimate`로 연결합니다.
+                  `GET /entries`로 기록을 불러오고, 선택한 기록을
+                  `POST /season-books/estimate` 요청으로 연결해 시즌북 견적을
+                  생성합니다.
                 </p>
               </div>
             </div>
@@ -108,7 +108,7 @@ export default async function NewSeasonBookPage() {
             </Link>
           </section>
         ) : (
-          <SeasonBookEntrySelection entries={result.entries} />
+          <SeasonBookBuilderForm entries={result.entries} />
         )}
       </div>
     </main>
