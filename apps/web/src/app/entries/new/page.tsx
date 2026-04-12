@@ -4,7 +4,7 @@ import { EntryCreateForm } from "@/components/entry-create-form";
 
 export const metadata: Metadata = {
   title: "직관 기록 작성 | Sweetbook",
-  description: "POST /entries를 사용하는 새 기록 작성 화면",
+  description: "경기와 사진, 감상을 묶어 새 직관 기록을 남기는 화면",
 };
 
 export default function EntryCreatePage() {

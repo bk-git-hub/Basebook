@@ -157,7 +157,7 @@ function validateValues(values: EntryFormValues): FieldErrors {
   return errors;
 }
 
-function buildCreatePayload(
+function buildCreateInput(
   values: EntryFormValues,
   photos: PhotoAsset[],
 ): CreateDiaryEntryInput {
@@ -225,7 +225,6 @@ export function EntryCreateForm() {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const payloadPreview = buildCreatePayload(values, uploadedPhotos);
 
   function setFieldValue<K extends keyof EntryFormValues>(
     field: K,
@@ -276,7 +275,7 @@ export function EntryCreateForm() {
         setGameLookupError(error.message);
       } else {
         setGameLookupError(
-          "예상하지 못한 오류가 발생했습니다. GET /games 응답을 다시 확인해 주세요.",
+          "예상하지 못한 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.",
         );
       }
     } finally {
@@ -339,7 +338,7 @@ export function EntryCreateForm() {
 
       if (failures.length === 0) {
         setUploadNote(
-          `${nextAssets.length}개의 사진을 업로드했습니다. 저장 시 photos에 함께 포함됩니다.`,
+          `${nextAssets.length}개의 사진을 업로드했습니다. 저장하면 이번 기록에 함께 담깁니다.`,
         );
         return;
       }
@@ -347,7 +346,7 @@ export function EntryCreateForm() {
       const firstFailure = failures[0].reason;
       const fallbackMessage =
         failures.length === selectedFiles.length
-          ? "사진 업로드가 모두 실패했습니다. POST /uploads/image 응답을 확인해 주세요."
+          ? "사진 업로드가 모두 실패했습니다. 파일을 확인한 뒤 다시 시도해 주세요."
           : `${failures.length}개의 사진 업로드가 실패했습니다. 성공한 사진은 그대로 유지됩니다.`;
 
       if (firstFailure instanceof ApiClientError) {
@@ -371,7 +370,7 @@ export function EntryCreateForm() {
     setUploadedPhotos((current) =>
       current.filter((photo) => photo.id !== photoId),
     );
-    setUploadNote("선택한 사진을 이번 기록 생성 payload에서 제외했습니다.");
+    setUploadNote("선택한 사진을 이번 기록에서 제외했습니다.");
   }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -389,7 +388,8 @@ export function EntryCreateForm() {
     setIsSubmitting(true);
 
     try {
-      const response = await createEntry(payloadPreview);
+      const entryInput = buildCreateInput(values, uploadedPhotos);
+      const response = await createEntry(entryInput);
       setStatusMessage("기록을 저장했습니다. 생성된 상세 화면으로 이동합니다.");
       startTransition(() => {
         router.push(`/entries/${response.entry.id}`);
@@ -400,7 +400,7 @@ export function EntryCreateForm() {
         setSubmitError(error.message);
       } else {
         setSubmitError(
-          "예상하지 못한 오류가 발생했습니다. POST /entries 응답을 다시 확인해 주세요.",
+          "예상하지 못한 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.",
         );
       }
     } finally {
@@ -421,12 +421,11 @@ export function EntryCreateForm() {
                 새 직관 기록 작성
               </p>
               <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-                POST /entries 생성 흐름
+                오늘의 직관 기록을 남겨보세요
               </h1>
               <p className="max-w-2xl text-sm leading-7 text-stone-300">
-                경기 후보 조회와 사진 업로드를 먼저 마친 뒤 기록 생성 payload를
-                저장하는 흐름입니다. 아직 저장 전 단계에서는 값과 첨부 자산을
-                계속 수정할 수 있습니다.
+                경기 정보를 불러오고 사진과 감상을 더해, 시즌북에 담을 수 있는
+                한 경기의 기억을 완성합니다.
               </p>
             </div>
           </div>
@@ -526,13 +525,13 @@ export function EntryCreateForm() {
 
               <label className="space-y-2 sm:col-span-2">
                 <span className="text-sm font-medium text-stone-700">
-                  gameId (선택)
+                  연결된 경기
                 </span>
                 <input
                   type="text"
                   value={values.gameId}
                   onChange={(event) => setFieldValue("gameId", event.target.value)}
-                  placeholder="후보 선택 시 자동 입력되며, 필요하면 직접 수정할 수 있습니다"
+                  placeholder="경기 후보를 선택하면 자동으로 연결됩니다"
                   className="w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-sm text-stone-950 outline-none transition focus:border-stone-400"
                 />
               </label>
@@ -656,9 +655,8 @@ export function EntryCreateForm() {
                 경기 후보 조회
               </h2>
               <p className="max-w-2xl text-sm leading-6 text-stone-500">
-                지금은 버튼을 눌렀을 때만 `GET /games`를 호출합니다. 조회 로직을
-                분리해 두었기 때문에, 나중에는 날짜나 응원 팀 변경 시 자동 조회로
-                바꾸기 쉽도록 구성했습니다.
+                날짜와 응원 팀에 맞는 경기 후보를 불러온 뒤, 원하는 경기를 선택해
+                기본 정보를 채울 수 있습니다.
               </p>
             </div>
 
@@ -746,7 +744,7 @@ export function EntryCreateForm() {
                         }`}
                       >
                         <p className="text-xs font-medium uppercase tracking-[0.16em]">
-                          gameId
+                          경기 연결
                         </p>
                         <p className="mt-1 break-all font-mono text-xs">
                           {game.id}
@@ -826,9 +824,8 @@ export function EntryCreateForm() {
                 사진 업로드
               </h2>
               <p className="mt-2 text-sm leading-6 text-stone-500">
-                파일을 고르면 즉시 `POST /uploads/image`로 업로드합니다. 업로드된
-                사진은 저장 전에 제거할 수 있고, 최종적으로 `POST /entries`의
-                `photos`에 함께 들어갑니다.
+                사진을 먼저 올려두면 저장할 때 이번 기록에 함께 담깁니다. 저장 전에는
+                언제든 제외할 수 있습니다.
               </p>
             </div>
 
@@ -901,29 +898,10 @@ export function EntryCreateForm() {
               </ul>
             ) : (
               <div className="rounded-[24px] border border-dashed border-stone-200 bg-stone-50/70 px-4 py-5 text-sm leading-7 text-stone-500">
-                아직 업로드된 사진이 없습니다. 이번 슬라이스에서는 업로드 즉시
-                asset을 받아 `photos` payload에 쌓는 흐름까지 구현합니다.
+                아직 업로드된 사진이 없습니다. 경기장의 분위기나 기억에 남는 장면을
+                함께 남겨보세요.
               </div>
             )}
-          </article>
-
-          <article className="rounded-[28px] border border-stone-200 bg-white p-6 shadow-sm lg:col-span-2">
-            <h2 className="text-xl font-semibold tracking-tight text-stone-950">
-              생성 요청 미리보기
-            </h2>
-            <p className="mt-2 text-sm leading-6 text-stone-500">
-              현재 폼 값이 `POST /entries` body로 어떻게 전달되는지 바로 확인할 수
-              있습니다.
-            </p>
-            <pre className="mt-6 overflow-x-auto rounded-[24px] bg-stone-950 px-4 py-4 text-xs leading-6 text-stone-100">
-              {JSON.stringify(payloadPreview, null, 2)}
-            </pre>
-            <div className="mt-6 rounded-[24px] border border-dashed border-stone-200 bg-stone-50/70 px-4 py-4 text-sm leading-7 text-stone-500">
-              `GET /games`는 버튼 기반 후보 조회로 먼저 연결했고, 추후 자동
-              조회로 확장할 수 있도록 로직을 분리해 두었습니다. 사진도 지금은
-              `POST /uploads/image`로 먼저 올린 뒤 응답 asset을 payload에
-              포함하는 방식으로 연결했습니다.
-            </div>
           </article>
         </section>
 
