@@ -67,7 +67,7 @@ export function SeasonBookBuilderForm({ entries }: SeasonBookBuilderFormProps) {
   const selectedSeasonYear = selectedEntries[0]?.seasonYear;
   const suggestedCoverPhotoUrl =
     getFirstSelectedCoverPhotoUrl(selectedEntries);
-  const estimatePayload = {
+  const estimateInput = {
     seasonYear: selectedSeasonYear ?? new Date().getFullYear(),
     title: title.trim(),
     introText: introText.trim() || undefined,
@@ -142,14 +142,14 @@ export function SeasonBookBuilderForm({ entries }: SeasonBookBuilderFormProps) {
     setIsEstimating(true);
 
     try {
-      const result = await estimateSeasonBook(estimatePayload);
+      const result = await estimateSeasonBook(estimateInput);
       setEstimateResult(result);
     } catch (error) {
       if (error instanceof ApiClientError) {
         setEstimateError(error.message);
       } else {
         setEstimateError(
-          "예상하지 못한 오류가 발생했습니다. POST /season-books/estimate 응답을 다시 확인해 주세요.",
+          "예상하지 못한 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.",
         );
       }
     } finally {
@@ -260,6 +260,10 @@ export function SeasonBookBuilderForm({ entries }: SeasonBookBuilderFormProps) {
                 {formErrors.coverPhotoUrl}
               </p>
             ) : null}
+            <p className="text-xs leading-5 text-stone-500">
+              실제 책 제작에 사용할 수 있도록 외부에서 열리는 이미지 주소를
+              입력해 주세요.
+            </p>
           </label>
 
           <button
@@ -309,10 +313,6 @@ export function SeasonBookBuilderForm({ entries }: SeasonBookBuilderFormProps) {
             </Link>
           </div>
         ) : null}
-
-        <pre className="max-h-64 overflow-auto rounded-[20px] bg-stone-950 px-4 py-4 text-xs leading-6 text-stone-100">
-          {JSON.stringify(estimatePayload, null, 2)}
-        </pre>
 
         <button
           type="submit"

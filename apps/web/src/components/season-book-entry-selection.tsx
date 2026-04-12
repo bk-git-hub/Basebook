@@ -96,8 +96,8 @@ export function SeasonBookEntrySelection({
             시즌북에 넣을 기록
           </h2>
           <p className="mt-2 text-sm leading-6 text-stone-500">
-            `GET /entries`로 가져온 기록 중 시즌북에 포함할 항목을 고릅니다.
-            견적 생성 API는 오른쪽 빌더 패널에서 호출합니다.
+            시즌북에 담고 싶은 경기 기록을 고르세요. 선택한 기록은 오른쪽
+            요약에 바로 반영됩니다.
           </p>
         </div>
 

@@ -3,11 +3,11 @@ import type { Metadata } from "next";
 
 import { SeasonBookBuilderForm } from "@/components/season-book-builder-form";
 import { getEntries } from "@/lib/api/entries";
-import { ApiClientError, getApiBaseUrl } from "@/lib/api/http";
+import { ApiClientError } from "@/lib/api/http";
 
 export const metadata: Metadata = {
   title: "시즌북 만들기 | Sweetbook",
-  description: "GET /entries 응답으로 시즌북에 포함할 기록을 선택하는 화면",
+  description: "시즌북에 담을 기록을 고르고 견적을 확인하는 화면",
 };
 
 export const dynamic = "force-dynamic";
@@ -33,7 +33,7 @@ async function loadSeasonBookEntries() {
     return {
       status: "error" as const,
       message:
-        "예상하지 못한 오류가 발생했습니다. API 서버 상태와 응답 형식을 다시 확인해 주세요.",
+        "예상하지 못한 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.",
     };
   }
 }
@@ -58,9 +58,8 @@ export default async function NewSeasonBookPage() {
                   시즌북에 담을 경기 기록을 고르세요
                 </h1>
                 <p className="max-w-2xl text-sm leading-7 text-stone-300">
-                  `GET /entries`로 기록을 불러오고, 선택한 기록을
-                  `POST /season-books/estimate` 요청으로 연결해 시즌북 견적을
-                  생성합니다.
+                  시즌의 기억을 고르고 제목과 커버를 정하면, 제작 전 예상 금액을
+                  바로 확인할 수 있습니다.
                 </p>
               </div>
             </div>
@@ -77,16 +76,13 @@ export default async function NewSeasonBookPage() {
         {result.status === "error" ? (
           <section className="rounded-[28px] border border-rose-200 bg-white p-8 shadow-sm">
             <p className="text-sm font-semibold tracking-[0.18em] text-rose-500 uppercase">
-              GET /entries
+              Season Book
             </p>
             <h2 className="mt-3 text-2xl font-semibold tracking-tight text-stone-950">
               기록 목록을 불러오지 못했습니다
             </h2>
             <p className="mt-3 text-sm leading-7 text-stone-600">
               {result.message}
-            </p>
-            <p className="mt-4 rounded-2xl bg-stone-50 px-4 py-3 text-sm text-stone-500 ring-1 ring-stone-200">
-              현재 API 주소: {getApiBaseUrl()}
             </p>
           </section>
         ) : result.entries.length === 0 ? (
