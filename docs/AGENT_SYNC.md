@@ -51,3 +51,15 @@
 - Required action: Frontend can integrate against `POST /season-books/estimate` using `seasonYear`, `title`, optional `introText`, `coverPhotoUrl`, and `selectedEntryIds`.
 - User notified: yes
 - Status: open
+
+## SYNC-003
+- Date: 2026-04-12
+- Time: 15:28
+- Source role: Backend
+- Target role: Frontend
+- Type: ready
+- Related area: `POST /season-books/estimate`
+- Summary: Backend now supports Sweetbook-backed estimate assembly in `auto` mode when Sandbox API key is configured and `coverPhotoUrl` is publicly fetchable.
+- Required action: Frontend may keep using local upload URLs for local fallback, but real Sweetbook estimates require a public image URL or a future backend multipart handoff path.
+- User notified: yes
+- Status: open

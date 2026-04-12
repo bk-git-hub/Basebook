@@ -1,5 +1,5 @@
 import type { CurrencyCode } from '@basebook/contracts';
-import type { DiaryEntry } from '@prisma/client';
+import type { DiaryEntry, Photo } from '@prisma/client';
 
 export const SEASON_BOOK_ESTIMATOR = Symbol('SEASON_BOOK_ESTIMATOR');
 
@@ -7,7 +7,7 @@ export type SeasonBookEstimateInput = {
   title: string;
   introText?: string;
   coverPhotoUrl: string;
-  entries: DiaryEntry[];
+  entries: Array<DiaryEntry & { photos: Photo[] }>;
 };
 
 export type SeasonBookEstimateResult = {

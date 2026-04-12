@@ -11,6 +11,32 @@ type SweetbookRequestOptions = {
   idempotencyKey?: string;
 };
 
+type SweetbookFormRequestOptions = {
+  path: string;
+  formData: FormData;
+};
+
+type SweetbookApiResponse<T> = {
+  success?: boolean;
+  message?: string;
+  data?: T;
+  errors?: string[];
+};
+
+export type SweetbookBookSpec = {
+  bookSpecUid: string;
+  pageMin: number;
+  pageMax: number;
+  pageIncrement: number;
+};
+
+export type SweetbookOrderEstimate = {
+  totalAmount?: number;
+  totalProductAmount?: number;
+  totalShippingFee?: number;
+  creditSufficient?: boolean;
+};
+
 export type SweetbookReadiness = {
   configured: boolean;
   bookSpecsReachable: boolean;
@@ -61,6 +87,72 @@ export class SweetbookClient {
     return this.request({ path: '/credits' });
   }
 
+  async createBook(input: {
+    title: string;
+    bookSpecUid: string;
+    externalRef: string;
+    idempotencyKey: string;
+  }) {
+    return this.request<{ bookUid: string }>({
+      path: '/books',
+      method: 'POST',
+      idempotencyKey: input.idempotencyKey,
+      body: {
+        title: input.title,
+        bookSpecUid: input.bookSpecUid,
+        externalRef: input.externalRef,
+      },
+    });
+  }
+
+  async createCover(
+    bookUid: string,
+    templateUid: string,
+    parameters: Record<string, unknown>,
+  ) {
+    return this.requestTemplateForm({
+      path: `/books/${bookUid}/cover`,
+      templateUid,
+      parameters,
+    });
+  }
+
+  async insertContent(
+    bookUid: string,
+    templateUid: string,
+    parameters: Record<string, unknown>,
+    breakBefore: 'page' | 'column' | 'none' = 'page',
+  ) {
+    return this.requestTemplateForm<{ pageCount?: number }>({
+      path: `/books/${bookUid}/contents?breakBefore=${breakBefore}`,
+      templateUid,
+      parameters,
+    });
+  }
+
+  async finalizeBook(bookUid: string) {
+    return this.request<{ pageCount?: number }>({
+      path: `/books/${bookUid}/finalization`,
+      method: 'POST',
+      body: {},
+    });
+  }
+
+  async estimateOrder(bookUid: string): Promise<SweetbookOrderEstimate> {
+    return this.request<SweetbookOrderEstimate>({
+      path: '/orders/estimate',
+      method: 'POST',
+      body: {
+        items: [
+          {
+            bookUid,
+            quantity: 1,
+          },
+        ],
+      },
+    });
+  }
+
   private async isReachable(path: string) {
     try {
       await this.request({ path });
@@ -70,7 +162,9 @@ export class SweetbookClient {
     }
   }
 
-  private async request(options: SweetbookRequestOptions) {
+  private async request<T = unknown>(
+    options: SweetbookRequestOptions,
+  ): Promise<T> {
     const config = getSweetbookConfig();
 
     if (!isConfiguredSweetbookApiKey(config.apiKey)) {
@@ -99,15 +193,83 @@ export class SweetbookClient {
     });
 
     if (!response.ok) {
+      const message = await this.readErrorMessage(response);
       throw new ServiceUnavailableException(
-        `Sweetbook API request failed with HTTP ${response.status}.`,
+        `Sweetbook API request to ${options.path} failed with HTTP ${response.status}: ${message}`,
       );
     }
 
-    return response.json();
+    return this.unwrapData<T>(
+      (await response.json()) as SweetbookApiResponse<T>,
+    );
   }
 
-  private isConfigured() {
+  private async requestTemplateForm<T = unknown>(options: {
+    path: string;
+    templateUid: string;
+    parameters: Record<string, unknown>;
+  }) {
+    const formData = new FormData();
+    formData.append('templateUid', options.templateUid);
+    formData.append('parameters', JSON.stringify(options.parameters));
+
+    return this.requestForm<T>({
+      path: options.path,
+      formData,
+    });
+  }
+
+  private async requestForm<T = unknown>(
+    options: SweetbookFormRequestOptions,
+  ): Promise<T> {
+    const config = getSweetbookConfig();
+
+    if (!isConfiguredSweetbookApiKey(config.apiKey)) {
+      throw new ServiceUnavailableException(
+        'Sweetbook Sandbox API key is not configured.',
+      );
+    }
+
+    const response = await fetch(`${config.baseUrl}${options.path}`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${config.apiKey}`,
+        Accept: 'application/json',
+      },
+      body: options.formData,
+    });
+
+    if (!response.ok) {
+      const message = await this.readErrorMessage(response);
+      throw new ServiceUnavailableException(
+        `Sweetbook API form request to ${options.path} failed with HTTP ${response.status}: ${message}`,
+      );
+    }
+
+    return this.unwrapData<T>(
+      (await response.json()) as SweetbookApiResponse<T>,
+    );
+  }
+
+  private unwrapData<T>(body: SweetbookApiResponse<T>) {
+    if (body && typeof body === 'object' && 'data' in body) {
+      return body.data as T;
+    }
+
+    return body as T;
+  }
+
+  private async readErrorMessage(response: Response) {
+    try {
+      const body = (await response.json()) as SweetbookApiResponse<unknown>;
+      const errors = body.errors?.join(', ');
+      return errors || body.message || 'No error message returned.';
+    } catch {
+      return 'No parseable error message returned.';
+    }
+  }
+
+  isConfigured() {
     const config = getSweetbookConfig();
     return isConfiguredSweetbookApiKey(config.apiKey);
   }

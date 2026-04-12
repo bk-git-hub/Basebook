@@ -333,3 +333,31 @@
   - `docs/planning/CONTRACT_SPEC.md`
 - Related Milestones:
   - `docs/milestones/backend.md`
+
+### API-013
+
+- Date: `2026-04-12`
+- Time: `15:28`
+- Agenda: First real Sweetbook season-book assembly path
+- Participants: User, Codex
+- Options Considered:
+  - Replace local estimate completely with forced Sweetbook calls
+  - Keep local estimate only and postpone real assembly
+  - Use `auto` mode: call Sweetbook when Sandbox API key and public image URLs are usable, otherwise keep local estimate fallback
+- Decision:
+  - Implement Sweetbook-backed book assembly for `POST /season-books/estimate` through `auto` mode
+  - Use sandbox-verified defaults for `SQUAREBOOK_HC` and the diary template set
+  - Keep local fallback for missing keys or local-only upload URLs
+- Rationale: This moves the product toward the real Book Print API without breaking local reviewer execution or frontend work that still uses localhost upload URLs.
+- Impact:
+  - a public `coverPhotoUrl` plus configured Sandbox API key can now create a Sweetbook draft, cover, contents, publish page, blank-page padding, finalization, and order estimate
+  - local uploads still need a future multipart/file handoff path before they can be sent directly to Sweetbook
+  - Sweetbook page-count handling is based on the API's returned current page count rather than an internal-only estimate
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/BOOK_PRINT_API_ANALYSIS.md`
+  - `docs/planning/BACKEND_FUNCTIONAL_SPEC.md`
+  - `docs/planning/CONTRACT_SPEC.md`
+- Related Milestones:
+  - `docs/milestones/backend.md`

@@ -37,6 +37,13 @@ export class SeasonBooksService {
           in: selectedEntryIds,
         },
       },
+      include: {
+        photos: {
+          orderBy: {
+            sortOrder: 'asc',
+          },
+        },
+      },
       orderBy: [{ date: 'asc' }, { createdAt: 'asc' }],
     });
 
