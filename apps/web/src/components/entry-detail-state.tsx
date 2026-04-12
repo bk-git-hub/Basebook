@@ -31,18 +31,16 @@ function EntryDetailStateCard({
 
 type EntryDetailErrorStateProps = {
   message: string;
-  apiBaseUrl: string;
 };
 
 export function EntryDetailErrorState({
   message,
-  apiBaseUrl,
 }: EntryDetailErrorStateProps) {
   return (
     <EntryDetailStateCard
       title="기록 상세를 불러오지 못했습니다"
       description={message}
-      hint={`현재 상세 조회 대상 API 주소는 ${apiBaseUrl} 입니다. 백엔드의 GET /entries/:id 구현과 파라미터 처리 상태를 확인해 주세요.`}
+      hint="잠시 후 다시 시도하거나, 시즌 대시보드에서 기록을 다시 선택해 주세요."
     />
   );
 }

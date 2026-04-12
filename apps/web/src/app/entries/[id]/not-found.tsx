@@ -8,11 +8,11 @@ export default function EntryNotFound() {
           Entry Detail
         </span>
         <h1 className="mt-4 text-3xl font-semibold tracking-tight text-stone-950">
-          요청한 기록을 찾지 못했습니다
+          이 기록을 찾지 못했습니다
         </h1>
         <p className="mt-4 text-sm leading-7 text-stone-600">
-          `GET /entries/:id`가 404를 반환한 상태입니다. URL의 entry id를 다시
-          확인하거나, 대시보드에서 존재하는 기록을 다시 선택해 주세요.
+          해당 주소의 기록이 없거나 더 이상 열 수 없습니다. 대시보드에서
+          존재하는 기록을 다시 선택해 주세요.
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
           <Link

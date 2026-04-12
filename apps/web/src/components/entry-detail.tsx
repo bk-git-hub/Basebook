@@ -88,7 +88,7 @@ export function EntryDetail({ entry }: EntryDetailProps) {
                 {TEAM_LABELS[entry.opponentTeam]}
               </h1>
               <p className="max-w-2xl text-sm leading-7 text-stone-300">
-                GET /entries/:id 응답을 그대로 상세 화면에 매핑한 상태입니다.
+                경기 결과와 그날의 감상을 한 화면에서 다시 확인하세요.
               </p>
             </div>
           </div>
@@ -122,7 +122,7 @@ export function EntryDetail({ entry }: EntryDetailProps) {
             </div>
             <div className="rounded-2xl bg-stone-50 px-4 py-3 text-right ring-1 ring-stone-200">
               <p className="text-xs font-medium tracking-[0.16em] text-stone-400 uppercase">
-                Final Score
+                Score
               </p>
               <p className="mt-1 text-lg font-semibold tracking-tight text-stone-950">
                 {formatScore(entry)}
@@ -168,17 +168,9 @@ export function EntryDetail({ entry }: EntryDetailProps) {
 
         <article className="rounded-[28px] border border-stone-200 bg-white p-6 shadow-sm">
           <h2 className="text-xl font-semibold tracking-tight text-stone-950">
-            기록 메타
+            기록 정보
           </h2>
           <dl className="mt-6 space-y-4">
-            <div className="rounded-2xl bg-stone-50 px-4 py-4">
-              <dt className="text-xs font-medium tracking-[0.16em] text-stone-400 uppercase">
-                Entry ID
-              </dt>
-              <dd className="mt-2 break-all font-mono text-sm text-stone-700">
-                {entry.id}
-              </dd>
-            </div>
             <div className="rounded-2xl bg-stone-50 px-4 py-4">
               <dt className="text-xs font-medium tracking-[0.16em] text-stone-400 uppercase">
                 생성 시각
@@ -206,7 +198,7 @@ export function EntryDetail({ entry }: EntryDetailProps) {
               한 줄 감상
             </h2>
             <p className="text-sm leading-6 text-stone-500">
-              백엔드가 내려준 highlight와 rawMemo를 그대로 보여줍니다.
+              그날 가장 오래 남은 장면과 자세한 감상을 확인합니다.
             </p>
           </div>
           <p className="mt-6 rounded-[24px] bg-stone-50 px-5 py-5 text-lg leading-8 text-stone-900">
@@ -253,7 +245,7 @@ export function EntryDetail({ entry }: EntryDetailProps) {
             </ul>
           ) : (
             <div className="mt-6 rounded-[24px] border border-dashed border-stone-200 bg-stone-50/70 px-5 py-8 text-sm leading-7 text-stone-500">
-              첨부된 사진이 없습니다. 업로드 API가 연결되면 여기에서 실제 이미지 자산을 확인할 수 있습니다.
+              첨부된 사진이 없습니다.
             </div>
           )}
         </article>
