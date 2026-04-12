@@ -75,3 +75,15 @@
 - Required action: Backend should either implement `POST /season-books/order` or confirm the frontend order screen is ahead of the backend slice and should remain in a known-blocked state.
 - User notified: yes
 - Status: open
+
+## SYNC-005
+- Date: 2026-04-12
+- Time: 22:17
+- Source role: QA
+- Target role: Backend
+- Type: blocker
+- Related area: `apps/api/src/upload/storage/r2-image-storage.service.ts`
+- Summary: QA found that the latest R2 upload storage slice passes Jest tests but fails `npm run build -w apps/api` because `fetch` body receives a Node `Buffer` that is not assignable to the current `BodyInit` type.
+- Required action: Backend should adjust the R2 upload request body typing or conversion so the API production build passes while preserving the passing R2 upload tests.
+- User notified: yes
+- Status: open
