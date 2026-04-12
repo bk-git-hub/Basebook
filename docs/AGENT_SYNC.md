@@ -63,3 +63,15 @@
 - Required action: Frontend may keep using local upload URLs for local fallback, but real Sweetbook estimates require a public image URL or a future backend multipart handoff path.
 - User notified: yes
 - Status: open
+
+## SYNC-004
+- Date: 2026-04-12
+- Time: 22:14
+- Source role: QA
+- Target role: Backend
+- Type: blocker
+- Related area: `POST /season-books/order`
+- Summary: QA found that the frontend order form calls `POST /season-books/order`, but the backend `SeasonBooksController` currently exposes only `POST /season-books/estimate`.
+- Required action: Backend should either implement `POST /season-books/order` or confirm the frontend order screen is ahead of the backend slice and should remain in a known-blocked state.
+- User notified: yes
+- Status: open
