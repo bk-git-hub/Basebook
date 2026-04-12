@@ -305,3 +305,26 @@
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
 - Related Milestones:
   - `docs/milestones/frontend.md`
+
+### WEB-013
+
+- Date: `2026-04-12`
+- Time: `15:01`
+- Agenda: `/season-book/new`의 `POST /season-books/estimate` 연동을 기존 선택 컴포넌트에 직접 넣을지 builder form으로 분리할지 결정
+- Participants: User, Codex
+- Options Considered:
+  - `SeasonBookEntrySelection` 안에 제목/소개문/커버 입력과 estimate 호출까지 직접 추가
+  - `SeasonBookBuilderForm`이 선택값과 estimate 요청 상태를 관리하고, `SeasonBookEntrySelection`은 선택 UI만 담당하도록 분리
+- Decision: `SeasonBookBuilderForm`을 추가해 시즌북 생성 폼 상태와 `POST /season-books/estimate` 호출을 맡기고, 기존 선택 컴포넌트는 controlled selection UI로 정리한다.
+- Rationale: 시즌북 흐름은 선택, 견적, 주문으로 이어지므로 estimate 요청 상태까지 선택 컴포넌트에 넣으면 역할이 빠르게 커진다. 빌더 폼을 별도로 두면 다음 `/order/[projectId]` 연동이나 옵션 확장 시 경계가 명확하다.
+- Impact:
+  - `/season-book/new`에서 기록 선택 후 제목, 소개문, 커버 URL을 입력해 견적을 생성할 수 있다
+  - 성공 응답의 `projectId`, `pageCount`, `totalPrice`, `creditSufficient`를 화면에서 확인할 수 있다
+  - `/order/[projectId]` 이동 버튼은 생기지만 주문 화면 구현은 다음 슬라이스로 남는다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/CONTRACT_SPEC.md`
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+- Related Milestones:
+  - `docs/milestones/frontend.md`

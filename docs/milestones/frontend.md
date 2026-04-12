@@ -212,3 +212,22 @@
   - 별도 QA thread에서 통합 테스트 예정
 - Next Step:
   - user validation 후 `/season-book/new`의 `POST /season-books/estimate` 연동 범위를 회의로 결정
+
+### FE-MILESTONE-011
+
+- Date: `2026-04-12`
+- Time: `15:01`
+- Milestone: `/season-book/new` `POST /season-books/estimate` integration implemented
+- Status: `ready_for_review`
+- Summary:
+  - `season-books` API client를 추가하고 `/season-book/new`에서 견적 생성 요청을 호출하도록 연결함
+  - `SeasonBookBuilderForm`을 추가해 선택 기록, 제목, 소개문, 커버 사진 URL, estimate 요청 상태를 관리함
+  - 견적 성공 시 `projectId`, 페이지 수, 예상 금액, 크레딧 상태와 `/order/[projectId]` 이동 버튼을 표시함
+- Related Decision IDs:
+  - `WEB-013`
+- Blocking Items:
+  - backend `POST /season-books/estimate` 구현 및 실제 Sweetbook 응답 확인 필요
+  - `/order/[projectId]` 화면과 `POST /season-books/order`는 아직 미구현
+  - 별도 QA thread에서 통합 테스트 예정
+- Next Step:
+  - user validation 후 `/order/[projectId]` 주문 화면 구현 범위를 회의로 결정
