@@ -29,26 +29,24 @@ export function SeasonDashboardEmptyState() {
   return (
     <SeasonStateCard
       title="표시할 시즌 기록이 아직 없습니다"
-      description="`GET /entries` 호출은 성공했지만 아직 대시보드에 그릴 기록이 비어 있습니다. 백엔드 seed 데이터나 사용자의 첫 기록 생성이 준비되면 이 영역이 자동으로 채워집니다."
-      hint="다음 연동 대상인 POST /entries가 준비되면 이 빈 상태를 실제 생성 흐름으로 자연스럽게 연결할 수 있습니다."
+      description="첫 직관 기록을 저장하면 승패 요약과 최근 기록이 이 화면에 채워집니다."
+      hint="새 기록 작성에서 경기와 사진, 감상을 남겨보세요."
     />
   );
 }
 
 type SeasonDashboardErrorStateProps = {
   message: string;
-  apiBaseUrl: string;
 };
 
 export function SeasonDashboardErrorState({
   message,
-  apiBaseUrl,
 }: SeasonDashboardErrorStateProps) {
   return (
     <SeasonStateCard
       title="시즌 기록을 불러오지 못했습니다"
       description={message}
-      hint={`현재 조회 대상으로 설정된 API 주소는 ${apiBaseUrl} 입니다. 백엔드 서버가 실행 중인지, 그리고 GET /entries 구현이 준비됐는지 먼저 확인해 주세요.`}
+      hint="잠시 후 다시 시도해 주세요. 문제가 계속되면 기록 저장 상태를 확인해 보겠습니다."
     />
   );
 }

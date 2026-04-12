@@ -62,14 +62,14 @@ function getDashboardHeading(entries: DiaryEntry[]) {
     return {
       seasonLabel: "시즌 대시보드",
       teamLabel: "응원 팀 미설정",
-      helperText: "연동된 /entries 응답을 기반으로 시즌 기록을 정리하는 영역입니다.",
+      helperText: "첫 직관 기록을 남기면 시즌 요약이 채워집니다.",
     };
   }
 
   return {
     seasonLabel: `${latestEntry.seasonYear} 시즌`,
     teamLabel: TEAM_LABELS[latestEntry.favoriteTeam],
-    helperText: "GET /entries 응답을 사용해 요약 카드와 최근 기록 리스트를 함께 렌더링합니다.",
+    helperText: "승패 흐름과 최근 직관 기록을 한눈에 확인하세요.",
   };
 }
 
@@ -143,7 +143,7 @@ export function SeasonDashboard({ dashboard }: SeasonDashboardProps) {
             </p>
           </div>
           <p className="text-xs font-medium tracking-[0.18em] text-stone-400 uppercase">
-            GET /entries
+            Latest notes
           </p>
         </div>
 
@@ -178,7 +178,7 @@ export function SeasonDashboard({ dashboard }: SeasonDashboardProps) {
 
                   <div className="rounded-2xl bg-white px-4 py-3 text-right shadow-sm ring-1 ring-stone-200">
                     <p className="text-xs font-medium tracking-[0.16em] text-stone-400 uppercase">
-                      Final Score
+                      Score
                     </p>
                     <p className="mt-1 text-lg font-semibold tracking-tight text-stone-950">
                       {formatScore(entry)}

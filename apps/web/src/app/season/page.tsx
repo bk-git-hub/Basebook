@@ -6,11 +6,11 @@ import {
   SeasonDashboardErrorState,
 } from "@/components/season-dashboard-state";
 import { getEntries } from "@/lib/api/entries";
-import { ApiClientError, getApiBaseUrl } from "@/lib/api/http";
+import { ApiClientError } from "@/lib/api/http";
 
 export const metadata: Metadata = {
   title: "시즌 대시보드 | Sweetbook",
-  description: "GET /entries 응답으로 구성되는 시즌 요약과 최근 기록 화면",
+  description: "한 시즌의 직관 기록과 승패 요약을 확인하는 화면",
 };
 
 export const dynamic = "force-dynamic";
@@ -32,7 +32,7 @@ async function loadSeasonEntries() {
     return {
       status: "error" as const,
       message:
-        "예상하지 못한 오류가 발생했습니다. API 서버 상태와 응답 형식을 다시 확인해 주세요.",
+        "예상하지 못한 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.",
     };
   }
 }
@@ -44,10 +44,7 @@ export default async function SeasonPage() {
     <main className="min-h-screen bg-stone-100 px-6 py-10 text-stone-950 sm:px-10">
       <div className="mx-auto max-w-6xl">
         {result.status === "error" ? (
-          <SeasonDashboardErrorState
-            message={result.message}
-            apiBaseUrl={getApiBaseUrl()}
-          />
+          <SeasonDashboardErrorState message={result.message} />
         ) : result.data.entries.length === 0 ? (
           <SeasonDashboardEmptyState />
         ) : (
