@@ -250,3 +250,21 @@
   - 별도 QA thread에서 통합 테스트 예정
 - Next Step:
   - user validation 후 홈 랜딩/전체 polish 또는 미구현 API 의존성 정리 범위를 회의로 결정
+
+### FE-MILESTONE-013
+
+- Date: `2026-04-12`
+- Time: `22:01`
+- Milestone: `/` landing page rebuilt for current product UI
+- Status: `ready_for_review`
+- Summary:
+  - `/`를 Next 기본 템플릿에서 Sweetbook 제품 랜딩으로 교체함
+  - 현재 구현된 `stone` 계열 UI 톤에 맞춰 hero, navigation, workflow, 주요 라우트 CTA를 구성함
+  - 앱 metadata와 html lang을 Sweetbook/한국어 기준으로 보정함
+- Related Decision IDs:
+  - `WEB-015`
+- Blocking Items:
+  - 실제 브랜드/카피 최종 polish는 전체 QA 이후 조정 필요
+  - 별도 QA thread에서 반응형/접근성 검증 예정
+- Next Step:
+  - user validation 후 전체 페이지 polish 또는 QA 피드백 수정 범위를 회의로 결정

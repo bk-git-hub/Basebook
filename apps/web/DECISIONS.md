@@ -351,3 +351,25 @@
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
 - Related Milestones:
   - `docs/milestones/frontend.md`
+
+### WEB-015
+
+- Date: `2026-04-12`
+- Time: `22:01`
+- Agenda: `/` 랜딩을 예전 placeholder shell로 복구할지, 현재 구현된 제품 UI 톤에 맞춰 새로 구성할지 결정
+- Participants: User, Codex
+- Options Considered:
+  - `codex/web`에 있던 `AppShell`/`PlaceholderPage` 기반 홈과 네비게이션을 그대로 복구
+  - 현재 `main`의 실제 구현 화면들과 같은 stone/white 카드형 UI 톤으로 랜딩을 새로 구현
+- Decision: 이전 placeholder shell은 복구하지 않고, 현재 구현된 `/season`, `/entries`, `/season-book`, `/order` 흐름에 맞는 제품 랜딩으로 `/`를 새로 구현한다.
+- Rationale: 예전 shell은 라우트 골격 확인용 placeholder였고 현재 화면들의 색감과 구조와 맞지 않는다. 지금은 실제 API 연결 화면들이 있으므로 랜딩도 현재 제품 흐름을 안내하는 역할이 더 적합하다.
+- Impact:
+  - `/`가 Next 기본 템플릿에서 Sweetbook 제품 랜딩으로 교체된다
+  - 주요 화면으로 이동하는 네비게이션과 CTA가 복구된다
+  - 앱 metadata와 html lang도 Sweetbook/한국어 기준으로 보정된다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+- Related Milestones:
+  - `docs/milestones/frontend.md`
