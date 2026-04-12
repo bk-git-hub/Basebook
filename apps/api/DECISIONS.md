@@ -361,3 +361,30 @@
   - `docs/planning/CONTRACT_SPEC.md`
 - Related Milestones:
   - `docs/milestones/backend.md`
+
+### API-014
+
+- Date: `2026-04-12`
+- Time: `22:16`
+- Agenda: Public image hosting path for Sweetbook integration and deployment
+- Participants: User, Codex
+- Options Considered:
+  - Keep local file uploads only
+  - Add a new SDK dependency for Cloudflare R2
+  - Add R2 upload support through the S3-compatible API without a new package dependency
+- Decision:
+  - Keep local uploads as the default development path
+  - Add optional R2 upload support for deployment and real Sweetbook estimates
+  - Avoid adding a new SDK dependency in this slice so the change stays inside the backend app boundary
+- Rationale: Sweetbook cannot fetch `localhost` image URLs, so production-like estimates need public image URLs. Local fallback keeps reviewer setup simple while R2 provides a low-cost deployment path.
+- Impact:
+  - `POST /uploads/image` can return local URLs or R2 public URLs depending on backend environment variables
+  - actual R2 upload verification waits for Cloudflare-provided account and bucket credentials
+  - no frontend API shape change is required
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/BACKEND_FUNCTIONAL_SPEC.md`
+  - `docs/planning/CONTRACT_SPEC.md`
+- Related Milestones:
+  - `docs/milestones/backend.md`

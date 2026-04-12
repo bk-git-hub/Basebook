@@ -29,7 +29,8 @@ export class UploadController {
   )
   async uploadImage(
     @Req() request: Request,
-    @UploadedFile() file?: { buffer: Buffer; originalname: string; mimetype: string },
+    @UploadedFile()
+    file?: { buffer: Buffer; originalname: string; mimetype: string },
   ): Promise<UploadImageResponse> {
     const storedAsset = await this.uploadService.uploadImage(
       file
@@ -45,15 +46,21 @@ export class UploadController {
       asset: {
         id: storedAsset.id,
         fileName: storedAsset.fileName,
-        url: `${request.protocol}://${request.get('host')}${storedAsset.urlPath}`,
+        url:
+          storedAsset.url ||
+          `${request.protocol}://${request.get('host')}${storedAsset.urlPath}`,
       },
     };
   }
 
   @Get('local/:fileName')
   @Header('Cache-Control', 'no-store')
-  getStoredImage(@Param('fileName') fileName: string, @Res({ passthrough: true }) response: Response) {
-    const { stream, contentType } = this.uploadService.openStoredImage(fileName);
+  getStoredImage(
+    @Param('fileName') fileName: string,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    const { stream, contentType } =
+      this.uploadService.openStoredImage(fileName);
     response.type(contentType);
     return new StreamableFile(stream);
   }

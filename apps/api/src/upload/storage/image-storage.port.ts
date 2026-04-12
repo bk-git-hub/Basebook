@@ -1,7 +1,8 @@
 export type StoredImageAsset = {
   id: string;
   fileName: string;
-  urlPath: string;
+  urlPath?: string;
+  url?: string;
 };
 
 export type UploadableImage = {
