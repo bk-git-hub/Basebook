@@ -126,6 +126,7 @@ export type GetSeasonBookStatusResponse = {
   orderUid?: string;
   projectStatus: SeasonBookProjectStatus;
   orderStatus: SeasonBookOrderStatus;
+  shipping?: SeasonBookShippingInfo;
   source: SeasonBookStatusSource;
   sweetbookStatusCode?: number;
   sweetbookStatusDisplay?: string;

@@ -184,3 +184,16 @@
 - Required action: Frontend can wire the address-edit form against the existing contract and expect the response to return the fully merged shipping object.
 - User notified: yes
 - Status: open
+
+## SYNC-013
+
+- Date: 2026-04-14
+- Time: 14:24
+- Source role: Backend
+- Target role: Frontend
+- Type: ready
+- Related area: `GET /season-books/:projectId/status`
+- Summary: Shared contract is being expanded so the season-book status response can optionally include the current shipping snapshot for form prefill.
+- Required action: Frontend should treat `status.shipping` as the preferred prefill source once the backend implementation lands, instead of requiring full re-entry.
+- User notified: yes
+- Status: open

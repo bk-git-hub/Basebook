@@ -222,3 +222,20 @@
   - user verification pending
 - Next Step:
   - implement `POST /webhooks/sweetbook`
+
+### BE-MILESTONE-012
+
+- Date: `2026-04-14`
+- Time: `14:24`
+- Milestone: Season-book status contract expanded for shipping prefill
+- Status: `ready_for_review`
+- Summary:
+  - shared contract now allows `GET /season-books/:projectId/status` to include optional `shipping`
+  - planning docs define the status response as the prefill source for the address-edit form
+  - backend implementation is now expected to return saved shipping data through the existing status endpoint
+- Related Decision IDs:
+  - `API-022`
+- Blocking Items:
+  - backend implementation pending
+- Next Step:
+  - update `apps/api` status endpoint implementation to return stored shipping data

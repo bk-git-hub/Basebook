@@ -500,6 +500,14 @@ type GetSeasonBookStatusResponse = {
     | "CANCELLED_REFUND"
     | "ERROR"
     | "UNKNOWN";
+  shipping?: {
+    recipientName: string;
+    recipientPhone: string;
+    postalCode: string;
+    address1: string;
+    address2?: string;
+    shippingMemo?: string;
+  };
   source: "LOCAL" | "SWEETBOOK";
   sweetbookStatusCode?: number;
   sweetbookStatusDisplay?: string;
@@ -524,6 +532,8 @@ type GetSeasonBookStatusResponse = {
 
 - `source`는 현재 상태가 로컬 개발용 상태인지, Sweetbook 조회 기반 상태인지를 구분한다
 - `progress`는 주문 진행 화면의 세로 타임라인 UI를 바로 그릴 수 있게 백엔드가 정리해서 내려준다
+- `shipping`이 있으면 프론트 배송지 수정 폼의 초기값(prefill)으로 사용한다
+- 아직 주문 전이거나 저장된 배송지가 없으면 `shipping`은 생략될 수 있다
 - Sweetbook Sandbox에서는 일반적으로 `PAID` 이후 단계가 실제로 진행되지 않으므로 뒤 단계는 `pending`으로 남을 수 있다
 
 ### `POST /webhooks/sweetbook`

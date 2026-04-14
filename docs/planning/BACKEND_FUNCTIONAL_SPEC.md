@@ -206,6 +206,7 @@
 - 저장된 시즌북 프로젝트와 주문 상태 조회
 - 필요 시 Sweetbook order 상태를 다시 읽어와 진행 단계로 변환
 - 프론트 주문 진행 화면용 타임라인 데이터 반환
+- 저장된 배송지가 있으면 함께 내려주어 주소 수정 폼 prefill에 사용
 
 ### `POST /season-books/:projectId/cancel`
 
@@ -330,6 +331,7 @@
 
 - `POST /season-books/order` 동작
 - `GET /season-books/:projectId/status` 동작
+- 상태 응답이 배송지 prefill 기준 데이터로도 사용 가능
 
 ### Phase B8. 주문 관리 및 상태 동기화
 

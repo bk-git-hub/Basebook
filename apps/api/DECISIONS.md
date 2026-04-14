@@ -587,3 +587,32 @@
   - `docs/planning/BOOK_PRINT_API_ANALYSIS.md`
 - Related Milestones:
   - `docs/milestones/backend.md`
+
+### API-022
+
+- Date: `2026-04-14`
+- Time: `14:24`
+- Agenda: 배송지 수정 UX를 위한 상태 조회 계약 보강 순서
+- Participants: User, Codex
+- Options Considered:
+  - 현재 계약만 유지하고 프론트가 빈 배송지 폼에서 전체 주소를 다시 입력받는다
+  - 기존 `GET /season-books/:projectId/status` 응답에 현재 배송지를 포함하도록 계약을 먼저 보강한다
+- Decision:
+  - 구현보다 먼저 계약 문서와 공유 타입을 수정한다
+  - 별도 배송지 조회 엔드포인트를 추가하지 않고, 기존 status 응답에 optional `shipping` 필드를 추가한다
+- Rationale:
+  - 사용자는 주소 수정 화면에서 기존 배송지가 미리 채워져 있는 흐름을 더 자연스럽게 느낀다
+  - 기존 status 조회를 확장하면 프론트 호출 구조를 늘리지 않고도 UX를 개선할 수 있다
+  - 계약을 먼저 잠그면 프론트와 백엔드가 같은 응답 shape를 기준으로 병렬 작업할 수 있다
+- Impact:
+  - 프론트는 status 응답 하나로 진행 상태와 배송지 초기값을 함께 받을 수 있다
+  - 백엔드는 다음 구현 슬라이스에서 저장된 shipping snapshot을 status 응답에 포함해야 한다
+  - 현재 범위에서는 별도 배송지 조회 API를 추가하지 않는다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `packages/contracts/src/season-book.ts`
+  - `docs/planning/CONTRACT_SPEC.md`
+  - `docs/planning/BACKEND_FUNCTIONAL_SPEC.md`
+- Related Milestones:
+  - `docs/milestones/backend.md`
