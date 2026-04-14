@@ -504,3 +504,23 @@
 - Status: `approved`
 - Related Docs:
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+
+### WEB-022
+
+- Date: `2026-04-14`
+- Time: `14:23`
+- Agenda: 팀 배지 2차 보정에서 이니셜 체계와 캐릭터 모티프를 어떻게 고정할지 결정
+- Participants: User, Codex
+- Options Considered:
+  - 기존 추상 캐릭터 톤을 유지하고 색상과 이니셜만 미세 조정한다
+  - 팀별 실제 모티프를 반영하되, 공식 로고 대신 오리지널 SVG 캐릭터 해석으로 풀어낸다
+- Decision: 팀 배지는 오리지널 SVG 톤을 유지하면서도 팀별 모티프를 더 분명히 반영한다. `SSG`는 회색 강아지, `키움`은 히어로 헬멧, `NC`는 공룡, `KIA`는 호랑이, `롯데`는 갈매기, `삼성`은 사자, `한화`는 독수리 방향으로 보정하고, 이니셜은 `LG`, `DS`, `SSG`, `KW`, `KT`, `NC`, `KIA`, `LO`, `SL`, `HE`로 확정한다.
+- Rationale: 첫 버전 배지는 전체 톤은 좋았지만 팀별 개성이 조금 추상적으로 읽혔다. 실제 팀 이미지와 느슨하게 연결되는 모티프를 넣어주면 팀 인지가 빨라지고, 동시에 공식 자산을 직접 쓰지 않는 안전선도 유지할 수 있다. 3글자 이니셜은 별도 폭 대응을 넣어 칩이 깨지지 않게 한다.
+- Impact:
+  - 팀 선택 배지의 캐릭터 구분감이 강화된다
+  - 2글자와 3글자 이니셜 칩이 모두 안정적으로 렌더링된다
+  - 이후 다른 화면에 배지를 확장해도 같은 모티프 체계를 재사용할 수 있다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`

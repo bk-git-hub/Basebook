@@ -33,6 +33,7 @@ export function TeamPicker({
         {TEAM_OPTIONS.map((option) => {
           const team = TEAM_META[option.value];
           const isSelected = option.value === value;
+          const isWideInitials = team.initials.length >= 3;
 
           return (
             <button
@@ -50,7 +51,11 @@ export function TeamPicker({
               <div className="flex items-center justify-between gap-2">
                 <TeamBadge team={option.value} size={52} />
                 <span
-                  className={`rounded-full px-2 py-1 text-[10px] font-semibold tracking-[0.18em] ${
+                  className={`inline-flex items-center justify-center rounded-full py-1 font-semibold ${
+                    isWideInitials
+                      ? "min-w-[3.6rem] px-2.5 text-[9px] tracking-[0.12em]"
+                      : "min-w-[3.15rem] px-2 text-[10px] tracking-[0.18em]"
+                  } ${
                     isSelected
                       ? "bg-white/12 text-stone-200"
                       : "bg-white text-stone-500 ring-1 ring-stone-200"

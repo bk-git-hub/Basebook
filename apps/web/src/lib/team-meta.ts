@@ -1,15 +1,23 @@
 import type { TeamCode } from "@basebook/contracts";
 
-export type TeamBadgeAccessory =
+export type TeamBadgeCharacter =
+  | "cat"
+  | "bear"
+  | "puppy"
+  | "hero"
+  | "wizard"
+  | "dino"
+  | "tiger"
+  | "seagull"
+  | "lion"
+  | "eagle";
+
+export type TeamBadgeHeadwear =
   | "bow"
   | "cap"
-  | "star"
-  | "sprout"
+  | "helmet"
   | "halo"
-  | "tuft"
-  | "crown";
-
-export type TeamBadgeEars = "round" | "pointy" | "none";
+  | "none";
 
 export type TeamMeta = {
   code: TeamCode;
@@ -22,8 +30,8 @@ export type TeamMeta = {
     accent: string;
     face: string;
   };
-  accessory: TeamBadgeAccessory;
-  ears: TeamBadgeEars;
+  character: TeamBadgeCharacter;
+  headwear: TeamBadgeHeadwear;
   foreheadMark?: "heart" | "star" | "diamond" | "stripe" | "none";
 };
 
@@ -39,8 +47,8 @@ export const TEAM_META: Record<TeamCode, TeamMeta> = {
       accent: "#8D1F43",
       face: "#FFF6EE",
     },
-    accessory: "bow",
-    ears: "pointy",
+    character: "cat",
+    headwear: "bow",
     foreheadMark: "heart",
   },
   DOOSAN: {
@@ -54,8 +62,8 @@ export const TEAM_META: Record<TeamCode, TeamMeta> = {
       accent: "#4D5F8C",
       face: "#FFF5EA",
     },
-    accessory: "cap",
-    ears: "round",
+    character: "bear",
+    headwear: "cap",
     foreheadMark: "none",
   },
   SSG: {
@@ -64,13 +72,13 @@ export const TEAM_META: Record<TeamCode, TeamMeta> = {
     shortLabel: "랜더스",
     initials: "SSG",
     palette: {
-      primary: "#C3393B",
-      secondary: "#FFD2C8",
-      accent: "#8A242A",
-      face: "#FFF5EC",
+      primary: "#C8CDD8",
+      secondary: "#EEF1F6",
+      accent: "#C53D43",
+      face: "#FFF7F1",
     },
-    accessory: "star",
-    ears: "none",
+    character: "puppy",
+    headwear: "none",
     foreheadMark: "star",
   },
   KIWOOM: {
@@ -84,8 +92,8 @@ export const TEAM_META: Record<TeamCode, TeamMeta> = {
       accent: "#4F1732",
       face: "#FFF3EE",
     },
-    accessory: "crown",
-    ears: "pointy",
+    character: "hero",
+    headwear: "helmet",
     foreheadMark: "diamond",
   },
   KT: {
@@ -99,8 +107,8 @@ export const TEAM_META: Record<TeamCode, TeamMeta> = {
       accent: "#C3374B",
       face: "#FFF4EB",
     },
-    accessory: "halo",
-    ears: "round",
+    character: "wizard",
+    headwear: "halo",
     foreheadMark: "stripe",
   },
   NC: {
@@ -114,8 +122,8 @@ export const TEAM_META: Record<TeamCode, TeamMeta> = {
       accent: "#153B4B",
       face: "#FDF5EE",
     },
-    accessory: "sprout",
-    ears: "pointy",
+    character: "dino",
+    headwear: "none",
     foreheadMark: "none",
   },
   KIA: {
@@ -129,53 +137,53 @@ export const TEAM_META: Record<TeamCode, TeamMeta> = {
       accent: "#15304F",
       face: "#FFF4EA",
     },
-    accessory: "tuft",
-    ears: "pointy",
+    character: "tiger",
+    headwear: "none",
     foreheadMark: "stripe",
   },
   LOTTE: {
     code: "LOTTE",
     label: "롯데 자이언츠",
     shortLabel: "자이언츠",
-    initials: "LT",
+    initials: "LO",
     palette: {
       primary: "#0E3766",
       secondary: "#BFD7F4",
       accent: "#D73A4A",
       face: "#FFF5ED",
     },
-    accessory: "cap",
-    ears: "none",
+    character: "seagull",
+    headwear: "cap",
     foreheadMark: "diamond",
   },
   SAMSUNG: {
     code: "SAMSUNG",
     label: "삼성 라이온즈",
     shortLabel: "라이온즈",
-    initials: "SS",
+    initials: "SL",
     palette: {
       primary: "#1455C0",
       secondary: "#C6DCFF",
       accent: "#0E3580",
       face: "#FFF6EE",
     },
-    accessory: "halo",
-    ears: "round",
+    character: "lion",
+    headwear: "none",
     foreheadMark: "star",
   },
   HANWHA: {
     code: "HANWHA",
     label: "한화 이글스",
     shortLabel: "이글스",
-    initials: "HW",
+    initials: "HE",
     palette: {
       primary: "#F1792B",
       secondary: "#FFD9AD",
       accent: "#A64718",
       face: "#FFF4E9",
     },
-    accessory: "tuft",
-    ears: "pointy",
+    character: "eagle",
+    headwear: "none",
     foreheadMark: "heart",
   },
 };
