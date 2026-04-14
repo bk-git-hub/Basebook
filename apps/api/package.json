@@ -9,6 +9,7 @@
     "build": "nest build",
     "db:generate": "node scripts/run-with-env.cjs prisma generate",
     "db:init": "node scripts/db-init.cjs",
+    "db:reset-demo-entries": "node scripts/reset-demo-entries.cjs",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "postinstall": "npm run db:generate",
     "r2:check": "node -r ts-node/register -r tsconfig-paths/register scripts/check-r2-upload.cjs",
