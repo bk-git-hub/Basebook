@@ -25,6 +25,7 @@ COPY --from=builder /app/package-lock.json ./package-lock.json
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/apps/api ./apps/api
 COPY --from=builder /app/packages/contracts ./packages/contracts
+COPY data ./data
 
 WORKDIR /app/apps/api
 
