@@ -1,6 +1,12 @@
+import Image from "next/image";
 import Link from "next/link";
 
-import type { DiaryEntry, GameResult, TeamCode, WatchType } from "@basebook/contracts";
+import type {
+  DiaryEntry,
+  GameResult,
+  TeamCode,
+  WatchType,
+} from "@basebook/contracts";
 
 const TEAM_LABELS: Record<TeamCode, string> = {
   LG: "LG 트윈스",
@@ -16,17 +22,17 @@ const TEAM_LABELS: Record<TeamCode, string> = {
 };
 
 const RESULT_LABELS: Record<GameResult, string> = {
-  WIN: "승",
-  LOSE: "패",
-  DRAW: "무",
+  WIN: "승리",
+  LOSE: "패배",
+  DRAW: "무승부",
   UNKNOWN: "미정",
 };
 
 const RESULT_TONE: Record<GameResult, string> = {
-  WIN: "bg-emerald-50 text-emerald-700 ring-emerald-600/15",
-  LOSE: "bg-rose-50 text-rose-700 ring-rose-600/15",
-  DRAW: "bg-amber-50 text-amber-700 ring-amber-600/15",
-  UNKNOWN: "bg-stone-100 text-stone-600 ring-stone-500/10",
+  WIN: "border-[#d9e4f4] bg-[#eef3fb] text-[#11284f]",
+  LOSE: "border-[#f3c9cf] bg-[#fff4f5] text-[#c42d3c]",
+  DRAW: "border-[#d9e4f4] bg-[#f8fbff] text-[#5a6f91]",
+  UNKNOWN: "border-[#e1e8f3] bg-[#f5f7fb] text-[#6a7d9f]",
 };
 
 const WATCH_TYPE_LABELS: Record<WatchType, string> = {
@@ -71,181 +77,244 @@ type EntryDetailProps = {
 };
 
 export function EntryDetail({ entry }: EntryDetailProps) {
+  const isStadiumVisit = entry.watchType === "STADIUM";
+  const detailDescription = isStadiumVisit
+    ? "그날 현장에서 남긴 결과와 감상을 다시 확인하세요."
+    : "그날 시청 흐름과 감상을 다시 확인하세요.";
+  const summaryTitle = isStadiumVisit ? "직관 요약" : "기록 요약";
+  const summaryDescription = isStadiumVisit
+    ? "결과와 현장 관람 메모를 한 곳에서 확인합니다."
+    : "결과와 시청 기록을 한 곳에서 확인합니다.";
+  const photoDescription = isStadiumVisit
+    ? "첨부한 현장 사진과 업로드 결과를 바로 확인할 수 있습니다."
+    : "첨부한 사진과 화면 캡처를 바로 확인할 수 있습니다.";
+  const emptyPhotoCopy = isStadiumVisit
+    ? "첨부된 현장 사진이 없습니다."
+    : "첨부된 사진이나 캡처가 없습니다.";
+
+  const summaryItems = [
+    {
+      label: "관람 형태",
+      value: WATCH_TYPE_LABELS[entry.watchType],
+    },
+    {
+      label: "오늘의 선수",
+      value: entry.playerOfTheDay || "기록 없음",
+    },
+    ...(isStadiumVisit
+      ? [
+          {
+            label: "경기장",
+            value: entry.stadium || "기록 없음",
+          },
+          {
+            label: "좌석",
+            value: entry.seat || "기록 없음",
+          },
+        ]
+      : []),
+  ];
+
+  const infoItems = [
+    {
+      label: "생성 시각",
+      value: formatEntryDateTime(entry.createdAt),
+    },
+    {
+      label: "마지막 수정",
+      value: formatEntryDateTime(entry.updatedAt),
+    },
+    {
+      label: "첨부 사진",
+      value: `${entry.photos.length}장`,
+    },
+  ];
+
   return (
     <div className="space-y-8">
-      <section className="rounded-[32px] bg-stone-950 px-8 py-10 text-white shadow-xl shadow-stone-950/10">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+      <section className="rounded-[32px] border border-[#e5ecf6] bg-white px-6 py-8 shadow-[0_18px_48px_rgba(17,40,79,0.06)] sm:px-8 sm:py-10">
+        <div className="flex flex-col gap-6 xl:flex-row xl:items-start xl:justify-between">
           <div className="space-y-4">
-            <span className="inline-flex rounded-full bg-white/12 px-3 py-1 text-xs font-semibold tracking-[0.2em] text-stone-200 uppercase">
+            <span className="inline-flex rounded-full border border-[#dce6f3] bg-[#fbfdff] px-3 py-1 text-xs font-semibold tracking-[0.2em] text-[#c42d3c] uppercase">
               Entry Detail
             </span>
+
             <div className="space-y-2">
-              <p className="text-sm font-medium text-stone-300">
+              <p className="text-sm font-medium text-[#5a6f91]">
                 {entry.seasonYear} 시즌 · {formatEntryDate(entry.date)}
               </p>
-              <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+              <h1 className="text-3xl font-semibold tracking-tight text-[#11284f] sm:text-4xl">
                 {TEAM_LABELS[entry.favoriteTeam]} vs{" "}
                 {TEAM_LABELS[entry.opponentTeam]}
               </h1>
-              <p className="max-w-2xl text-sm leading-7 text-stone-300">
-                경기 결과와 그날의 감상을 한 화면에서 다시 확인하세요.
+              <p className="max-w-2xl text-sm leading-7 text-[#4e6284]">
+                {detailDescription}
               </p>
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              <span className="inline-flex rounded-full border border-[#dce6f3] bg-[#fbfdff] px-3 py-1.5 text-sm font-semibold text-[#11284f]">
+                {WATCH_TYPE_LABELS[entry.watchType]}
+              </span>
+              {isStadiumVisit && entry.stadium ? (
+                <span className="inline-flex rounded-full border border-[#dce6f3] bg-[#fbfdff] px-3 py-1.5 text-sm font-medium text-[#5a6f91]">
+                  {entry.stadium}
+                </span>
+              ) : null}
+              {isStadiumVisit && entry.seat ? (
+                <span className="inline-flex rounded-full border border-[#dce6f3] bg-[#fbfdff] px-3 py-1.5 text-sm font-medium text-[#5a6f91]">
+                  {entry.seat}
+                </span>
+              ) : null}
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-3">
-            <span
-              className={`inline-flex rounded-full px-3 py-1.5 text-sm font-semibold ring-1 ring-inset ${RESULT_TONE[entry.result]}`}
-            >
-              {RESULT_LABELS[entry.result]}
-            </span>
-            <Link
-              href={`/entries/${entry.id}/edit`}
-              className="inline-flex items-center justify-center rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-stone-950 transition hover:bg-stone-100"
-            >
-              이 기록 수정하기
-            </Link>
+          <div className="flex w-full flex-col gap-3 xl:max-w-[18rem] xl:items-end">
+            <div className="w-full rounded-[24px] border border-[#e6eef8] bg-[#fbfdff] px-5 py-4 text-left xl:text-right">
+              <p className="text-[0.68rem] font-semibold tracking-[0.16em] text-[#6a7d9f] uppercase">
+                Score
+              </p>
+              <p className="mt-2 text-3xl font-semibold tracking-tight text-[#11284f]">
+                {formatScore(entry)}
+              </p>
+            </div>
+
+            <div className="flex flex-wrap gap-3 xl:justify-end">
+              <span
+                className={`inline-flex rounded-full border px-3 py-1.5 text-sm font-semibold ${RESULT_TONE[entry.result]}`}
+              >
+                {RESULT_LABELS[entry.result]}
+              </span>
+              <Link
+                href={`/entries/${entry.id}/edit`}
+                className="inline-flex items-center justify-center rounded-full bg-[#11284f] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#0b1d3b]"
+              >
+                이 기록 수정하기
+              </Link>
+            </div>
           </div>
         </div>
       </section>
 
-      <section className="grid gap-4 lg:grid-cols-[1.5fr_1fr]">
-        <article className="rounded-[28px] border border-stone-200 bg-white p-6 shadow-sm">
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <h2 className="text-xl font-semibold tracking-tight text-stone-950">
-                경기 요약
-              </h2>
-              <p className="mt-2 text-sm leading-6 text-stone-500">
-                경기 결과, 관람 방식, 관람 메모를 한 곳에서 확인합니다.
-              </p>
-            </div>
-            <div className="rounded-2xl bg-stone-50 px-4 py-3 text-right ring-1 ring-stone-200">
-              <p className="text-xs font-medium tracking-[0.16em] text-stone-400 uppercase">
-                Score
-              </p>
-              <p className="mt-1 text-lg font-semibold tracking-tight text-stone-950">
-                {formatScore(entry)}
-              </p>
-            </div>
+      <section className="grid gap-4 lg:grid-cols-[1.55fr_0.95fr]">
+        <article className="rounded-[28px] border border-[#e5ecf6] bg-white p-6 shadow-[0_16px_40px_rgba(17,40,79,0.05)]">
+          <div className="space-y-2">
+            <h2 className="text-xl font-semibold tracking-tight text-[#11284f]">
+              {summaryTitle}
+            </h2>
+            <p className="text-sm leading-6 text-[#5a6f91]">
+              {summaryDescription}
+            </p>
           </div>
 
           <dl className="mt-6 grid gap-4 sm:grid-cols-2">
-            <div className="rounded-2xl bg-stone-50 px-4 py-4">
-              <dt className="text-xs font-medium tracking-[0.16em] text-stone-400 uppercase">
-                관람 형태
-              </dt>
-              <dd className="mt-2 text-base font-semibold text-stone-950">
-                {WATCH_TYPE_LABELS[entry.watchType]}
-              </dd>
-            </div>
-            <div className="rounded-2xl bg-stone-50 px-4 py-4">
-              <dt className="text-xs font-medium tracking-[0.16em] text-stone-400 uppercase">
-                오늘의 선수
-              </dt>
-              <dd className="mt-2 text-base font-semibold text-stone-950">
-                {entry.playerOfTheDay || "기록 없음"}
-              </dd>
-            </div>
-            <div className="rounded-2xl bg-stone-50 px-4 py-4">
-              <dt className="text-xs font-medium tracking-[0.16em] text-stone-400 uppercase">
-                경기장
-              </dt>
-              <dd className="mt-2 text-base font-semibold text-stone-950">
-                {entry.stadium || "기록 없음"}
-              </dd>
-            </div>
-            <div className="rounded-2xl bg-stone-50 px-4 py-4">
-              <dt className="text-xs font-medium tracking-[0.16em] text-stone-400 uppercase">
-                좌석
-              </dt>
-              <dd className="mt-2 text-base font-semibold text-stone-950">
-                {entry.seat || "기록 없음"}
-              </dd>
-            </div>
+            {summaryItems.map((item) => (
+              <div
+                key={item.label}
+                className="rounded-[22px] border border-[#e6eef8] bg-[#fbfdff] px-4 py-4"
+              >
+                <dt className="text-[0.68rem] font-semibold tracking-[0.16em] text-[#6a7d9f] uppercase">
+                  {item.label}
+                </dt>
+                <dd className="mt-2 break-words text-base font-semibold text-[#11284f]">
+                  {item.value}
+                </dd>
+              </div>
+            ))}
           </dl>
         </article>
 
-        <article className="rounded-[28px] border border-stone-200 bg-white p-6 shadow-sm">
-          <h2 className="text-xl font-semibold tracking-tight text-stone-950">
+        <article className="rounded-[28px] border border-[#e5ecf6] bg-white p-6 shadow-[0_16px_40px_rgba(17,40,79,0.05)]">
+          <h2 className="text-xl font-semibold tracking-tight text-[#11284f]">
             기록 정보
           </h2>
           <dl className="mt-6 space-y-4">
-            <div className="rounded-2xl bg-stone-50 px-4 py-4">
-              <dt className="text-xs font-medium tracking-[0.16em] text-stone-400 uppercase">
-                생성 시각
-              </dt>
-              <dd className="mt-2 text-sm font-medium text-stone-700">
-                {formatEntryDateTime(entry.createdAt)}
-              </dd>
-            </div>
-            <div className="rounded-2xl bg-stone-50 px-4 py-4">
-              <dt className="text-xs font-medium tracking-[0.16em] text-stone-400 uppercase">
-                마지막 수정
-              </dt>
-              <dd className="mt-2 text-sm font-medium text-stone-700">
-                {formatEntryDateTime(entry.updatedAt)}
-              </dd>
-            </div>
+            {infoItems.map((item) => (
+              <div
+                key={item.label}
+                className="rounded-[22px] border border-[#e6eef8] bg-[#fbfdff] px-4 py-4"
+              >
+                <dt className="text-[0.68rem] font-semibold tracking-[0.16em] text-[#6a7d9f] uppercase">
+                  {item.label}
+                </dt>
+                <dd className="mt-2 text-sm font-medium text-[#5a6f91]">
+                  {item.value}
+                </dd>
+              </div>
+            ))}
           </dl>
         </article>
       </section>
 
-      <section className="grid gap-4 lg:grid-cols-[1.4fr_1fr]">
-        <article className="rounded-[28px] border border-stone-200 bg-white p-6 shadow-sm">
+      <section className="grid gap-4 lg:grid-cols-[1.25fr_1.05fr]">
+        <article className="rounded-[28px] border border-[#e5ecf6] bg-white p-6 shadow-[0_16px_40px_rgba(17,40,79,0.05)]">
           <div className="space-y-2">
-            <h2 className="text-xl font-semibold tracking-tight text-stone-950">
-              한 줄 감상
+            <h2 className="text-xl font-semibold tracking-tight text-[#11284f]">
+              감상
             </h2>
-            <p className="text-sm leading-6 text-stone-500">
-              그날 가장 오래 남은 장면과 자세한 감상을 확인합니다.
+            <p className="text-sm leading-6 text-[#5a6f91]">
+              그날 가장 오래 남은 장면과 자세한 감상을 다시 읽을 수 있습니다.
             </p>
           </div>
-          <p className="mt-6 rounded-[24px] bg-stone-50 px-5 py-5 text-lg leading-8 text-stone-900">
+
+          <p className="mt-6 rounded-[24px] border border-[#e6eef8] bg-[#fbfdff] px-5 py-5 text-lg leading-8 text-[#11284f]">
             {entry.highlight}
           </p>
-          <div className="mt-4 rounded-[24px] border border-dashed border-stone-200 bg-stone-50/70 px-5 py-5">
-            <h3 className="text-sm font-semibold text-stone-800">상세 메모</h3>
-            <p className="mt-3 whitespace-pre-wrap text-sm leading-7 text-stone-600">
+
+          <div className="mt-4 rounded-[24px] border border-dashed border-[#d7e3f2] bg-[#fbfdff] px-5 py-5">
+            <h3 className="text-sm font-semibold text-[#11284f]">상세 메모</h3>
+            <p className="mt-3 whitespace-pre-wrap text-sm leading-7 text-[#5a6f91]">
               {entry.rawMemo || "작성된 상세 메모가 없습니다."}
             </p>
           </div>
         </article>
 
-        <article className="rounded-[28px] border border-stone-200 bg-white p-6 shadow-sm">
+        <article className="rounded-[28px] border border-[#e5ecf6] bg-white p-6 shadow-[0_16px_40px_rgba(17,40,79,0.05)]">
           <div className="space-y-2">
-            <h2 className="text-xl font-semibold tracking-tight text-stone-950">
+            <h2 className="text-xl font-semibold tracking-tight text-[#11284f]">
               사진
             </h2>
-            <p className="text-sm leading-6 text-stone-500">
-              첨부된 관람 사진과 업로드 결과를 확인합니다.
+            <p className="text-sm leading-6 text-[#5a6f91]">
+              {photoDescription}
             </p>
           </div>
 
           {entry.photos.length > 0 ? (
-            <ul className="mt-6 space-y-3">
-              {entry.photos.map((photo) => (
-                <li
-                  key={photo.id}
-                  className="rounded-2xl bg-stone-50 px-4 py-4 ring-1 ring-stone-200"
-                >
-                  <p className="text-sm font-semibold text-stone-900">
-                    {photo.fileName || "첨부 이미지"}
-                  </p>
+            <ul className="mt-6 grid gap-3 sm:grid-cols-2">
+              {entry.photos.map((photo, index) => (
+                <li key={photo.id} className="min-w-0">
                   <a
                     href={photo.url}
                     target="_blank"
                     rel="noreferrer"
-                    className="mt-2 inline-flex text-sm font-medium text-stone-600 underline underline-offset-4 hover:text-stone-900"
+                    className="group block overflow-hidden rounded-[22px] border border-[#e6eef8] bg-[#fbfdff] transition hover:border-[#cfdcf0] hover:bg-white"
                   >
-                    원본 열기
+                    <Image
+                      src={photo.url}
+                      alt={
+                        photo.fileName ||
+                        `${TEAM_LABELS[entry.favoriteTeam]} 기록 사진 ${index + 1}`
+                      }
+                      width={960}
+                      height={720}
+                      unoptimized
+                      className="h-44 w-full bg-[#eef3fb] object-cover"
+                    />
+                    <div className="space-y-2 px-4 py-4">
+                      <p className="break-words text-sm font-semibold text-[#11284f]">
+                        {photo.fileName || `첨부 이미지 ${index + 1}`}
+                      </p>
+                      <p className="text-sm font-medium text-[#5a6f91] underline underline-offset-4 group-hover:text-[#11284f]">
+                        원본 열기
+                      </p>
+                    </div>
                   </a>
                 </li>
               ))}
             </ul>
           ) : (
-            <div className="mt-6 rounded-[24px] border border-dashed border-stone-200 bg-stone-50/70 px-5 py-8 text-sm leading-7 text-stone-500">
-              첨부된 사진이 없습니다.
+            <div className="mt-6 rounded-[24px] border border-dashed border-[#d7e3f2] bg-[#fbfdff] px-5 py-8 text-sm leading-7 text-[#5a6f91]">
+              {emptyPhotoCopy}
             </div>
           )}
         </article>
@@ -254,13 +323,13 @@ export function EntryDetail({ entry }: EntryDetailProps) {
       <div className="flex flex-wrap gap-3">
         <Link
           href="/season"
-          className="inline-flex items-center justify-center rounded-full bg-stone-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-stone-800"
+          className="inline-flex items-center justify-center rounded-full bg-[#11284f] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#0b1d3b]"
         >
           시즌 대시보드로 돌아가기
         </Link>
         <Link
           href={`/entries/${entry.id}/edit`}
-          className="inline-flex items-center justify-center rounded-full border border-stone-200 bg-white px-5 py-3 text-sm font-semibold text-stone-700 transition hover:border-stone-300 hover:bg-stone-50"
+          className="inline-flex items-center justify-center rounded-full border border-[#d4ddeb] bg-white px-5 py-3 text-sm font-semibold text-[#11284f] transition hover:border-[#aebfd8] hover:bg-[#f8fbff]"
         >
           수정 화면 열기
         </Link>

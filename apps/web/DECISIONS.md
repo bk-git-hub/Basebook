@@ -986,6 +986,26 @@
 - Related Docs:
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
 
+### WEB-048
+
+- Date: `2026-04-14`
+- Time: `20:51`
+- Agenda: `/entries/[id]` 상세화면을 기존 stone 기반 요약 카드로 유지할지, 홈/작성 화면과 같은 톤으로 재구성할지 결정
+- Participants: User, Codex
+- Options Considered:
+  - 상세화면은 기존 stone 계열 톤과 `직관` 중심 카피를 유지하고, 필요한 문구만 부분 수정한다
+  - 상세화면을 홈/작성 화면과 같은 화이트/네이비/레드 포인트 톤으로 재구성하고, 관람 형태에 따라 정보 노출을 조정한다
+- Decision: 상세화면은 홈/작성 화면과 같은 화이트/네이비/레드 포인트 톤으로 재구성하고, 관람 형태에 따라 정보 노출을 조정한다.
+- Rationale: 기록 작성 화면은 이미 입력 의미와 브랜드 톤이 정리됐는데, 상세화면이 예전 stone 계열과 `직관` 고정 표현에 머물러 있으면 작성 후 확인 흐름이 다른 제품처럼 느껴진다. 같은 기록 경험 안에서 톤과 정보 구조를 맞추는 편이 제품 완성도와 스캔 속도 모두에 유리하다.
+- Impact:
+  - `/entries/[id]`는 홈/작성 화면과 더 가까운 색감과 위계로 재정리된다
+  - `TV`, `모바일 시청`, `기타` 기록에서는 경기장/좌석 같은 직관 전용 정보의 노출 비중이 줄어든다
+  - 사진 섹션은 파일명 링크 중심에서 실제 썸네일 중심으로 바뀌어 상세화면의 정보 가치가 높아진다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+
 ### WEB-044
 
 - Date: `2026-04-14`
