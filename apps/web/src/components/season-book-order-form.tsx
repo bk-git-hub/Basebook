@@ -160,19 +160,22 @@ export function SeasonBookOrderForm({
       className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]"
       onSubmit={handleSubmit}
     >
-      <section className="rounded-[28px] border border-stone-200 bg-white p-6 shadow-sm">
-        <div className="border-b border-stone-100 pb-5">
-          <h2 className="text-xl font-semibold tracking-tight text-stone-950">
+      <section className="rounded-[30px] border border-[#e5ecf6] bg-white p-6 shadow-[0_18px_48px_rgba(17,40,79,0.05)]">
+        <div className="border-b border-[#e6eef8] pb-5">
+          <p className="text-xs font-semibold tracking-[0.2em] text-[#c42d3c] uppercase">
+            shipping form
+          </p>
+          <h2 className="mt-2 text-xl font-semibold tracking-tight text-[#11284f]">
             배송 정보
           </h2>
-          <p className="mt-2 text-sm leading-6 text-stone-500">
+          <p className="mt-2 text-sm leading-6 text-[#5a6f91]">
             시즌북을 받을 수령인과 주소를 입력해 주세요.
           </p>
         </div>
 
         <div className="mt-6 grid gap-4 sm:grid-cols-2">
           <label className="space-y-2">
-            <span className="text-sm font-semibold text-stone-800">
+            <span className="text-sm font-semibold text-[#11284f]">
               수령인 이름
             </span>
             <input
@@ -181,7 +184,7 @@ export function SeasonBookOrderForm({
               onChange={(event) =>
                 setFieldValue("recipientName", event.target.value)
               }
-              className="w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-sm text-stone-950 outline-none transition focus:border-stone-400"
+              className="w-full rounded-2xl border border-[#d7e2f0] bg-white px-4 py-3 text-sm text-[#11284f] outline-none transition focus:border-[#11284f]"
             />
             {fieldErrors.recipientName ? (
               <p className="text-sm text-rose-600">
@@ -191,7 +194,7 @@ export function SeasonBookOrderForm({
           </label>
 
           <label className="space-y-2">
-            <span className="text-sm font-semibold text-stone-800">
+            <span className="text-sm font-semibold text-[#11284f]">
               전화번호
             </span>
             <input
@@ -201,7 +204,7 @@ export function SeasonBookOrderForm({
                 setFieldValue("recipientPhone", event.target.value)
               }
               placeholder="010-0000-0000"
-              className="w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-sm text-stone-950 outline-none transition focus:border-stone-400"
+              className="w-full rounded-2xl border border-[#d7e2f0] bg-white px-4 py-3 text-sm text-[#11284f] outline-none transition focus:border-[#11284f]"
             />
             {fieldErrors.recipientPhone ? (
               <p className="text-sm text-rose-600">
@@ -211,7 +214,7 @@ export function SeasonBookOrderForm({
           </label>
 
           <label className="space-y-2">
-            <span className="text-sm font-semibold text-stone-800">
+            <span className="text-sm font-semibold text-[#11284f]">
               우편번호
             </span>
             <input
@@ -220,7 +223,7 @@ export function SeasonBookOrderForm({
               onChange={(event) =>
                 setFieldValue("postalCode", event.target.value)
               }
-              className="w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-sm text-stone-950 outline-none transition focus:border-stone-400"
+              className="w-full rounded-2xl border border-[#d7e2f0] bg-white px-4 py-3 text-sm text-[#11284f] outline-none transition focus:border-[#11284f]"
             />
             {fieldErrors.postalCode ? (
               <p className="text-sm text-rose-600">{fieldErrors.postalCode}</p>
@@ -228,14 +231,14 @@ export function SeasonBookOrderForm({
           </label>
 
           <label className="space-y-2 sm:col-span-2">
-            <span className="text-sm font-semibold text-stone-800">
+            <span className="text-sm font-semibold text-[#11284f]">
               기본 주소
             </span>
             <input
               type="text"
               value={values.address1}
               onChange={(event) => setFieldValue("address1", event.target.value)}
-              className="w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-sm text-stone-950 outline-none transition focus:border-stone-400"
+              className="w-full rounded-2xl border border-[#d7e2f0] bg-white px-4 py-3 text-sm text-[#11284f] outline-none transition focus:border-[#11284f]"
             />
             {fieldErrors.address1 ? (
               <p className="text-sm text-rose-600">{fieldErrors.address1}</p>
@@ -243,58 +246,60 @@ export function SeasonBookOrderForm({
           </label>
 
           <label className="space-y-2 sm:col-span-2">
-            <span className="text-sm font-semibold text-stone-800">
+            <span className="text-sm font-semibold text-[#11284f]">
               상세 주소
             </span>
             <input
               type="text"
               value={values.address2}
               onChange={(event) => setFieldValue("address2", event.target.value)}
-              className="w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-sm text-stone-950 outline-none transition focus:border-stone-400"
+              className="w-full rounded-2xl border border-[#d7e2f0] bg-white px-4 py-3 text-sm text-[#11284f] outline-none transition focus:border-[#11284f]"
             />
           </label>
         </div>
       </section>
 
-      <aside className="h-fit space-y-6 rounded-[28px] border border-stone-200 bg-white p-6 shadow-sm lg:sticky lg:top-6">
+      <aside className="h-fit space-y-6 rounded-[30px] border border-[#e5ecf6] bg-white p-6 shadow-[0_18px_48px_rgba(17,40,79,0.05)] lg:sticky lg:top-6">
         <div>
-          <p className="text-sm font-medium text-stone-500">주문 대상</p>
-          <h2 className="mt-2 text-2xl font-semibold tracking-tight text-stone-950">
+          <p className="text-xs font-semibold tracking-[0.2em] text-[#c42d3c] uppercase">
+            order summary
+          </p>
+          <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[#11284f]">
             견적 확인 완료
           </h2>
-          <p className="mt-3 text-sm leading-6 text-stone-500">
+          <p className="mt-3 text-sm leading-6 text-[#5a6f91]">
             이전 단계에서 만든 시즌북 견적을 바탕으로 주문을 이어갑니다.
           </p>
         </div>
 
         {estimateSummary ? (
-          <section className="space-y-4 rounded-[24px] border border-stone-200 bg-stone-50/80 px-4 py-4">
+          <section className="space-y-4 rounded-[24px] border border-[#e5ecf6] bg-[#fbfdff] px-4 py-4">
             <div>
-              <p className="text-sm font-semibold text-stone-900">
+              <p className="text-sm font-semibold text-[#11284f]">
                 주문 전 확인
               </p>
-              <p className="mt-1 text-sm leading-6 text-stone-500">
+              <p className="mt-1 text-sm leading-6 text-[#5a6f91]">
                 배송 정보를 입력하기 전에 제작 분량과 예상 금액을 다시 확인하세요.
               </p>
             </div>
             <dl className="grid gap-3">
-              <div className="flex items-center justify-between gap-4 rounded-2xl bg-white px-4 py-3 ring-1 ring-stone-200">
-                <dt className="text-sm text-stone-500">페이지 수</dt>
-                <dd className="font-semibold text-stone-950">
+              <div className="flex items-center justify-between gap-4 rounded-2xl bg-white px-4 py-3 ring-1 ring-[#e5ecf6]">
+                <dt className="text-sm text-[#5a6f91]">페이지 수</dt>
+                <dd className="font-semibold text-[#11284f]">
                   {estimateSummary.pageCount}p
                 </dd>
               </div>
-              <div className="flex items-center justify-between gap-4 rounded-2xl bg-white px-4 py-3 ring-1 ring-stone-200">
-                <dt className="text-sm text-stone-500">예상 금액</dt>
-                <dd className="font-semibold text-stone-950">
+              <div className="flex items-center justify-between gap-4 rounded-2xl bg-white px-4 py-3 ring-1 ring-[#e5ecf6]">
+                <dt className="text-sm text-[#5a6f91]">예상 금액</dt>
+                <dd className="font-semibold text-[#11284f]">
                   {formatPrice(estimateSummary.totalPrice)}{" "}
                   {estimateSummary.currency}
                 </dd>
               </div>
               {typeof estimateSummary.creditSufficient === "boolean" ? (
-                <div className="flex items-center justify-between gap-4 rounded-2xl bg-white px-4 py-3 ring-1 ring-stone-200">
-                  <dt className="text-sm text-stone-500">크레딧</dt>
-                  <dd className="font-semibold text-stone-950">
+                <div className="flex items-center justify-between gap-4 rounded-2xl bg-white px-4 py-3 ring-1 ring-[#e5ecf6]">
+                  <dt className="text-sm text-[#5a6f91]">크레딧</dt>
+                  <dd className="font-semibold text-[#11284f]">
                     {estimateSummary.creditSufficient ? "사용 가능" : "부족"}
                   </dd>
                 </div>
@@ -302,7 +307,7 @@ export function SeasonBookOrderForm({
             </dl>
           </section>
         ) : (
-          <section className="rounded-[24px] border border-amber-200 bg-amber-50 px-4 py-4 text-sm leading-6 text-amber-900">
+          <section className="rounded-[24px] border border-[#f2dfb2] bg-[#fff8e8] px-4 py-4 text-sm leading-6 text-[#8b6420]">
             견적 정보를 다시 확인하려면 견적 화면에서 주문 화면으로 이동해 주세요.
           </section>
         )}
@@ -340,7 +345,7 @@ export function SeasonBookOrderForm({
             </dl>
             <Link
               href={buildOrderStatusHref(orderResult.projectId)}
-              className="inline-flex w-full items-center justify-center rounded-full bg-emerald-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-emerald-800"
+              className="inline-flex w-full items-center justify-center rounded-full bg-[#11284f] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#0b1d3b]"
             >
               주문 진행 상태 보기
             </Link>
@@ -350,14 +355,14 @@ export function SeasonBookOrderForm({
         <button
           type="submit"
           disabled={isSubmitting}
-          className="inline-flex w-full items-center justify-center rounded-full bg-stone-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-stone-800 disabled:cursor-not-allowed disabled:bg-stone-400"
+          className="inline-flex w-full items-center justify-center rounded-full bg-[#11284f] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#0b1d3b] disabled:cursor-not-allowed disabled:bg-[#95a8c6]"
         >
           {isSubmitting ? "주문 접수 중..." : "시즌북 주문 접수"}
         </button>
 
         <Link
           href="/season-book/new"
-          className="inline-flex w-full items-center justify-center rounded-full border border-stone-200 bg-white px-5 py-3 text-sm font-semibold text-stone-700 transition hover:border-stone-300 hover:bg-stone-50"
+          className="inline-flex w-full items-center justify-center rounded-full border border-[#d4ddeb] bg-white px-5 py-3 text-sm font-semibold text-[#11284f] transition hover:border-[#aebfd8] hover:bg-[#f8fbff]"
         >
           견적 화면으로 돌아가기
         </Link>

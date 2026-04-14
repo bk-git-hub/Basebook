@@ -1046,6 +1046,26 @@
 - Related Docs:
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
 
+### WEB-052
+
+- Date: `2026-04-14`
+- Time: `21:21`
+- Agenda: `/order/[projectId]`를 검정 히어로 중심 구조로 유지할지, 홈 톤의 입력/확인 중심 작업 화면으로 재구성할지 결정
+- Participants: User, Codex
+- Options Considered:
+  - 주문 화면은 기존 dark hero와 stone 계열 입력 폼을 유지하고, 문구만 부분 수정한다
+  - 주문 화면은 홈 톤의 얇은 안내 블록과 화이트/네이비 중심 입력/요약 카드로 재구성한다
+- Decision: `/order/[projectId]`는 홈 톤의 얇은 안내 블록과 화이트/네이비 중심 입력/요약 카드로 재구성한다.
+- Rationale: 주문 화면은 브랜드를 크게 보여주는 배너보다 배송 정보를 빠르게 입력하고 주문 확인으로 넘어가는 작업성이 더 중요하다. 시즌북 견적 화면과 주문 상태 화면 사이의 중간 단계인 만큼, 무거운 dark hero보다는 홈 톤의 작업 카드 구조가 흐름상 더 자연스럽다.
+- Impact:
+  - `/order/[projectId]` 상단은 검정 히어로 대신 `배송지 입력 -> 주문 접수 -> 상태 조회` 안내 블록으로 바뀐다
+  - 배송 입력 폼과 우측 요약 패널이 홈과 같은 화이트/네이비 기반 톤으로 통일된다
+  - 시즌북 견적 화면에서 주문 화면으로 넘어왔을 때 톤이 더 자연스럽게 이어진다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+
 ### WEB-044
 
 - Date: `2026-04-14`
