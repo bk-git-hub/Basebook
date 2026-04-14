@@ -414,3 +414,31 @@
   - `docs/planning/CONTRACT_SPEC.md`
 - Related Milestones:
   - `docs/milestones/backend.md`
+
+### API-016
+
+- Date: `2026-04-14`
+- Time: `11:43`
+- Agenda: Sweetbook order API wiring safety mode
+- Participants: User, Codex
+- Options Considered:
+  - Keep only local order completion until final submission
+  - Replace local order completion with real Sweetbook order creation
+  - Add real Sweetbook order creation behind an explicit opt-in mode
+- Decision:
+  - Keep local order completion as the default behavior
+  - Add Sweetbook sandbox order creation behind `SWEETBOOK_ORDER_MODE=sandbox`
+  - Use the project id as the order idempotency key basis to avoid duplicate external orders on retry
+- Rationale: Sweetbook order creation immediately deducts credits, so the backend should support the real API path without making it the default during local reviewer execution.
+- Impact:
+  - local reviewers can keep using the order flow without external side effects
+  - maintainers can intentionally test Sweetbook sandbox ordering after confirming sandbox credit usage
+  - live/production order placement still requires a separate explicit risk decision
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/BOOK_PRINT_API_ANALYSIS.md`
+  - `docs/planning/BACKEND_FUNCTIONAL_SPEC.md`
+  - `docs/planning/CONTRACT_SPEC.md`
+- Related Milestones:
+  - `docs/milestones/backend.md`

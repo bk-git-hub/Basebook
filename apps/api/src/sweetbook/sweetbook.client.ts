@@ -37,6 +37,12 @@ export type SweetbookOrderEstimate = {
   creditSufficient?: boolean;
 };
 
+export type SweetbookCreatedOrder = {
+  orderUid?: string;
+  orderStatus?: number;
+  totalAmount?: number;
+};
+
 export type SweetbookReadiness = {
   configured: boolean;
   bookSpecsReachable: boolean;
@@ -149,6 +155,39 @@ export class SweetbookClient {
             quantity: 1,
           },
         ],
+      },
+    });
+  }
+
+  async createOrder(input: {
+    bookUid: string;
+    recipientName: string;
+    recipientPhone: string;
+    postalCode: string;
+    address1: string;
+    address2?: string;
+    externalRef: string;
+    idempotencyKey: string;
+  }): Promise<SweetbookCreatedOrder> {
+    return this.request<SweetbookCreatedOrder>({
+      path: '/orders',
+      method: 'POST',
+      idempotencyKey: input.idempotencyKey,
+      body: {
+        items: [
+          {
+            bookUid: input.bookUid,
+            quantity: 1,
+          },
+        ],
+        shipping: {
+          recipientName: input.recipientName,
+          recipientPhone: input.recipientPhone,
+          postalCode: input.postalCode,
+          address1: input.address1,
+          address2: input.address2,
+        },
+        externalRef: input.externalRef,
       },
     });
   }

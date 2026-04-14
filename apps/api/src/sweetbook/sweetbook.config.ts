@@ -12,6 +12,7 @@ export type SweetbookConfig = {
   baseUrl: string;
   apiKey: string;
   estimateMode: SweetbookEstimateMode;
+  orderMode: SweetbookOrderMode;
   bookSpecUid: string;
   coverTemplateUid: string;
   contentTemplateUid: string;
@@ -20,6 +21,7 @@ export type SweetbookConfig = {
 };
 
 export type SweetbookEstimateMode = 'auto' | 'local' | 'sandbox';
+export type SweetbookOrderMode = 'local' | 'sandbox';
 
 export function getSweetbookConfig(env = process.env): SweetbookConfig {
   loadApiEnv();
@@ -30,6 +32,7 @@ export function getSweetbookConfig(env = process.env): SweetbookConfig {
     ),
     apiKey: (env.SWEETBOOK_API_KEY || '').trim(),
     estimateMode: normalizeEstimateMode(env.SWEETBOOK_ESTIMATE_MODE),
+    orderMode: normalizeOrderMode(env.SWEETBOOK_ORDER_MODE),
     bookSpecUid: env.SWEETBOOK_BOOK_SPEC_UID || DEFAULT_BOOK_SPEC_UID,
     coverTemplateUid:
       env.SWEETBOOK_COVER_TEMPLATE_UID || DEFAULT_COVER_TEMPLATE_UID,
@@ -56,4 +59,12 @@ function normalizeEstimateMode(value?: string): SweetbookEstimateMode {
   }
 
   return 'auto';
+}
+
+function normalizeOrderMode(value?: string): SweetbookOrderMode {
+  if (value === 'sandbox') {
+    return value;
+  }
+
+  return 'local';
 }

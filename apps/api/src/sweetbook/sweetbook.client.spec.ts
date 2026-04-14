@@ -55,6 +55,66 @@ describe('SweetbookClient', () => {
     });
   });
 
+  it('creates orders with an idempotency key and shipping payload', async () => {
+    const fetchMock = jest.fn().mockResolvedValue({
+      ok: true,
+      status: 201,
+      json: async () => ({
+        data: {
+          orderUid: 'or_test123',
+          orderStatus: 20,
+          totalAmount: 15000,
+        },
+      }),
+    });
+    global.fetch = fetchMock as unknown as typeof fetch;
+
+    await expect(
+      new SweetbookClient().createOrder({
+        bookUid: 'bk_test123',
+        recipientName: '홍길동',
+        recipientPhone: '010-1234-5678',
+        postalCode: '06236',
+        address1: '서울특별시 강남구 테헤란로 123',
+        address2: '4층',
+        externalRef: 'basebook-order-project-1',
+        idempotencyKey: 'basebook-order-project-1',
+      }),
+    ).resolves.toEqual({
+      orderUid: 'or_test123',
+      orderStatus: 20,
+      totalAmount: 15000,
+    });
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      'https://api-sandbox.sweetbook.com/v1/orders',
+      expect.objectContaining({
+        method: 'POST',
+        headers: expect.objectContaining({
+          Authorization: 'Bearer SB.test-key',
+          'Content-Type': 'application/json',
+          'Idempotency-Key': 'basebook-order-project-1',
+        }),
+        body: JSON.stringify({
+          items: [
+            {
+              bookUid: 'bk_test123',
+              quantity: 1,
+            },
+          ],
+          shipping: {
+            recipientName: '홍길동',
+            recipientPhone: '010-1234-5678',
+            postalCode: '06236',
+            address1: '서울특별시 강남구 테헤란로 123',
+            address2: '4층',
+          },
+          externalRef: 'basebook-order-project-1',
+        }),
+      }),
+    );
+  });
+
   it('fails safely when the sandbox key is missing', async () => {
     process.env.SWEETBOOK_API_KEY = 'your_sandbox_api_key_here';
 

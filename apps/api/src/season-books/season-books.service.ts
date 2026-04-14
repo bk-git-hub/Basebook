@@ -20,6 +20,10 @@ import {
   SEASON_BOOK_ESTIMATOR,
   type SeasonBookEstimatorPort,
 } from './estimate/season-book-estimator.port';
+import {
+  SEASON_BOOK_ORDER_PLACER,
+  type SeasonBookOrderPlacerPort,
+} from './order/season-book-order.port';
 
 @Injectable()
 export class SeasonBooksService {
@@ -27,6 +31,8 @@ export class SeasonBooksService {
     private readonly prisma: PrismaService,
     @Inject(SEASON_BOOK_ESTIMATOR)
     private readonly estimator: SeasonBookEstimatorPort,
+    @Inject(SEASON_BOOK_ORDER_PLACER)
+    private readonly orderPlacer: SeasonBookOrderPlacerPort,
   ) {}
 
   async estimateSeasonBook(
@@ -128,14 +134,28 @@ export class SeasonBooksService {
       );
     }
 
+    const order = await this.orderPlacer.placeOrder({
+      projectId: project.id,
+      bookUid: project.bookUid,
+      totalPrice: project.totalPrice,
+      currency: project.currency as CurrencyCode,
+      recipientName: body.recipientName,
+      recipientPhone: body.recipientPhone,
+      postalCode: body.postalCode,
+      address1: body.address1,
+      address2: body.address2,
+    });
+
     const orderedProject = await this.prisma.seasonBookProject.update({
       where: {
         id: project.id,
       },
       data: {
-        orderUid: `local-order-${randomUUID()}`,
+        orderUid: order.orderUid,
+        totalPrice: order.totalPrice,
+        currency: order.currency,
         projectStatus: 'ORDERED',
-        orderStatus: 'CONFIRMED',
+        orderStatus: order.orderStatus,
       },
     });
 

@@ -1,6 +1,6 @@
 # Backend Reminder
 
-Last updated: 2026-04-13
+Last updated: 2026-04-14
 
 This file is a quick restart note for the next backend work session.
 
@@ -44,6 +44,7 @@ This file is a quick restart note for the next backend work session.
 - `API-013`: Use Sweetbook-backed estimate in `auto` mode when Sandbox API key and public image URLs are usable.
 - `API-014`: Keep local upload default; add optional Cloudflare R2 image storage without adding a new SDK dependency in that slice.
 - `API-015`: Implement the first order endpoint locally and keep real Sweetbook order placement as a follow-up decision.
+- `API-016`: Add Sweetbook sandbox order wiring behind an explicit `SWEETBOOK_ORDER_MODE=sandbox` flag while keeping local order as the default.
 
 ## Environment Notes
 
@@ -59,6 +60,8 @@ This file is a quick restart note for the next backend work session.
 - `R2_PUBLIC_BASE_URL`
 - `npm run r2:check` is expected to fail until those R2 values are configured.
 - `SWEETBOOK_ESTIMATE_MODE=auto` can call Sweetbook only when the Sandbox API key is configured and image URLs are publicly fetchable.
+- `SWEETBOOK_ORDER_MODE=local` keeps order completion local.
+- `SWEETBOOK_ORDER_MODE=sandbox` can place Sweetbook sandbox orders and may deduct sandbox credits, so only enable it intentionally.
 
 ## Last Verified Commands
 
@@ -70,11 +73,11 @@ npm test -- --runInBand
 npm run test:e2e -- --runInBand
 ```
 
-Last known result: all three passed on 2026-04-12 after the R2 storage slice.
+Last known result: all three passed on 2026-04-14 after the Sweetbook sandbox order wiring slice.
 
 ## Known Open Backend Follow-Ups
 
-- Real Sweetbook order placement is still a follow-up after confirming the external order API behavior and credit/fulfillment risk.
+- Real Sweetbook order placement is wired for sandbox mode, but production/live ordering remains a separate risk decision.
 - After the user finishes Cloudflare setup, run `npm run r2:check` from `apps/api` to verify a real public image upload.
 - If R2 check passes, test the frontend upload-to-estimate path again so Sweetbook can receive a public `coverPhotoUrl`.
 
@@ -82,5 +85,5 @@ Last known result: all three passed on 2026-04-12 after the R2 storage slice.
 
 1. Read `docs/AGENT_SYNC.md` and this file.
 2. Run `git status --short --branch`.
-3. Ask the user whether to prioritize frontend order-flow validation or real Sweetbook order API wiring.
-4. If wiring real Sweetbook order placement, first report the risk and smallest safe slice before writing code.
+3. Ask the user whether to prioritize frontend order-flow validation or explicit `SWEETBOOK_ORDER_MODE=sandbox` validation.
+4. If validating Sweetbook sandbox ordering, first confirm sandbox credit usage risk before running a real order request.
