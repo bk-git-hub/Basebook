@@ -474,7 +474,7 @@ export default async function HomePage() {
 
         <section className="mx-auto max-w-7xl px-6 py-10 sm:px-10 sm:py-14">
           <div className="grid gap-6 lg:grid-cols-[minmax(0,1.18fr)_minmax(20rem,0.82fr)]">
-            <section className="rounded-[36px] border border-[#e5ecf6] bg-white p-8 shadow-[0_24px_60px_rgba(17,40,79,0.06)] sm:p-10">
+            <section className="order-2 rounded-[36px] border border-[#e5ecf6] bg-white p-8 shadow-[0_24px_60px_rgba(17,40,79,0.06)] sm:p-10 lg:order-none">
               <span className="inline-flex items-center rounded-full border border-[#dce6f3] bg-[#fbfdff] px-4 py-1.5 text-xs font-semibold tracking-[0.18em] text-[#c42d3c] uppercase">
                 season home
               </span>
@@ -544,13 +544,15 @@ export default async function HomePage() {
               </div>
             </section>
 
-            <SeasonWinRateDonut
-              wins={summary.wins}
-              draws={summary.draws}
-              losses={summary.losses}
-              trackedGames={summary.trackedGames}
-              winRate={summary.winRate}
-            />
+            <div className="order-1 lg:order-none">
+              <SeasonWinRateDonut
+                wins={summary.wins}
+                draws={summary.draws}
+                losses={summary.losses}
+                trackedGames={summary.trackedGames}
+                winRate={summary.winRate}
+              />
+            </div>
           </div>
         </section>
 

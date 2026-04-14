@@ -744,3 +744,23 @@
 - Status: `approved`
 - Related Docs:
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+
+### WEB-034
+
+- Date: `2026-04-14`
+- Time: `18:28`
+- Agenda: 모바일 홈에서 시즌 요약 카드와 직관 승률 카드의 우선 노출 순서를 어떻게 둘지 결정
+- Participants: User, Codex
+- Options Considered:
+  - 모바일에서도 데스크톱과 같은 순서로 시즌 요약 카드를 먼저 노출한다
+  - 모바일에서는 직관 승률 카드와 승무패 모듈을 최상단에 올리고, 시즌 요약 카드는 그 아래에 둔다
+- Decision: 모바일 홈에서는 직관 승률 카드와 승무패 모듈이 최상단에 먼저 보이도록 순서를 바꾸고, 데스크톱 배치는 그대로 유지한다.
+- Rationale: 작은 화면에서는 핵심 수치와 상태 요약이 먼저 보여야 홈의 첫인상이 더 명확하다. 직관 승률과 승무패는 한눈에 읽히는 정보라 모바일에서 가장 앞에 두는 편이 사용 흐름상 자연스럽다.
+- Impact:
+  - 모바일 첫 화면에서 시즌 기록 요약보다 승률 카드가 먼저 보인다
+  - 데스크톱 그리드 구조와 정보 우선순위는 유지된다
+  - 변경 범위는 홈 상단 모듈의 순서 조정으로 제한된다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
