@@ -4,7 +4,7 @@ import { AppShell } from "@/components/app-shell";
 import { EntryCreateForm } from "@/components/entry-create-form";
 
 export const metadata: Metadata = {
-  title: "직관 기록 작성 | Sweetbook",
+  title: "직관 기록 작성 | Basebook",
   description: "경기와 사진, 감상을 묶어 새 직관 기록을 남기는 화면",
 };
 

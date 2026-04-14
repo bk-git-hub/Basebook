@@ -13,8 +13,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Sweetbook",
+  title: "Basebook",
   description: "한 시즌의 야구 기록을 모아 시즌북으로 남기는 팬 저널 서비스",
+  icons: {
+    icon: [{ url: "/basebook.png", type: "image/png" }],
+    shortcut: ["/basebook.png"],
+    apple: [{ url: "/basebook.png", type: "image/png" }],
+  },
 };
 
 export default function RootLayout({

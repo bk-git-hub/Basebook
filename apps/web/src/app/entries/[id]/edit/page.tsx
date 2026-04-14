@@ -8,7 +8,7 @@ import { getEntry } from "@/lib/api/entries";
 import { ApiClientError } from "@/lib/api/http";
 
 export const metadata: Metadata = {
-  title: "직관 기록 수정 | Sweetbook",
+  title: "직관 기록 수정 | Basebook",
   description: "저장한 직관 기록의 경기 정보와 감상을 수정하는 화면",
 };
 

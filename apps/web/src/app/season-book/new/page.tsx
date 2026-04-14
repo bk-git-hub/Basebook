@@ -7,7 +7,7 @@ import { getEntries } from "@/lib/api/entries";
 import { ApiClientError } from "@/lib/api/http";
 
 export const metadata: Metadata = {
-  title: "시즌북 만들기 | Sweetbook",
+  title: "시즌북 만들기 | Basebook",
   description: "시즌북에 담을 기록을 고르고 견적을 확인하는 화면",
 };
 

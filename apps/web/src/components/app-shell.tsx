@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
@@ -59,9 +60,18 @@ export function AppShell({
               <div className="space-y-2">
                 <Link
                   href="/"
-                  className="inline-flex text-sm font-semibold tracking-[0.24em] text-stone-950 uppercase"
+                  className="inline-flex items-center gap-3"
                 >
-                  Sweetbook
+                  <Image
+                    src="/basebook.png"
+                    alt="Basebook"
+                    width={88}
+                    height={88}
+                    className="h-10 w-10 rounded-[14px] object-cover shadow-sm"
+                  />
+                  <span className="text-sm font-semibold tracking-[0.24em] text-stone-950 uppercase">
+                    Basebook
+                  </span>
                 </Link>
                 <p className="text-sm leading-6 text-stone-500">
                   기록 작성부터 시즌북 주문까지 이어지는 팬 저널 앱입니다.

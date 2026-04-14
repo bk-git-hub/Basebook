@@ -664,3 +664,23 @@
 - Status: `approved`
 - Related Docs:
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+
+### WEB-030
+
+- Date: `2026-04-14`
+- Time: `15:49`
+- Agenda: 프론트 브랜드 자산을 어떤 기준으로 정리할지 결정
+- Participants: User, Codex
+- Options Considered:
+  - 현재 텍스트 브랜드 표기만 `Basebook`으로 고치고 로고 자산 적용은 뒤로 미룬다
+  - 사용자 제공 `basebook.png`를 파비콘과 공통 로고에 바로 적용하면서 화면 메타 title 표기도 함께 `Basebook`으로 맞춘다
+- Decision: 이번 slice에서는 사용자 제공 `apps/web/public/basebook.png`를 프론트 대표 브랜드 자산으로 사용하고, 파비콘/공통 헤더 로고/페이지 메타 title의 서비스명을 `Basebook`으로 맞춘다.
+- Rationale: 사용자가 바로 인지한 문제는 브랜드 표기 불일치와 기존 로고 부재다. 랜딩 구조 전체를 손보기 전에 먼저 브랜딩 기준점을 고정하면 이후 버튼 정리나 정보 구조 개편도 같은 이름과 자산을 기준으로 진행할 수 있다.
+- Impact:
+  - 브라우저 탭 아이콘과 페이지 타이틀이 `Basebook` 기준으로 정리된다
+  - 랜딩 페이지와 공통 앱 쉘 상단 브랜드 노출이 새 로고 자산을 사용한다
+  - 외부 주문 제공자 의미의 `Sweetbook` 계약 용어는 그대로 두고, 제품 브랜드 표기만 분리해서 관리한다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`

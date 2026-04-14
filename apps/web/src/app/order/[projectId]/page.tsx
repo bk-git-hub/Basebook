@@ -8,7 +8,7 @@ import {
 } from "@/components/season-book-order-form";
 
 export const metadata: Metadata = {
-  title: "시즌북 주문 | Sweetbook",
+  title: "시즌북 주문 | Basebook",
   description: "시즌북을 받을 배송 정보를 입력하고 주문을 접수하는 화면",
 };
 

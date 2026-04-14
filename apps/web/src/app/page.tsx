@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 const primaryNavigation = [
@@ -23,7 +24,7 @@ const workflowSteps = [
     step: "03",
     title: "견적을 만들고 주문합니다",
     description:
-      "선택한 기록을 Sweetbook 책 제작 흐름으로 넘겨 견적과 주문까지 이어갑니다.",
+      "선택한 기록을 Basebook 제작 흐름으로 넘겨 견적과 주문까지 이어갑니다.",
   },
 ];
 
@@ -55,9 +56,18 @@ export default function Home() {
         <header className="flex flex-col gap-4 py-4 sm:flex-row sm:items-center sm:justify-between">
           <Link
             href="/"
-            className="text-sm font-semibold tracking-[0.24em] text-stone-950 uppercase"
+            className="inline-flex items-center gap-3"
           >
-            Sweetbook
+            <Image
+              src="/basebook.png"
+              alt="Basebook"
+              width={96}
+              height={96}
+              className="h-11 w-11 rounded-[14px] object-cover shadow-sm sm:h-12 sm:w-12"
+            />
+            <span className="text-sm font-semibold tracking-[0.24em] text-stone-950 uppercase">
+              Basebook
+            </span>
           </Link>
           <nav className="flex flex-wrap gap-2">
             {primaryNavigation.map((item) => (
@@ -83,7 +93,7 @@ export default function Home() {
                   한 시즌의 직관 기록을 한 권의 책으로 남깁니다.
                 </h1>
                 <p className="max-w-2xl text-base leading-8 text-stone-300 sm:text-lg">
-                  Sweetbook은 경기 기록, 사진, 감상을 모아 시즌북 견적과 주문까지
+                  Basebook은 경기 기록, 사진, 감상을 모아 시즌북 견적과 주문까지
                   이어주는 야구 팬 기록 제작 흐름입니다.
                 </p>
               </div>

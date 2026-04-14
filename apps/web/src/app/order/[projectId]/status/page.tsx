@@ -7,7 +7,7 @@ import { getSeasonBookStatus } from "@/lib/api/season-books";
 import { ApiClientError } from "@/lib/api/http";
 
 export const metadata: Metadata = {
-  title: "주문 진행 상태 | Sweetbook",
+  title: "주문 진행 상태 | Basebook",
   description: "시즌북 주문 이후의 제작 및 배송 진행 단계를 확인하는 화면",
 };
 

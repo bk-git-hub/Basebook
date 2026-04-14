@@ -10,7 +10,7 @@ import { getEntries } from "@/lib/api/entries";
 import { ApiClientError } from "@/lib/api/http";
 
 export const metadata: Metadata = {
-  title: "시즌 대시보드 | Sweetbook",
+  title: "시즌 대시보드 | Basebook",
   description: "한 시즌의 직관 기록과 승패 요약을 확인하는 화면",
 };
 
