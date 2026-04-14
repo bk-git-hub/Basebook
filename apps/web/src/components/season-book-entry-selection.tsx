@@ -122,6 +122,7 @@ export function SeasonBookEntrySelection({
       <div className="mt-5 space-y-3">
         {entries.map((entry) => {
           const isSelected = selectedEntryIdSet.has(entry.id);
+          const representativePhoto = entry.photos[0];
 
           return (
             <article
@@ -148,35 +149,54 @@ export function SeasonBookEntrySelection({
                   >
                     ✓
                   </span>
-                  <span className="space-y-3">
-                    <span className="flex flex-wrap items-center gap-2">
+                  <span className="flex min-w-0 flex-1 items-start justify-between gap-4">
+                    <span className="min-w-0 space-y-3">
+                      <span className="flex flex-wrap items-center gap-2">
+                        <span
+                          className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ring-inset ${
+                            isSelected
+                              ? "bg-white/15 text-white ring-white/20"
+                              : RESULT_TONE[entry.result]
+                          }`}
+                        >
+                          {RESULT_LABELS[entry.result]}
+                        </span>
+                        <span
+                          className={`text-sm font-medium ${
+                            isSelected ? "text-stone-200" : "text-stone-500"
+                          }`}
+                        >
+                          {formatEntryDate(entry.date)}
+                        </span>
+                      </span>
+                      <span className="block text-lg font-semibold tracking-tight">
+                        {formatEntryTitle(entry)}
+                      </span>
                       <span
-                        className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ring-inset ${
+                        className={`block text-sm leading-6 ${
+                          isSelected ? "text-stone-200" : "text-stone-600"
+                        }`}
+                      >
+                        {entry.highlight}
+                      </span>
+                    </span>
+
+                    {representativePhoto ? (
+                      <span
+                        className={`relative h-20 w-16 shrink-0 overflow-hidden rounded-[18px] border sm:h-24 sm:w-20 ${
                           isSelected
-                            ? "bg-white/15 text-white ring-white/20"
-                            : RESULT_TONE[entry.result]
+                            ? "border-white/20 bg-white/10"
+                            : "border-stone-200 bg-white"
                         }`}
                       >
-                        {RESULT_LABELS[entry.result]}
+                        <img
+                          src={representativePhoto.url}
+                          alt={`${formatEntryTitle(entry)} 대표 사진`}
+                          loading="lazy"
+                          className="h-full w-full object-cover"
+                        />
                       </span>
-                      <span
-                        className={`text-sm font-medium ${
-                          isSelected ? "text-stone-200" : "text-stone-500"
-                        }`}
-                      >
-                        {formatEntryDate(entry.date)}
-                      </span>
-                    </span>
-                    <span className="block text-lg font-semibold tracking-tight">
-                      {formatEntryTitle(entry)}
-                    </span>
-                    <span
-                      className={`block text-sm leading-6 ${
-                        isSelected ? "text-stone-200" : "text-stone-600"
-                      }`}
-                    >
-                      {entry.highlight}
-                    </span>
+                    ) : null}
                   </span>
                 </button>
 

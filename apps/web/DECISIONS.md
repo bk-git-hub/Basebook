@@ -926,6 +926,26 @@
 - Related Docs:
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
 
+### WEB-045
+
+- Date: `2026-04-14`
+- Time: `20:12`
+- Agenda: `/season-book/new` 기록 선택 카드의 첨부 사진 정보를 텍스트만 유지할지, 대표 썸네일을 함께 노출할지 결정
+- Participants: User, Codex
+- Options Considered:
+  - 현재처럼 `첨부 사진 n장` 텍스트만 유지하고 리스트 밀도를 최우선으로 둔다
+  - 사진이 있는 기록은 첫 번째 첨부 이미지를 작은 대표 썸네일로 함께 노출한다
+- Decision: `/season-book/new` 기록 선택 카드에서는 사진이 있는 기록에 한해 첫 번째 첨부 이미지를 작은 대표 썸네일로 노출한다.
+- Rationale: 시즌북 제작 단계에서는 사용자가 어떤 기록에 어떤 사진이 들어 있는지 바로 떠올릴 수 있어야 커버와 수록 기록을 더 빠르게 고를 수 있다. 다만 카드 높이를 크게 키우면 리스트 스캔 속도가 떨어지므로, 전체 배너형이 아닌 작은 우측 썸네일 방식으로 밀도와 시인성을 같이 가져가기로 했다.
+- Impact:
+  - 시즌북 기록 선택 리스트에서 사진이 첨부된 기록은 대표 썸네일이 함께 보인다
+  - 사진이 없는 기록은 기존 텍스트 중심 카드 구조를 유지한다
+  - 모바일과 PC 모두에서 기록 선택 중 사진 맥락을 더 빨리 파악할 수 있다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+
 ### WEB-044
 
 - Date: `2026-04-14`
