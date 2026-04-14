@@ -356,6 +356,7 @@ export function EntryEditForm({ entry }: EntryEditFormProps) {
                 value={values.favoriteTeam}
                 onChange={(team) => setFieldValue("favoriteTeam", team)}
                 hint="수정하면서 응원 팀을 바꾸더라도 나머지 감상 정보는 그대로 유지됩니다."
+                disabledTeams={[values.opponentTeam]}
               />
 
               <TeamPicker
@@ -364,6 +365,7 @@ export function EntryEditForm({ entry }: EntryEditFormProps) {
                 onChange={(team) => setFieldValue("opponentTeam", team)}
                 error={fieldErrors.opponentTeam}
                 hint="응원 팀과 상대 팀은 같을 수 없습니다."
+                disabledTeams={[values.favoriteTeam]}
               />
             </div>
           </article>

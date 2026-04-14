@@ -11,6 +11,7 @@ type TeamPickerProps = {
   onChange: (team: TeamCode) => void;
   error?: string;
   hint?: string;
+  disabledTeams?: TeamCode[];
 };
 
 export function TeamPicker({
@@ -19,6 +20,7 @@ export function TeamPicker({
   onChange,
   error,
   hint,
+  disabledTeams = [],
 }: TeamPickerProps) {
   return (
     <fieldset className="space-y-3 sm:col-span-2">
@@ -32,6 +34,7 @@ export function TeamPicker({
       >
         {TEAM_OPTIONS.map((option) => {
           const isSelected = option.value === value;
+          const isDisabled = disabledTeams.includes(option.value);
 
           return (
             <button
@@ -39,11 +42,15 @@ export function TeamPicker({
               type="button"
               role="radio"
               aria-checked={isSelected}
+              aria-disabled={isDisabled}
+              disabled={isDisabled}
               onClick={() => onChange(option.value)}
               className={`group flex min-h-[10.5rem] flex-col items-center justify-center rounded-[28px] border px-2 py-4 text-center transition ${
                 isSelected
                   ? "border-[#11284f] bg-[#11284f] text-white shadow-[0_18px_40px_rgba(17,40,79,0.18)]"
-                  : "border-[#e5ecf6] bg-white text-[#11284f] hover:border-[#cfdcf0] hover:bg-[#f8fbff]"
+                  : isDisabled
+                    ? "cursor-not-allowed border-[#edf2f8] bg-[#f8fbff] text-[#9aaaca] opacity-60"
+                    : "border-[#e5ecf6] bg-white text-[#11284f] hover:border-[#cfdcf0] hover:bg-[#f8fbff]"
               }`}
             >
               <TeamBadge team={option.value} size={88} />

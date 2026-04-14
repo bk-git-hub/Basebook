@@ -486,6 +486,7 @@ export function EntryCreateForm() {
                 value={values.favoriteTeam}
                 onChange={(team) => setFieldValue("favoriteTeam", team)}
                 hint="나를 대표하는 팀을 먼저 고르면 이후 경기 후보 조회에도 그대로 반영됩니다."
+                disabledTeams={[values.opponentTeam]}
               />
 
               <TeamPicker
@@ -494,6 +495,7 @@ export function EntryCreateForm() {
                 onChange={(team) => setFieldValue("opponentTeam", team)}
                 error={fieldErrors.opponentTeam}
                 hint="응원 팀과 다른 팀을 골라 주세요. 같은 팀을 고르면 저장 전에 알려드립니다."
+                disabledTeams={[values.favoriteTeam]}
               />
 
               <label className="space-y-2 sm:col-span-2">
