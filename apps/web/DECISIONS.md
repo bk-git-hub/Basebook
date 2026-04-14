@@ -684,3 +684,23 @@
 - Status: `approved`
 - Related Docs:
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+
+### WEB-031
+
+- Date: `2026-04-14`
+- Time: `16:01`
+- Agenda: 랜딩페이지를 어떤 브랜드 톤과 구조로 재정리할지 결정
+- Participants: User, Codex
+- Options Considered:
+  - 기존 흑백 중심 랜딩 구조를 유지하면서 카피와 버튼만 조금 줄인다
+  - `Basebook` 로고 팔레트에 맞춰 랜딩 전체를 밝고 발랄한 브랜드 포스터 톤으로 재구성하고, 로고를 더 크게 전면에 세운다
+- Decision: 랜딩페이지는 `Basebook` 로고의 네이비·레드 팔레트를 중심으로 더 밝고 발랄한 브랜드 포스터 톤으로 재구성한다. 로고는 히어로의 핵심 시각 자산으로 확대하고, CTA는 메인 진입과 흐름 소개로 역할을 나눠 중복을 줄인다.
+- Rationale: 사용자가 느낀 가장 큰 문제는 현재 랜딩이 너무 칙칙하고, 버튼 역할이 겹치며, 새 브랜드 자산의 에너지가 화면에 반영되지 않는다는 점이었다. 제품 초기의 랜딩은 기능 설명보다 브랜드 인상과 첫 진입 방향이 더 중요하므로, 구조 자체를 브랜드 중심으로 다시 잡는 편이 맞다.
+- Impact:
+  - 히어로가 더 큰 로고와 컬러 배경을 중심으로 재구성된다
+  - 검정/흰색 위주의 무드에서 벗어나 `Basebook` 팔레트가 전면에 반영된다
+  - 랜딩 상단과 하단의 CTA 역할이 분리돼 중복 클릭 지점이 줄어든다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
