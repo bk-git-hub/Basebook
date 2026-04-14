@@ -556,3 +556,34 @@
   - `docs/planning/BACKEND_FUNCTIONAL_SPEC.md`
 - Related Milestones:
   - `docs/milestones/backend.md`
+
+### API-021
+
+- Date: `2026-04-14`
+- Time: `14:05`
+- Agenda: 배송지 수정 기능을 위한 저장 위치와 로컬 DB 초기화 방식
+- Participants: User, Codex
+- Options Considered:
+  - 배송지 정보를 PATCH 요청 처리 시점에만 사용하고 별도 저장 없이 넘긴다
+  - 배송지 정보를 `SeasonBookProject`에 저장하고 기존 로컬 SQLite도 자동으로 컬럼을 보강한다
+- Decision:
+  - 주문 시점 배송지와 이후 수정 배송지를 모두 `SeasonBookProject`에 저장한다
+  - `db:init`는 새 DB 생성뿐 아니라 기존 로컬 SQLite 파일에 빠진 nullable 배송지 컬럼도 자동으로 추가한다
+  - 배송지 수정은 출고 전 상태(`PAID`, `CONFIRMED`)에서만 허용한다
+- Rationale:
+  - 사용자는 프론트에서 배송지 수정 후 다시 조회하거나 이어서 주문 관리 화면을 열어도 같은 주소 정보가 남아 있기를 기대한다
+  - 과제 검토자나 관리자 컴퓨터에서 수동 `db push`나 DB 삭제 없이 서버가 올라와야 한다는 사용자 우선순위를 지켜야 한다
+  - SQLite는 기존 테이블에 새 컬럼을 안전하게 맞추려면 명시적인 보강 단계가 필요하므로, 자동 초기화 흐름 안에 그 책임을 넣는 편이 가장 운영 실수가 적다
+- Impact:
+  - 시즌북 주문 프로젝트 레코드에 배송지 필드들이 추가된다
+  - `POST /season-books/order`와 `PATCH /season-books/:projectId/shipping`가 같은 저장 원천을 공유한다
+  - 기존 개발용 `dev.db`도 `npm run db:init`만 다시 실행하면 배송지 컬럼이 자동 반영된다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `apps/api/prisma/schema.prisma`
+  - `apps/api/prisma/init.sql`
+  - `apps/api/scripts/db-init.cjs`
+  - `docs/planning/BOOK_PRINT_API_ANALYSIS.md`
+- Related Milestones:
+  - `docs/milestones/backend.md`

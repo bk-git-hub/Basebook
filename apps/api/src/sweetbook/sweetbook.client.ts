@@ -1,4 +1,5 @@
 import { Injectable, ServiceUnavailableException } from '@nestjs/common';
+import type { SeasonBookShippingInfo } from '@basebook/contracts';
 import {
   getSweetbookConfig,
   isConfiguredSweetbookApiKey,
@@ -6,7 +7,7 @@ import {
 
 type SweetbookRequestOptions = {
   path: string;
-  method?: 'GET' | 'POST';
+  method?: 'GET' | 'POST' | 'PATCH';
   body?: unknown;
   idempotencyKey?: string;
 };
@@ -220,6 +221,17 @@ export class SweetbookClient {
       body: {
         cancelReason,
       },
+    });
+  }
+
+  async updateOrderShipping(
+    orderUid: string,
+    shipping: SeasonBookShippingInfo,
+  ): Promise<SweetbookOrderDetail> {
+    return this.request<SweetbookOrderDetail>({
+      path: `/orders/${encodeURIComponent(orderUid)}/shipping`,
+      method: 'PATCH',
+      body: shipping,
     });
   }
 

@@ -13,6 +13,8 @@ import type {
   SeasonBookOrderResponse,
   SeasonBookOrderStatus,
   SeasonBookProjectStatus,
+  SeasonBookShippingInfo,
+  UpdateSeasonBookShippingResponse,
 } from '@basebook/contracts';
 import { randomUUID } from 'node:crypto';
 import { DEMO_OWNER_ID } from '../entries/demo-owner';
@@ -21,6 +23,7 @@ import { SweetbookClient } from '../sweetbook/sweetbook.client';
 import type { CancelSeasonBookOrderDto } from './dto/cancel-season-book-order.dto';
 import type { EstimateSeasonBookDto } from './dto/estimate-season-book.dto';
 import type { OrderSeasonBookDto } from './dto/order-season-book.dto';
+import type { UpdateSeasonBookShippingDto } from './dto/update-season-book-shipping.dto';
 import {
   SEASON_BOOK_ESTIMATOR,
   type SeasonBookEstimatorPort,
@@ -34,6 +37,24 @@ import {
   mapSweetbookOrderStatus,
   resolveProgressStepKey,
 } from './season-book-status';
+
+type PersistedSeasonBookProjectStatus =
+  | 'DRAFT'
+  | 'ESTIMATED'
+  | 'ORDERED'
+  | 'FAILED';
+
+type PersistedSeasonBookOrderStatus =
+  | 'UNPLACED'
+  | 'PAID'
+  | 'CONFIRMED'
+  | 'IN_PRODUCTION'
+  | 'SHIPPED'
+  | 'DELIVERED'
+  | 'CANCELLED'
+  | 'CANCELLED_REFUND'
+  | 'ERROR'
+  | 'UNKNOWN';
 
 @Injectable()
 export class SeasonBooksService {
@@ -59,7 +80,9 @@ export class SeasonBooksService {
     });
 
     if (!project) {
-      throw new NotFoundException(`Season book project not found: ${projectId}`);
+      throw new NotFoundException(
+        `Season book project not found: ${projectId}`,
+      );
     }
 
     const sweetbookStatus = await this.tryRefreshSweetbookOrderStatus(
@@ -104,7 +127,9 @@ export class SeasonBooksService {
     });
 
     if (!project) {
-      throw new NotFoundException(`Season book project not found: ${projectId}`);
+      throw new NotFoundException(
+        `Season book project not found: ${projectId}`,
+      );
     }
 
     if (!project.orderUid) {
@@ -127,7 +152,10 @@ export class SeasonBooksService {
       };
     }
 
-    const cancelResult = await this.cancelOrder(project.orderUid, body.cancelReason);
+    const cancelResult = await this.cancelOrder(
+      project.orderUid,
+      body.cancelReason,
+    );
 
     const cancelledProject = await this.prisma.seasonBookProject.update({
       where: {
@@ -135,11 +163,7 @@ export class SeasonBooksService {
       },
       data: {
         projectStatus: 'ORDERED',
-        orderStatus: cancelResult.orderStatus as
-          | 'CANCELLED'
-          | 'CANCELLED_REFUND'
-          | 'ERROR'
-          | 'UNKNOWN',
+        orderStatus: cancelResult.orderStatus as PersistedSeasonBookOrderStatus,
       },
     });
 
@@ -151,6 +175,70 @@ export class SeasonBooksService {
       cancelReason: cancelResult.cancelReason,
       refundAmount: cancelResult.refundAmount,
       cancelledAt: cancelResult.cancelledAt,
+    };
+  }
+
+  async updateSeasonBookShipping(
+    projectId: string,
+    body: UpdateSeasonBookShippingDto,
+  ): Promise<UpdateSeasonBookShippingResponse> {
+    const project = await this.prisma.seasonBookProject.findFirst({
+      where: {
+        id: projectId,
+        ownerId: DEMO_OWNER_ID,
+      },
+    });
+
+    if (!project) {
+      throw new NotFoundException(
+        `Season book project not found: ${projectId}`,
+      );
+    }
+
+    if (!project.orderUid) {
+      throw new BadRequestException(
+        'Season book project does not have an order to update.',
+      );
+    }
+
+    this.ensureShippingUpdateRequested(body);
+    this.ensureShippingUpdatable(
+      project.orderStatus as SeasonBookOrderStatus,
+      project.orderUid,
+    );
+
+    const shipping = this.resolveShippingInfo(project, body);
+    const refreshedOrder = await this.updateOrderShipping(
+      project.orderUid,
+      shipping,
+    );
+    const nextOrderStatus = refreshedOrder?.orderStatus
+      ? mapSweetbookOrderStatus(refreshedOrder.orderStatus)
+      : (project.orderStatus as SeasonBookOrderStatus);
+
+    const updatedProject = await this.prisma.seasonBookProject.update({
+      where: {
+        id: project.id,
+      },
+      data: {
+        recipientName: shipping.recipientName,
+        recipientPhone: shipping.recipientPhone,
+        postalCode: shipping.postalCode,
+        address1: shipping.address1,
+        address2: shipping.address2 ?? null,
+        shippingMemo: shipping.shippingMemo ?? null,
+        orderStatus: nextOrderStatus as PersistedSeasonBookOrderStatus,
+      },
+    });
+
+    return {
+      projectId: updatedProject.id,
+      orderUid: updatedProject.orderUid ?? project.orderUid,
+      projectStatus:
+        updatedProject.projectStatus as PersistedSeasonBookProjectStatus,
+      orderStatus: updatedProject.orderStatus as PersistedSeasonBookOrderStatus,
+      shipping,
+      updatedAt: updatedProject.updatedAt.toISOString(),
     };
   }
 
@@ -273,14 +361,13 @@ export class SeasonBooksService {
         orderUid: order.orderUid,
         totalPrice: order.totalPrice,
         currency: order.currency,
+        recipientName: body.recipientName,
+        recipientPhone: body.recipientPhone,
+        postalCode: body.postalCode,
+        address1: body.address1,
+        address2: body.address2,
         projectStatus: 'ORDERED',
-        orderStatus: order.orderStatus as
-          | 'PAID'
-          | 'CONFIRMED'
-          | 'IN_PRODUCTION'
-          | 'SHIPPED'
-          | 'DELIVERED'
-          | 'UNKNOWN',
+        orderStatus: order.orderStatus as PersistedSeasonBookOrderStatus,
       },
     });
 
@@ -324,6 +411,117 @@ export class SeasonBooksService {
       refundAmount: cancelledOrder.refundAmount,
       cancelledAt: cancelledOrder.cancelledAt,
     };
+  }
+
+  private async updateOrderShipping(
+    orderUid: string,
+    shipping: SeasonBookShippingInfo,
+  ) {
+    if (orderUid.startsWith('local-order-')) {
+      return null;
+    }
+
+    if (!this.sweetbookClient.isConfigured()) {
+      throw new BadRequestException(
+        'Sweetbook shipping update requires a configured Sandbox API key.',
+      );
+    }
+
+    return this.sweetbookClient.updateOrderShipping(orderUid, shipping);
+  }
+
+  private ensureShippingUpdateRequested(body: UpdateSeasonBookShippingDto) {
+    const requestedValues = [
+      body.recipientName,
+      body.recipientPhone,
+      body.postalCode,
+      body.address1,
+      body.address2,
+      body.shippingMemo,
+    ];
+
+    if (requestedValues.every((value) => value === undefined)) {
+      throw new BadRequestException(
+        'At least one shipping field must be provided for update.',
+      );
+    }
+  }
+
+  private ensureShippingUpdatable(
+    orderStatus: SeasonBookOrderStatus,
+    orderUid: string,
+  ) {
+    const allowedStatuses: SeasonBookOrderStatus[] = ['PAID', 'CONFIRMED'];
+
+    if (allowedStatuses.includes(orderStatus)) {
+      return;
+    }
+
+    throw new BadRequestException(
+      `Shipping can only be updated before shipment. Current order ${orderUid} status is ${orderStatus}.`,
+    );
+  }
+
+  private resolveShippingInfo(
+    project: {
+      recipientName: string | null;
+      recipientPhone: string | null;
+      postalCode: string | null;
+      address1: string | null;
+      address2: string | null;
+      shippingMemo: string | null;
+    },
+    body: UpdateSeasonBookShippingDto,
+  ): SeasonBookShippingInfo {
+    return {
+      recipientName: this.resolveRequiredShippingField(
+        'recipientName',
+        body.recipientName,
+        project.recipientName,
+      ),
+      recipientPhone: this.resolveRequiredShippingField(
+        'recipientPhone',
+        body.recipientPhone,
+        project.recipientPhone,
+      ),
+      postalCode: this.resolveRequiredShippingField(
+        'postalCode',
+        body.postalCode,
+        project.postalCode,
+      ),
+      address1: this.resolveRequiredShippingField(
+        'address1',
+        body.address1,
+        project.address1,
+      ),
+      address2: this.normalizeOptionalShippingField(
+        body.address2 ?? project.address2 ?? undefined,
+      ),
+      shippingMemo: this.normalizeOptionalShippingField(
+        body.shippingMemo ?? project.shippingMemo ?? undefined,
+      ),
+    };
+  }
+
+  private resolveRequiredShippingField(
+    fieldName: 'recipientName' | 'recipientPhone' | 'postalCode' | 'address1',
+    requestedValue: string | undefined,
+    existingValue: string | null,
+  ) {
+    const nextValue = (requestedValue ?? existingValue ?? '').trim();
+
+    if (!nextValue) {
+      throw new BadRequestException(
+        `Shipping update requires a non-empty ${fieldName} value.`,
+      );
+    }
+
+    return nextValue;
+  }
+
+  private normalizeOptionalShippingField(value: string | undefined) {
+    const nextValue = value?.trim();
+    return nextValue ? nextValue : undefined;
   }
 
   private async tryRefreshSweetbookOrderStatus(orderUid: string | null) {
@@ -374,8 +572,8 @@ export class SeasonBooksService {
       orderUid: project.orderUid,
       totalPrice: project.totalPrice,
       currency: project.currency as CurrencyCode,
-      projectStatus: project.projectStatus as SeasonBookProjectStatus,
-      orderStatus: project.orderStatus as SeasonBookOrderStatus,
+      projectStatus: project.projectStatus as PersistedSeasonBookProjectStatus,
+      orderStatus: project.orderStatus as PersistedSeasonBookOrderStatus,
     };
   }
 }

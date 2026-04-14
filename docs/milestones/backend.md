@@ -204,3 +204,21 @@
   - user verification pending
 - Next Step:
   - implement `PATCH /season-books/:projectId/shipping`
+
+### BE-MILESTONE-011
+
+- Date: `2026-04-14`
+- Time: `14:05`
+- Milestone: Season-book shipping update endpoint implemented
+- Status: `ready_for_review`
+- Summary:
+  - `PATCH /season-books/:projectId/shipping` is now available
+  - order-time shipping info is persisted into SQLite and can be updated before shipment
+  - existing local SQLite files auto-upgrade missing shipping columns during `db:init`
+  - build, unit tests, and e2e tests were rerun for the new slice
+- Related Decision IDs:
+  - `API-021`
+- Blocking Items:
+  - user verification pending
+- Next Step:
+  - implement `POST /webhooks/sweetbook`

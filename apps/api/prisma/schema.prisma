@@ -104,6 +104,12 @@ model SeasonBookProject {
   pageCount        Int?
   totalPrice       Int?
   currency         String?
+  recipientName    String?
+  recipientPhone   String?
+  postalCode       String?
+  address1         String?
+  address2         String?
+  shippingMemo     String?
   projectStatus    SeasonBookProjectStatus @default(DRAFT)
   orderStatus      SeasonBookOrderStatus   @default(UNPLACED)
   createdAt        DateTime                @default(now())

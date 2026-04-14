@@ -16,6 +16,7 @@ describe('SeasonBooksService', () => {
     isConfigured: jest.fn(),
     getOrder: jest.fn(),
     cancelOrder: jest.fn(),
+    updateOrderShipping: jest.fn(),
   } as unknown as SweetbookClient;
 
   const service = new SeasonBooksService(
@@ -137,9 +138,9 @@ describe('SeasonBooksService', () => {
   it('throws when the season-book project does not exist', async () => {
     prisma.seasonBookProject.findFirst.mockResolvedValue(null);
 
-    await expect(service.getSeasonBookStatus('missing-project')).rejects.toBeInstanceOf(
-      NotFoundException,
-    );
+    await expect(
+      service.getSeasonBookStatus('missing-project'),
+    ).rejects.toBeInstanceOf(NotFoundException);
   });
 
   it('cancels a local order while keeping the project in ordered history', async () => {
@@ -173,6 +174,63 @@ describe('SeasonBooksService', () => {
         data: expect.objectContaining({
           projectStatus: 'ORDERED',
           orderStatus: 'CANCELLED_REFUND',
+        }),
+      }),
+    );
+  });
+
+  it('updates stored shipping for a local order before shipment', async () => {
+    prisma.seasonBookProject.findFirst.mockResolvedValue({
+      id: 'project-4',
+      ownerId: 'demo-user-001',
+      orderUid: 'local-order-456',
+      projectStatus: 'ORDERED',
+      orderStatus: 'CONFIRMED',
+      recipientName: '홍길동',
+      recipientPhone: '010-1234-5678',
+      postalCode: '06236',
+      address1: '서울특별시 강남구 테헤란로 123',
+      address2: '4층',
+      shippingMemo: null,
+      updatedAt: new Date('2026-04-14T13:40:00Z'),
+    });
+    prisma.seasonBookProject.update.mockResolvedValue({
+      id: 'project-4',
+      ownerId: 'demo-user-001',
+      orderUid: 'local-order-456',
+      projectStatus: 'ORDERED',
+      orderStatus: 'CONFIRMED',
+      updatedAt: new Date('2026-04-14T13:41:00Z'),
+    });
+
+    const result = await service.updateSeasonBookShipping('project-4', {
+      recipientPhone: '010-9999-0000',
+      address2: '5층',
+      shippingMemo: '문 앞',
+    });
+
+    expect(result).toEqual({
+      projectId: 'project-4',
+      orderUid: 'local-order-456',
+      projectStatus: 'ORDERED',
+      orderStatus: 'CONFIRMED',
+      shipping: {
+        recipientName: '홍길동',
+        recipientPhone: '010-9999-0000',
+        postalCode: '06236',
+        address1: '서울특별시 강남구 테헤란로 123',
+        address2: '5층',
+        shippingMemo: '문 앞',
+      },
+      updatedAt: '2026-04-14T13:41:00.000Z',
+    });
+    expect(sweetbookClient.updateOrderShipping).not.toHaveBeenCalled();
+    expect(prisma.seasonBookProject.update).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          recipientPhone: '010-9999-0000',
+          address2: '5층',
+          shippingMemo: '문 앞',
         }),
       }),
     );

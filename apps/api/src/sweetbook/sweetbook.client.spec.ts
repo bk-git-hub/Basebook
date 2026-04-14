@@ -130,12 +130,14 @@ describe('SweetbookClient', () => {
     });
     global.fetch = fetchMock as unknown as typeof fetch;
 
-    await expect(new SweetbookClient().getOrder('or_test123')).resolves.toEqual({
-      orderUid: 'or_test123',
-      orderStatus: 25,
-      orderStatusDisplay: 'PDF 준비 완료',
-      orderedAt: '2026-04-14T03:07:00Z',
-    });
+    await expect(new SweetbookClient().getOrder('or_test123')).resolves.toEqual(
+      {
+        orderUid: 'or_test123',
+        orderStatus: 25,
+        orderStatusDisplay: 'PDF 준비 완료',
+        orderedAt: '2026-04-14T03:07:00Z',
+      },
+    );
 
     expect(fetchMock).toHaveBeenCalledWith(
       'https://api-sandbox.sweetbook.com/v1/orders/or_test123',
@@ -185,6 +187,53 @@ describe('SweetbookClient', () => {
         }),
         body: JSON.stringify({
           cancelReason: '고객 요청',
+        }),
+      }),
+    );
+  });
+
+  it('updates shipping with a patch payload', async () => {
+    const fetchMock = jest.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => ({
+        data: {
+          orderUid: 'or_test123',
+          orderStatus: 30,
+        },
+      }),
+    });
+    global.fetch = fetchMock as unknown as typeof fetch;
+
+    await expect(
+      new SweetbookClient().updateOrderShipping('or_test123', {
+        recipientName: '홍길동',
+        recipientPhone: '010-9999-0000',
+        postalCode: '06236',
+        address1: '서울특별시 강남구 테헤란로 123',
+        address2: '5층',
+        shippingMemo: '문 앞에 놓아주세요',
+      }),
+    ).resolves.toEqual({
+      orderUid: 'or_test123',
+      orderStatus: 30,
+    });
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      'https://api-sandbox.sweetbook.com/v1/orders/or_test123/shipping',
+      expect.objectContaining({
+        method: 'PATCH',
+        headers: expect.objectContaining({
+          Authorization: 'Bearer SB.test-key',
+          'Content-Type': 'application/json',
+        }),
+        body: JSON.stringify({
+          recipientName: '홍길동',
+          recipientPhone: '010-9999-0000',
+          postalCode: '06236',
+          address1: '서울특별시 강남구 테헤란로 123',
+          address2: '5층',
+          shippingMemo: '문 앞에 놓아주세요',
         }),
       }),
     );

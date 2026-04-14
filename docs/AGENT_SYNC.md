@@ -14,6 +14,7 @@
 
 ```md
 ## SYNC-XXX
+
 - Date:
 - Time:
 - Source role:
@@ -29,6 +30,7 @@
 ---
 
 ## SYNC-001
+
 - Date: 2026-04-10
 - Time: 00:00
 - Source role: CTO
@@ -41,6 +43,7 @@
 - Status: resolved
 
 ## SYNC-002
+
 - Date: 2026-04-11
 - Time: 16:16
 - Source role: Backend
@@ -53,6 +56,7 @@
 - Status: open
 
 ## SYNC-003
+
 - Date: 2026-04-12
 - Time: 15:28
 - Source role: Backend
@@ -65,6 +69,7 @@
 - Status: open
 
 ## SYNC-004
+
 - Date: 2026-04-12
 - Time: 22:14
 - Source role: QA
@@ -77,6 +82,7 @@
 - Status: open
 
 ## SYNC-005
+
 - Date: 2026-04-12
 - Time: 22:17
 - Source role: QA
@@ -89,6 +95,7 @@
 - Status: open
 
 ## SYNC-006
+
 - Date: 2026-04-12
 - Time: 22:23
 - Source role: Backend
@@ -101,6 +108,7 @@
 - Status: resolved
 
 ## SYNC-007
+
 - Date: 2026-04-14
 - Time: 11:46
 - Source role: Backend
@@ -113,6 +121,7 @@
 - Status: resolved
 
 ## SYNC-008
+
 - Date: 2026-04-14
 - Time: 12:06
 - Source role: QA
@@ -125,6 +134,7 @@
 - Status: resolved
 
 ## SYNC-009
+
 - Date: 2026-04-14
 - Time: 12:33
 - Source role: Backend
@@ -137,6 +147,7 @@
 - Status: open
 
 ## SYNC-010
+
 - Date: 2026-04-14
 - Time: 13:05
 - Source role: Backend
@@ -149,6 +160,7 @@
 - Status: open
 
 ## SYNC-011
+
 - Date: 2026-04-14
 - Time: 13:23
 - Source role: Backend
@@ -157,5 +169,18 @@
 - Related area: `POST /season-books/:projectId/cancel`
 - Summary: Backend implemented the season-book cancel endpoint. Cancellation keeps `projectStatus` as `ORDERED` and returns terminal order history through `orderStatus` such as `CANCELLED_REFUND`.
 - Required action: Frontend can wire the cancel action and render cancelled orders as terminal history, not as a reopened reorderable project.
+- User notified: yes
+- Status: open
+
+## SYNC-012
+
+- Date: 2026-04-14
+- Time: 14:05
+- Source role: Backend
+- Target role: Frontend
+- Type: ready
+- Related area: `PATCH /season-books/:projectId/shipping`
+- Summary: Backend implemented the season-book shipping update endpoint. The API persists shipping fields on the local project record and forwards updates to Sweetbook when the order is external and the Sandbox API key is configured.
+- Required action: Frontend can wire the address-edit form against the existing contract and expect the response to return the fully merged shipping object.
 - User notified: yes
 - Status: open
