@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { AppShell } from "@/components/app-shell";
 import { SeasonDashboard } from "@/components/season-dashboard";
 import {
   SeasonDashboardEmptyState,
@@ -41,16 +42,18 @@ export default async function SeasonPage() {
   const result = await loadSeasonEntries();
 
   return (
-    <main className="min-h-screen bg-stone-100 px-6 py-10 text-stone-950 sm:px-10">
-      <div className="mx-auto max-w-6xl">
-        {result.status === "error" ? (
-          <SeasonDashboardErrorState message={result.message} />
-        ) : result.data.entries.length === 0 ? (
-          <SeasonDashboardEmptyState />
-        ) : (
-          <SeasonDashboard dashboard={result.data} />
-        )}
-      </div>
-    </main>
+    <AppShell
+      activeSection="season"
+      title="시즌 대시보드"
+      description="한 시즌 동안 쌓인 기록의 흐름과 최근 경기를 같은 자리에서 확인합니다."
+    >
+      {result.status === "error" ? (
+        <SeasonDashboardErrorState message={result.message} />
+      ) : result.data.entries.length === 0 ? (
+        <SeasonDashboardEmptyState />
+      ) : (
+        <SeasonDashboard dashboard={result.data} />
+      )}
+    </AppShell>
   );
 }

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import { AppShell } from "@/components/app-shell";
 import { EntryEditForm } from "@/components/entry-edit-form";
 import { EntryEditErrorState } from "@/components/entry-edit-state";
 import { getEntry } from "@/lib/api/entries";
@@ -50,14 +51,16 @@ export default async function EntryEditPage({ params }: EntryEditPageProps) {
   const result = await loadEntry(id);
 
   return (
-    <main className="min-h-screen bg-stone-100 px-6 py-10 text-stone-950 sm:px-10">
-      <div className="mx-auto max-w-6xl">
-        {result.status === "error" ? (
-          <EntryEditErrorState message={result.message} />
-        ) : (
-          <EntryEditForm entry={result.data.entry} />
-        )}
-      </div>
-    </main>
+    <AppShell
+      activeSection="entries"
+      title="직관 기록 수정"
+      description="변경한 항목만 저장하는 흐름 안에서 경기 정보와 감상을 다시 다듬습니다."
+    >
+      {result.status === "error" ? (
+        <EntryEditErrorState message={result.message} />
+      ) : (
+        <EntryEditForm entry={result.data.entry} />
+      )}
+    </AppShell>
   );
 }

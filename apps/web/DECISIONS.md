@@ -415,3 +415,25 @@
 - Related Docs:
   - `docs/planning/CONTRACT_SPEC.md`
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+
+### WEB-018
+
+- Date: `2026-04-14`
+- Time: `13:11`
+- Agenda: 남은 UX polishing을 공통 앱 셸부터 시작할지, 화면별 미세 조정부터 시작할지 결정
+- Participants: User, Codex
+- Options Considered:
+  - 각 화면의 버튼, 문구, 간격을 개별적으로 먼저 다듬는다
+  - 앱 공통 셸과 전역 타이포그래피를 먼저 정리하고, 세부 폴리싱은 그 다음 단계로 진행한다
+- Decision: 공통 앱 셸과 전역 폰트 적용을 먼저 정리하고, 화면별 미세 폴리싱은 후속 슬라이스로 분리한다.
+- Rationale: 현재는 `/season`, `/entries`, `/season-book`, `/order` 흐름마다 상단 구조와 이동 맥락이 제각각이라 개별 화면만 먼저 다듬어도 전체 경험의 일관성이 남지 않는다. 공통 셸을 먼저 두면 이후 폴리싱이 같은 구조 안에서 더 빠르고 안정적으로 진행된다.
+- Impact:
+  - 주요 앱 화면에 공통 상단 내비게이션과 현재 위치 안내가 추가된다
+  - 로딩 화면도 동일한 프레임 안에서 표시되어 전환 인상이 안정된다
+  - 전역 폰트가 실제 의도한 앱 타이포그래피 기준으로 정상화된다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+- Related Milestones:
+  - `docs/milestones/frontend.md`

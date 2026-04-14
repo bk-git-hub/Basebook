@@ -1,3 +1,5 @@
+import { AppShell } from "@/components/app-shell";
+
 function LoadingCard() {
   return (
     <div className="animate-pulse rounded-[24px] border border-stone-200 bg-white p-6 shadow-sm">
@@ -9,8 +11,12 @@ function LoadingCard() {
 
 export default function SeasonLoading() {
   return (
-    <main className="min-h-screen bg-stone-100 px-6 py-10 text-stone-950 sm:px-10">
-      <div className="mx-auto max-w-6xl space-y-8">
+    <AppShell
+      activeSection="season"
+      title="시즌 대시보드"
+      description="한 시즌 동안 쌓인 기록의 흐름과 최근 경기를 같은 자리에서 확인합니다."
+    >
+      <div className="space-y-8">
         <section className="animate-pulse rounded-[32px] bg-stone-900 px-8 py-10">
           <div className="h-6 w-32 rounded-full bg-white/15" />
           <div className="mt-6 h-5 w-28 rounded-full bg-white/15" />
@@ -35,6 +41,6 @@ export default function SeasonLoading() {
           </div>
         </section>
       </div>
-    </main>
+    </AppShell>
   );
 }

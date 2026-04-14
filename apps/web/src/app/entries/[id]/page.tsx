@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import { AppShell } from "@/components/app-shell";
 import { EntryDetail } from "@/components/entry-detail";
 import { EntryDetailErrorState } from "@/components/entry-detail-state";
 import { getEntry } from "@/lib/api/entries";
@@ -52,14 +53,16 @@ export default async function EntryDetailPage({
   const result = await loadEntry(id);
 
   return (
-    <main className="min-h-screen bg-stone-100 px-6 py-10 text-stone-950 sm:px-10">
-      <div className="mx-auto max-w-6xl">
-        {result.status === "error" ? (
-          <EntryDetailErrorState message={result.message} />
-        ) : (
-          <EntryDetail entry={result.data.entry} />
-        )}
-      </div>
-    </main>
+    <AppShell
+      activeSection="entries"
+      title="직관 기록 상세"
+      description="저장된 경기 요약과 감상을 다시 읽고, 바로 수정 흐름으로 이어갈 수 있습니다."
+    >
+      {result.status === "error" ? (
+        <EntryDetailErrorState message={result.message} />
+      ) : (
+        <EntryDetail entry={result.data.entry} />
+      )}
+    </AppShell>
   );
 }

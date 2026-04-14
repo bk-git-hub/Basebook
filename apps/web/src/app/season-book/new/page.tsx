@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 
+import { AppShell } from "@/components/app-shell";
 import { SeasonBookBuilderForm } from "@/components/season-book-builder-form";
 import { getEntries } from "@/lib/api/entries";
 import { ApiClientError } from "@/lib/api/http";
@@ -42,8 +43,12 @@ export default async function NewSeasonBookPage() {
   const result = await loadSeasonBookEntries();
 
   return (
-    <main className="min-h-screen bg-stone-100 px-6 py-10 text-stone-950 sm:px-10">
-      <div className="mx-auto max-w-6xl space-y-8">
+    <AppShell
+      activeSection="season-book"
+      title="시즌북 만들기"
+      description="담을 기록을 고르고, 제목과 커버를 정한 뒤 견적 생성으로 이어갑니다."
+    >
+      <div className="space-y-8">
         <section className="rounded-[32px] bg-stone-950 px-8 py-10 text-white shadow-xl shadow-stone-950/10">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
             <div className="space-y-4">
@@ -107,6 +112,6 @@ export default async function NewSeasonBookPage() {
           <SeasonBookBuilderForm entries={result.entries} />
         )}
       </div>
-    </main>
+    </AppShell>
   );
 }

@@ -1,7 +1,13 @@
+import { AppShell } from "@/components/app-shell";
+
 export default function OrderStatusLoading() {
   return (
-    <main className="min-h-screen bg-stone-100 px-6 py-10 text-stone-950 sm:px-10">
-      <div className="mx-auto max-w-6xl space-y-8">
+    <AppShell
+      activeSection="order"
+      title="주문 진행 상태"
+      description="결제 이후 제작과 배송 단계가 어디까지 왔는지 재진입과 새로고침 기준으로 확인합니다."
+    >
+      <div className="space-y-8">
         <section className="animate-pulse rounded-[32px] bg-stone-900 px-8 py-10">
           <div className="h-6 w-32 rounded-full bg-white/15" />
           <div className="mt-6 h-5 w-40 rounded-full bg-white/15" />
@@ -14,6 +20,6 @@ export default function OrderStatusLoading() {
           <div className="h-[34rem] animate-pulse rounded-[28px] bg-white" />
         </section>
       </div>
-    </main>
+    </AppShell>
   );
 }

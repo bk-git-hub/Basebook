@@ -1,7 +1,13 @@
+import { AppShell } from "@/components/app-shell";
+
 export default function EntryEditLoading() {
   return (
-    <main className="min-h-screen bg-stone-100 px-6 py-10 text-stone-950 sm:px-10">
-      <div className="mx-auto max-w-6xl space-y-8">
+    <AppShell
+      activeSection="entries"
+      title="직관 기록 수정"
+      description="변경한 항목만 저장하는 흐름 안에서 경기 정보와 감상을 다시 다듬습니다."
+    >
+      <div className="space-y-8">
         <section className="animate-pulse rounded-[32px] bg-stone-900 px-8 py-10">
           <div className="h-6 w-24 rounded-full bg-white/15" />
           <div className="mt-6 h-5 w-40 rounded-full bg-white/15" />
@@ -18,6 +24,6 @@ export default function EntryEditLoading() {
           <div className="h-96 animate-pulse rounded-[28px] bg-white" />
         </section>
       </div>
-    </main>
+    </AppShell>
   );
 }

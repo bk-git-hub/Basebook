@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { AppShell } from "@/components/app-shell";
 import { SeasonBookOrderStatus } from "@/components/season-book-order-status";
 import { SeasonBookOrderStatusErrorState } from "@/components/season-book-order-status-state";
 import { getSeasonBookStatus } from "@/lib/api/season-books";
@@ -46,17 +47,19 @@ export default async function OrderStatusPage({
   const result = await loadOrderStatus(projectId);
 
   return (
-    <main className="min-h-screen bg-stone-100 px-6 py-10 text-stone-950 sm:px-10">
-      <div className="mx-auto max-w-6xl">
-        {result.status === "error" ? (
-          <SeasonBookOrderStatusErrorState
-            message={result.message}
-            projectId={projectId}
-          />
-        ) : (
-          <SeasonBookOrderStatus status={result.data} />
-        )}
-      </div>
-    </main>
+    <AppShell
+      activeSection="order"
+      title="주문 진행 상태"
+      description="결제 이후 제작과 배송 단계가 어디까지 왔는지 재진입과 새로고침 기준으로 확인합니다."
+    >
+      {result.status === "error" ? (
+        <SeasonBookOrderStatusErrorState
+          message={result.message}
+          projectId={projectId}
+        />
+      ) : (
+        <SeasonBookOrderStatus status={result.data} />
+      )}
+    </AppShell>
   );
 }
