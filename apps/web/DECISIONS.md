@@ -884,3 +884,24 @@
 - Status: `approved`
 - Related Docs:
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+
+### WEB-042
+
+- Date: `2026-04-14`
+- Time: `20:18`
+- Agenda: `/season-book/new` 커버 입력을 URL 중심으로 둘지, 업로드 후 자동 호스팅 중심으로 전환할지 결정
+- Participants: User, Codex
+- Options Considered:
+  - 기존 `coverPhotoUrl` 직접 입력을 메인 흐름으로 유지하고, 업로드는 보조 기능으로만 추가한다
+  - 커버 이미지는 파일 업로드를 메인 흐름으로 전환하고, 업로드 완료 후 반환된 호스팅 URL을 내부 `coverPhotoUrl`에 자동 반영한다
+- Decision: `/season-book/new`의 커버 이미지는 파일 업로드를 메인 흐름으로 사용하고, 업로드 성공 시 반환된 호스팅 URL을 내부 `coverPhotoUrl`에 자동 반영한다. 직접 URL 입력은 예외 상황용 보조 옵션으로만 남긴다.
+- Rationale: 사용자가 시즌북 커버를 만들 때 URL을 직접 붙여 넣게 하면 이미 구현된 업로드/호스팅 백엔드 가치를 제품 경험으로 연결하지 못한다. 업로드를 메인 경로로 두면 사용자는 더 자연스럽게 파일만 올리면 되고, 현재 estimate 계약은 그대로 유지하면서도 실제 전송 값은 공개 URL로 맞출 수 있다.
+- Impact:
+  - `/season-book/new`는 `POST /uploads/image`를 먼저 호출해 업로드된 자산 URL을 확보한 뒤 `POST /season-books/estimate`에 넘긴다
+  - 사용자는 업로드 직후 커버 이미지를 미리보기로 확인할 수 있다
+  - 수동 URL 입력은 fallback 성격으로 유지되어 예외 상황에서도 계약 호환성을 잃지 않는다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/CONTRACT_SPEC.md`
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`

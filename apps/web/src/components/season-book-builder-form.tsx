@@ -1,15 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import type {
   DiaryEntry,
+  PhotoAsset,
   SeasonBookEstimateResponse,
 } from "@basebook/contracts";
 
 import { estimateSeasonBook } from "@/lib/api/season-books";
 import { ApiClientError } from "@/lib/api/http";
+import { uploadImage } from "@/lib/api/uploads";
 
 import { SeasonBookEntrySelection } from "./season-book-entry-selection";
 
@@ -64,6 +66,16 @@ export function SeasonBookBuilderForm({ entries }: SeasonBookBuilderFormProps) {
   const [title, setTitle] = useState(getInitialTitle(entries));
   const [introText, setIntroText] = useState("");
   const [coverPhotoUrl, setCoverPhotoUrl] = useState("");
+  const [coverAsset, setCoverAsset] = useState<PhotoAsset | null>(null);
+  const [localCoverPreviewUrl, setLocalCoverPreviewUrl] = useState<
+    string | null
+  >(null);
+  const [coverStatusMessage, setCoverStatusMessage] = useState<string | null>(
+    null,
+  );
+  const [coverUploadError, setCoverUploadError] = useState<string | null>(null);
+  const [isUploadingCover, setIsUploadingCover] = useState(false);
+  const [isManualCoverInputOpen, setIsManualCoverInputOpen] = useState(false);
   const [formErrors, setFormErrors] = useState<FormErrors>({});
   const [estimateError, setEstimateError] = useState<string | null>(null);
   const [estimateResult, setEstimateResult] =
@@ -81,6 +93,7 @@ export function SeasonBookBuilderForm({ entries }: SeasonBookBuilderFormProps) {
   const selectedSeasonYear = selectedEntries[0]?.seasonYear;
   const suggestedCoverPhotoUrl =
     getFirstSelectedCoverPhotoUrl(selectedEntries);
+  const coverPreviewUrl = localCoverPreviewUrl ?? coverPhotoUrl.trim();
   const estimateInput = {
     seasonYear: selectedSeasonYear ?? new Date().getFullYear(),
     title: title.trim(),
@@ -88,6 +101,31 @@ export function SeasonBookBuilderForm({ entries }: SeasonBookBuilderFormProps) {
     coverPhotoUrl: coverPhotoUrl.trim(),
     selectedEntryIds,
   };
+
+  useEffect(() => {
+    return () => {
+      if (localCoverPreviewUrl?.startsWith("blob:")) {
+        URL.revokeObjectURL(localCoverPreviewUrl);
+      }
+    };
+  }, [localCoverPreviewUrl]);
+
+  function resetEstimateFeedback() {
+    setEstimateError(null);
+    setEstimateResult(null);
+  }
+
+  function clearCoverPhotoError() {
+    setFormErrors((current) => {
+      if (!current.coverPhotoUrl) {
+        return current;
+      }
+
+      const next = { ...current };
+      delete next.coverPhotoUrl;
+      return next;
+    });
+  }
 
   function validateEstimateRequest(): FormErrors {
     const nextErrors: FormErrors = {};
@@ -100,9 +138,12 @@ export function SeasonBookBuilderForm({ entries }: SeasonBookBuilderFormProps) {
       nextErrors.title = "시즌북 제목을 입력해 주세요.";
     }
 
-    if (!coverPhotoUrl.trim()) {
+    if (isUploadingCover) {
       nextErrors.coverPhotoUrl =
-        "커버 사진 URL을 입력하거나 선택 기록의 첫 사진을 사용해 주세요.";
+        "커버 이미지를 업로드 중입니다. 업로드가 끝난 뒤 다시 시도해 주세요.";
+    } else if (!coverPhotoUrl.trim()) {
+      nextErrors.coverPhotoUrl =
+        "커버 이미지를 업로드하거나 선택 기록의 첫 사진을 커버로 사용해 주세요.";
     }
 
     return nextErrors;
@@ -113,23 +154,26 @@ export function SeasonBookBuilderForm({ entries }: SeasonBookBuilderFormProps) {
       setFormErrors((current) => ({
         ...current,
         coverPhotoUrl:
-          "선택한 기록에 첨부 사진이 없습니다. 커버 사진 URL을 직접 입력해 주세요.",
+          "선택한 기록에 첨부 사진이 없습니다. 이미지를 업로드하거나 직접 URL을 입력해 주세요.",
       }));
       return;
     }
 
+    setCoverAsset(null);
+    setLocalCoverPreviewUrl(null);
+    setIsManualCoverInputOpen(false);
     setCoverPhotoUrl(suggestedCoverPhotoUrl);
-    setFormErrors((current) => {
-      const next = { ...current };
-      delete next.coverPhotoUrl;
-      return next;
-    });
+    setCoverStatusMessage(
+      "선택한 기록에 포함된 첫 번째 사진을 커버로 적용했습니다.",
+    );
+    setCoverUploadError(null);
+    clearCoverPhotoError();
+    resetEstimateFeedback();
   }
 
   function handleChangeSelectedEntryIds(nextEntryIds: string[]) {
     setSelectedEntryIds(nextEntryIds);
-    setEstimateResult(null);
-    setEstimateError(null);
+    resetEstimateFeedback();
     setFormErrors((current) => {
       if (!current.selectedEntryIds) {
         return current;
@@ -139,6 +183,47 @@ export function SeasonBookBuilderForm({ entries }: SeasonBookBuilderFormProps) {
       delete next.selectedEntryIds;
       return next;
     });
+  }
+
+  async function handleUploadCover(event: React.ChangeEvent<HTMLInputElement>) {
+    const selectedFile = event.target.files?.[0];
+    event.target.value = "";
+
+    if (!selectedFile) {
+      return;
+    }
+
+    const nextPreviewUrl = URL.createObjectURL(selectedFile);
+    setCoverAsset(null);
+    setLocalCoverPreviewUrl(nextPreviewUrl);
+    setIsManualCoverInputOpen(false);
+    setCoverStatusMessage(
+      `${selectedFile.name} 업로드 중입니다. 완료되면 자동으로 커버에 반영됩니다.`,
+    );
+    setCoverUploadError(null);
+    setIsUploadingCover(true);
+    resetEstimateFeedback();
+
+    try {
+      const response = await uploadImage(selectedFile);
+      setCoverAsset(response.asset);
+      setLocalCoverPreviewUrl(null);
+      setCoverPhotoUrl(response.asset.url);
+      setCoverStatusMessage(
+        `${response.asset.fileName || selectedFile.name} 업로드가 완료되어 커버 이미지로 적용했습니다.`,
+      );
+      clearCoverPhotoError();
+    } catch (error) {
+      setLocalCoverPreviewUrl(null);
+      setCoverUploadError(
+        error instanceof ApiClientError
+          ? error.message
+          : "커버 이미지를 업로드하지 못했습니다. 잠시 후 다시 시도해 주세요.",
+      );
+      setCoverStatusMessage(null);
+    } finally {
+      setIsUploadingCover(false);
+    }
   }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -251,42 +336,110 @@ export function SeasonBookBuilderForm({ entries }: SeasonBookBuilderFormProps) {
             />
           </label>
 
-          <label className="block space-y-2">
-            <span className="text-sm font-semibold text-stone-800">
-              커버 사진 URL
-            </span>
-            <input
-              type="url"
-              value={coverPhotoUrl}
-              onChange={(event) => {
-                setCoverPhotoUrl(event.target.value);
-                setFormErrors((current) => {
-                  const next = { ...current };
-                  delete next.coverPhotoUrl;
-                  return next;
-                });
-              }}
-              placeholder="https://..."
-              className="w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-sm text-stone-950 outline-none transition focus:border-stone-400"
-            />
+          <div className="space-y-3">
+            <div className="space-y-1">
+              <p className="text-sm font-semibold text-stone-800">
+                커버 이미지
+              </p>
+              <p className="text-xs leading-5 text-stone-500">
+                파일을 올리면 자동으로 호스팅한 뒤 시즌북 커버 주소에 바로
+                반영합니다.
+              </p>
+            </div>
+
+            <label className="inline-flex w-full cursor-pointer items-center justify-center rounded-full bg-stone-950 px-4 py-3 text-sm font-semibold text-white transition hover:bg-stone-800">
+              {isUploadingCover ? "커버 업로드 중..." : "커버 이미지 업로드"}
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleUploadCover}
+                className="sr-only"
+              />
+            </label>
+
+            <button
+              type="button"
+              onClick={handleUseSuggestedCover}
+              className="inline-flex w-full items-center justify-center rounded-full border border-stone-300 bg-white px-4 py-2.5 text-sm font-semibold text-stone-700 transition hover:border-stone-400 hover:bg-stone-100"
+            >
+              선택 기록의 첫 사진을 커버로 사용
+            </button>
+
+            <button
+              type="button"
+              onClick={() =>
+                setIsManualCoverInputOpen((current) => !current)
+              }
+              className="inline-flex items-center justify-center self-start rounded-full border border-stone-200 bg-white px-3 py-2 text-xs font-semibold text-stone-600 transition hover:border-stone-300 hover:text-stone-900"
+            >
+              {isManualCoverInputOpen ? "직접 URL 입력 닫기" : "직접 URL 입력"}
+            </button>
+
+            {coverStatusMessage ? (
+              <p className="rounded-2xl border border-sky-200 bg-sky-50 px-4 py-3 text-sm text-sky-800">
+                {coverStatusMessage}
+              </p>
+            ) : null}
+
+            {coverUploadError ? (
+              <p className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+                {coverUploadError}
+              </p>
+            ) : null}
+
+            {coverPreviewUrl ? (
+              <div className="overflow-hidden rounded-[24px] border border-stone-200 bg-white">
+                <div className="aspect-[4/5] bg-stone-100">
+                  <img
+                    src={coverPreviewUrl}
+                    alt="시즌북 커버 미리보기"
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+                <div className="space-y-1 px-4 py-3 text-xs text-stone-500">
+                  <p className="font-semibold text-stone-700">
+                    {coverAsset?.fileName || "현재 커버 이미지 미리보기"}
+                  </p>
+                  <p className="break-all">
+                    {coverAsset?.url || coverPhotoUrl.trim()}
+                  </p>
+                </div>
+              </div>
+            ) : null}
+
+            {isManualCoverInputOpen ? (
+              <label className="block space-y-2">
+                <span className="text-sm font-semibold text-stone-800">
+                  커버 사진 URL
+                </span>
+                <input
+                  type="url"
+                  value={coverPhotoUrl}
+                  onChange={(event) => {
+                    setCoverAsset(null);
+                    setLocalCoverPreviewUrl(null);
+                    setCoverStatusMessage(null);
+                    setCoverUploadError(null);
+                    setCoverPhotoUrl(event.target.value);
+                    clearCoverPhotoError();
+                    resetEstimateFeedback();
+                  }}
+                  placeholder="https://..."
+                  className="w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-sm text-stone-950 outline-none transition focus:border-stone-400"
+                />
+                <p className="text-xs leading-5 text-stone-500">
+                  예외적으로 직접 URL을 넣어야 한다면, 외부에서 바로 열리는
+                  이미지 주소만 사용해 주세요.
+                </p>
+              </label>
+            ) : null}
+
             {formErrors.coverPhotoUrl ? (
               <p className="text-sm text-rose-600">
                 {formErrors.coverPhotoUrl}
               </p>
             ) : null}
-            <p className="text-xs leading-5 text-stone-500">
-              실제 책 제작에 사용할 수 있도록 외부에서 열리는 이미지 주소를
-              입력해 주세요.
-            </p>
-          </label>
-
-          <button
-            type="button"
-            onClick={handleUseSuggestedCover}
-            className="inline-flex w-full items-center justify-center rounded-full border border-stone-300 bg-white px-4 py-2.5 text-sm font-semibold text-stone-700 transition hover:border-stone-400 hover:bg-stone-100"
-          >
-            선택 기록의 첫 사진을 커버로 사용
-          </button>
+          </div>
         </div>
 
         {estimateError ? (
@@ -330,10 +483,14 @@ export function SeasonBookBuilderForm({ entries }: SeasonBookBuilderFormProps) {
 
         <button
           type="submit"
-          disabled={isEstimating}
+          disabled={isEstimating || isUploadingCover}
           className="inline-flex w-full items-center justify-center rounded-full bg-stone-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-stone-800 disabled:cursor-not-allowed disabled:bg-stone-400"
         >
-          {isEstimating ? "견적 생성 중..." : "시즌북 견적 생성"}
+          {isUploadingCover
+            ? "커버 업로드 완료 대기 중..."
+            : isEstimating
+              ? "견적 생성 중..."
+              : "시즌북 견적 생성"}
         </button>
       </aside>
     </form>
