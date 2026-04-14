@@ -46,9 +46,8 @@ export function TeamBadge({ team, size = 72 }: TeamBadgeProps) {
       <circle cx="90" cy="55" r="6" fill="white" opacity="0.22" />
 
       <g transform="translate(0 2)">
-        <circle cx="60" cy="24" r="3.2" fill={meta.palette.capBrim} opacity="0.9" />
         <path
-          d="M42 46c2-15 10-24 18-24s16 9 18 24"
+          d="M42 52c1-16 9-28 18-28s17 12 18 28"
           fill={meta.palette.cap}
           stroke={meta.palette.capBrim}
           strokeWidth="3"
@@ -56,47 +55,12 @@ export function TeamBadge({ team, size = 72 }: TeamBadgeProps) {
           strokeLinejoin="round"
         />
         <path
-          d="M45 45c4-4 9-6 15-6s11 2 15 6"
+          d="M47 49c4-4 8-5 13-5s9 1 13 5"
           fill="none"
           stroke={meta.palette.capText}
           strokeOpacity="0.28"
           strokeWidth="2.5"
           strokeLinecap="round"
-        />
-        <path
-          d="M60 25v19"
-          fill="none"
-          stroke={meta.palette.capBrim}
-          strokeOpacity="0.5"
-          strokeWidth="2"
-          strokeLinecap="round"
-        />
-        <rect
-          x="50"
-          y="30"
-          width="20"
-          height="14"
-          rx="6"
-          fill={meta.palette.capBrim}
-          opacity="0.96"
-        />
-        <text
-          x="60"
-          y="39.5"
-          fill={meta.palette.capText}
-          fontFamily="inherit"
-          fontSize="11"
-          fontWeight="900"
-          textAnchor="middle"
-        >
-          {meta.capLetter}
-        </text>
-        <path
-          d="M35 47c9 6 41 6 50 0 0 6-5 10-25 10s-25-4-25-10Z"
-          fill={meta.palette.capBrim}
-          stroke={meta.palette.capBrim}
-          strokeWidth="2"
-          strokeLinejoin="round"
         />
 
         <circle
@@ -109,24 +73,67 @@ export function TeamBadge({ team, size = 72 }: TeamBadgeProps) {
         />
 
         <path
-          d="M47 56c4-4 9-6 13-6s9 2 13 6"
+          d="M44 50c4-7 10-10 16-10s12 3 16 10v7H44Z"
+          fill={meta.palette.cap}
+          stroke={meta.palette.capBrim}
+          strokeWidth="2.5"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M48 55c3-2 7-3 12-3s9 1 12 3"
+          fill="none"
+          stroke={meta.palette.capText}
+          strokeOpacity="0.24"
+          strokeWidth="2"
+          strokeLinecap="round"
+        />
+        <rect
+          x="50"
+          y="46"
+          width="20"
+          height="12"
+          rx="5"
+          fill={meta.palette.capBrim}
+          opacity="0.98"
+        />
+        <text
+          x="60"
+          y="55.2"
+          fill={meta.palette.capText}
+          fontFamily="inherit"
+          fontSize="10"
+          fontWeight="900"
+          textAnchor="middle"
+        >
+          {meta.capLetter}
+        </text>
+        <path
+          d="M42 58c7 4 29 4 36 0 0 4-4 7-18 7s-18-3-18-7Z"
+          fill={meta.palette.capBrim}
+          stroke={meta.palette.capBrim}
+          strokeWidth="2"
+          strokeLinejoin="round"
+        />
+
+        <path
+          d="M47 60c4-4 9-6 13-6s9 2 13 6"
           fill="none"
           stroke={meta.palette.hair}
           strokeWidth="4.5"
           strokeLinecap="round"
         />
         <path
-          d="M43 63c0-5 2-10 5-13"
+          d="M44 66c0-4 1-8 4-11"
           fill="none"
           stroke={meta.palette.hair}
-          strokeWidth="4"
+          strokeWidth="3.5"
           strokeLinecap="round"
         />
         <path
-          d="M77 63c0-5-2-10-5-13"
+          d="M76 66c0-4-1-8-4-11"
           fill="none"
           stroke={meta.palette.hair}
-          strokeWidth="4"
+          strokeWidth="3.5"
           strokeLinecap="round"
         />
 

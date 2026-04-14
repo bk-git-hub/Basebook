@@ -564,3 +564,23 @@
 - Status: `approved`
 - Related Docs:
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+
+### WEB-025
+
+- Date: `2026-04-14`
+- Time: `14:42`
+- Agenda: 모자 실루엣을 얼굴 뒤로 세울지, 얼굴 윗부분을 덮는 눌러쓴 구조로 바꿀지 결정
+- Participants: User, Codex
+- Options Considered:
+  - 모자 몸통을 얼굴 뒤에 세우고 챙만 분리해 둔다
+  - 모자 전면 패치와 챙이 얼굴 윗부분을 살짝 덮도록 내려서 실제로 눌러쓴 인상을 만든다
+- Decision: 팀 배지의 모자는 얼굴 윗부분을 살짝 덮는 눌러쓴 구조로 보정한다.
+- Rationale: 사용자가 본 문제는 “모자를 쓴 얼굴”이 아니라 “얼굴 뒤에 물체가 달린 캐릭터”처럼 읽히는 점이었다. 챙과 패치를 얼굴과 겹치게 두면 야구모자 인지가 훨씬 즉각적으로 생긴다.
+- Impact:
+  - 모자 챙이 뿔처럼 튀어나오지 않고 이마를 덮는 형태로 읽힌다
+  - 캐릭터가 더 안정적으로 사람 얼굴 이모티콘처럼 보인다
+  - 팀별 색상 차이를 유지하면서도 공통 실루엣이 정돈된다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
