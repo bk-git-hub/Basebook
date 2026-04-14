@@ -21,10 +21,10 @@ const RESULT_LABELS: Record<GameResult, string> = {
 };
 
 const RESULT_TONE: Record<GameResult, string> = {
-  WIN: "bg-[#eef3ff] text-[#11284f]",
-  LOSE: "bg-[#fff0f2] text-[#c42d3c]",
-  DRAW: "bg-[#f7faff] text-[#4f6488]",
-  UNKNOWN: "bg-[#f6f8fb] text-[#6a7d9f]",
+  WIN: "bg-emerald-100 text-emerald-900 ring-1 ring-emerald-200",
+  LOSE: "bg-rose-100 text-rose-900 ring-1 ring-rose-200",
+  DRAW: "bg-amber-100 text-amber-900 ring-1 ring-amber-200",
+  UNKNOWN: "bg-[#f6f8fb] text-[#6a7d9f] ring-1 ring-[#dbe4f0]",
 };
 
 const PRIMARY_NAVIGATION = [
@@ -363,9 +363,9 @@ export default async function HomePage() {
             </div>
             <Link
               href="/season"
-              className="text-sm font-semibold text-[#11284f] transition hover:text-[#0b1d3b]"
+              className="inline-flex items-center justify-center rounded-full border border-[#11284f] bg-white px-4 py-2 text-sm font-semibold text-[#11284f] transition hover:border-[#0b1d3b] hover:bg-[#f8fbff]"
             >
-              전체 시즌 화면 보기
+              시즌 기록 전체 보기
             </Link>
           </div>
 
@@ -397,7 +397,18 @@ export default async function HomePage() {
                         </h3>
                       </div>
                     </div>
-                    <span className="text-lg text-[#91a5c5]">→</span>
+                    {entry.photos[0] ? (
+                      <div className="h-20 w-16 shrink-0 overflow-hidden rounded-[18px] border border-[#d9e4f2] bg-[#f8fbff] sm:h-24 sm:w-20">
+                        <img
+                          src={entry.photos[0].url}
+                          alt={`${getTeamLabel(entry.favoriteTeam)} 경기 대표 사진`}
+                          loading="lazy"
+                          className="h-full w-full object-cover"
+                        />
+                      </div>
+                    ) : (
+                      <span className="text-lg text-[#91a5c5]">→</span>
+                    )}
                   </div>
 
                   <p className="mt-4 text-sm leading-6 text-[#4e6284] sm:mt-5 sm:leading-7">
@@ -408,6 +419,11 @@ export default async function HomePage() {
                     <span className="rounded-full border border-[#e6eef8] bg-[#fbfdff] px-3 py-1.5">
                       {formatScore(entry)}
                     </span>
+                    {entry.photos.length > 0 ? (
+                      <span className="rounded-full border border-[#e6eef8] bg-[#fbfdff] px-3 py-1.5">
+                        사진 {entry.photos.length}장
+                      </span>
+                    ) : null}
                     {entry.stadium ? (
                       <span className="rounded-full border border-[#e6eef8] bg-[#fbfdff] px-3 py-1.5">
                         {entry.stadium}

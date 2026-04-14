@@ -30,9 +30,9 @@ const RESULT_LABELS: Record<GameResult, string> = {
 };
 
 const RESULT_TONE: Record<GameResult, string> = {
-  WIN: "bg-emerald-50 text-emerald-700 ring-emerald-600/15",
-  LOSE: "bg-rose-50 text-rose-700 ring-rose-600/15",
-  DRAW: "bg-amber-50 text-amber-700 ring-amber-600/15",
+  WIN: "bg-emerald-100 text-emerald-900 ring-emerald-300/80",
+  LOSE: "bg-rose-100 text-rose-900 ring-rose-300/80",
+  DRAW: "bg-amber-100 text-amber-900 ring-amber-300/80",
   UNKNOWN: "bg-stone-100 text-stone-600 ring-stone-500/10",
 };
 
@@ -156,24 +156,37 @@ export function SeasonDashboard({ dashboard }: SeasonDashboardProps) {
             >
               <article>
                 <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
-                  <div className="space-y-2">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span
-                        className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ring-inset ${RESULT_TONE[entry.result]}`}
-                      >
-                        {RESULT_LABELS[entry.result]}
-                      </span>
-                      <span className="text-sm font-medium text-stone-500">
-                        {formatEntryDate(entry.date)}
-                      </span>
+                  <div className="flex min-w-0 flex-1 items-start justify-between gap-4">
+                    <div className="min-w-0 space-y-2">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span
+                          className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ring-inset ${RESULT_TONE[entry.result]}`}
+                        >
+                          {RESULT_LABELS[entry.result]}
+                        </span>
+                        <span className="text-sm font-medium text-stone-500">
+                          {formatEntryDate(entry.date)}
+                        </span>
+                      </div>
+                      <h3 className="text-lg font-semibold text-stone-950">
+                        {TEAM_LABELS[entry.favoriteTeam]} vs{" "}
+                        {TEAM_LABELS[entry.opponentTeam]}
+                      </h3>
+                      <p className="text-sm leading-6 text-stone-600">
+                        {entry.highlight}
+                      </p>
                     </div>
-                    <h3 className="text-lg font-semibold text-stone-950">
-                      {TEAM_LABELS[entry.favoriteTeam]} vs{" "}
-                      {TEAM_LABELS[entry.opponentTeam]}
-                    </h3>
-                    <p className="text-sm leading-6 text-stone-600">
-                      {entry.highlight}
-                    </p>
+
+                    {entry.photos[0] ? (
+                      <div className="h-20 w-16 shrink-0 overflow-hidden rounded-[18px] border border-stone-200 bg-white sm:h-24 sm:w-20">
+                        <img
+                          src={entry.photos[0].url}
+                          alt={`${TEAM_LABELS[entry.favoriteTeam]} 경기 대표 사진`}
+                          loading="lazy"
+                          className="h-full w-full object-cover"
+                        />
+                      </div>
+                    ) : null}
                   </div>
 
                   <div className="rounded-2xl bg-white px-4 py-3 text-right shadow-sm ring-1 ring-stone-200">
@@ -183,6 +196,11 @@ export function SeasonDashboard({ dashboard }: SeasonDashboardProps) {
                     <p className="mt-1 text-lg font-semibold tracking-tight text-stone-950">
                       {formatScore(entry)}
                     </p>
+                    {entry.photos.length > 0 ? (
+                      <p className="mt-2 text-xs font-medium text-stone-500">
+                        사진 {entry.photos.length}장
+                      </p>
+                    ) : null}
                   </div>
                 </div>
               </article>

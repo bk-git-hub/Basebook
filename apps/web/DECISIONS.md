@@ -1085,3 +1085,23 @@
 - Status: `approved`
 - Related Docs:
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+
+### WEB-049
+
+- Date: `2026-04-14`
+- Time: `21:08`
+- Agenda: 홈의 `/season` 진입 링크를 어디서 강화할지와 엔트리 카드의 결과/사진 가독성을 어떤 수준까지 보강할지 결정
+- Participants: User, Codex
+- Options Considered:
+  - 홈 상단 요약 액션으로 `/season` 버튼을 이동시키고, 하단 링크는 제거한다
+  - 현재 하단 위치는 유지하되 `/season` 링크를 버튼처럼 보이게 강화하고, 홈/시즌 엔트리 카드의 승무패 색감과 사진 썸네일 가독성을 함께 보강한다
+- Decision: 홈의 `/season` 진입은 현재 하단 위치를 유지하되 버튼처럼 보이게 강화하고, 홈 및 시즌 대시보드 엔트리 카드에서는 승/무/패 색감을 더 선명하게 조정하며 사진이 있는 경우 대표 썸네일을 함께 노출한다.
+- Rationale: 사용자는 링크가 버튼처럼 보이지 않아 `/season` 진입 동선을 놓쳤고, 엔트리 카드에서는 경기 결과와 사진 유무가 더 즉각적으로 읽히길 원했다. CTA 위치를 다시 옮기기보다 현재 정보 구조를 유지한 채 시각적 affordance와 카드 정보 밀도를 강화하는 편이 더 얇고 안전한 개선이다.
+- Impact:
+  - 홈 최근 일지 섹션의 `/season` 진입이 버튼처럼 더 명확하게 보인다
+  - 홈과 시즌 대시보드 엔트리 카드의 승/무/패 구분이 초록/노랑/빨강 중심으로 더 선명해진다
+  - 사진이 첨부된 카드에서는 대표 썸네일이 함께 보여 기록 식별이 빨라진다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
