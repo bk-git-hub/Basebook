@@ -139,6 +139,10 @@ function validateValues(values: EntryFormValues): FieldErrors {
     errors.scoreAgainst = "실점은 0 이상의 숫자여야 합니다.";
   }
 
+  if (values.watchType === "STADIUM" && !values.stadium.trim()) {
+    errors.stadium = "직관 기록에는 경기장을 선택해 주세요.";
+  }
+
   if (!values.highlight.trim()) {
     errors.highlight = "한 줄 감상은 비워둘 수 없습니다.";
   }
@@ -501,6 +505,9 @@ export function EntryCreateForm() {
                     </option>
                   ))}
                 </select>
+                {fieldErrors.stadium ? (
+                  <p className="text-sm text-[#c42d3c]">{fieldErrors.stadium}</p>
+                ) : null}
               </label>
 
               <label className="space-y-2">

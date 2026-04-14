@@ -946,6 +946,26 @@
 - Related Docs:
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
 
+### WEB-046
+
+- Date: `2026-04-14`
+- Time: `20:24`
+- Agenda: `/entries/new`에서 `직관` 기록의 경기장 입력을 선택사항으로 둘지, 저장 전 필수로 요구할지 결정
+- Participants: User, Codex
+- Options Considered:
+  - 경기장 입력은 계속 선택사항으로 두고, 비어 있어도 직관 기록 저장을 허용한다
+  - 관람 형태가 `직관`일 때는 경기장 선택을 필수로 요구한다
+- Decision: `/entries/new`에서는 관람 형태가 `직관`일 때 경기장 선택을 필수로 요구한다.
+- Rationale: 현재 홈 화면의 구장 관련 요약은 직관 기록에 쌓인 경기장 데이터를 기준으로 읽히는데, 직관 기록이 경기장 없이 저장되면 요약 품질이 쉽게 무너진다. 직관을 선택한 사용자는 이미 현장 관람이라는 구체적 맥락을 기록하려는 상태이므로, 구장을 함께 남기도록 유도하는 편이 더 자연스럽다.
+- Impact:
+  - `직관` 선택 상태에서 경기장을 고르지 않으면 저장 전에 인라인 에러가 표시된다
+  - 직관 기록의 구장 데이터 누락이 줄어든다
+  - 홈과 시즌 요약의 직관/구장 관련 집계 신뢰도가 높아진다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+
 ### WEB-044
 
 - Date: `2026-04-14`
