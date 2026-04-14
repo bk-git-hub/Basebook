@@ -864,3 +864,23 @@
 - Status: `approved`
 - Related Docs:
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+
+### WEB-041
+
+- Date: `2026-04-14`
+- Time: `19:42`
+- Agenda: 공통 `AppShell`의 Basebook navigation bar card를 유지할지, 홈 복귀 액션만 남기는 얇은 셸로 바꿀지 결정
+- Participants: User, Codex
+- Options Considered:
+  - 공통 `AppShell`의 브랜드/네비게이션 카드 구조를 유지하고, 각 화면에서 개별 조정만 계속한다
+  - 공통 `AppShell`에서는 Basebook navigation bar card를 제거하고, 홈 복귀 버튼과 섹션 헤더만 남긴다
+- Decision: 공통 `AppShell`에서는 Basebook navigation bar card를 제거하고, `홈으로 돌아가기` 버튼과 섹션 헤더만 남기는 얇은 구조로 바꾼다.
+- Rationale: 이미 `/entries/new`에서 더 가벼운 상단 구조가 사용자 기준으로 더 적합하다는 방향이 확인됐다. 작업형 화면에서 브랜드 카드와 nav pill이 반복되면 본문 진입이 늦어지고, 화면마다 개별적으로 제거하는 것보다 공통 셸을 얇게 만드는 편이 제품 일관성과 유지보수 모두에 유리하다.
+- Impact:
+  - `AppShell`을 쓰는 `/season`, `/entries/[id]`, `/entries/[id]/edit`, `/order/*`, `/season-book/new` 상단 chrome이 전반적으로 가벼워진다
+  - 각 화면별 맥락형 `이전 페이지로 돌아가기` 액션은 후속 개별 polishing 작업에서 추가할 수 있다
+  - `/entries/new`는 이미 비슷한 방향이라 이번 공통 셸 단순화와 충돌하지 않는다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
