@@ -236,3 +236,16 @@
 - Required action: Authenticate Railway once from the user's interactive terminal or browser session, then resume backend deployment with the prepared Dockerfile, mounted volume, and Railway service variables.
 - User notified: yes
 - Status: open
+
+## SYNC-017
+
+- Date: 2026-04-14
+- Time: 20:49
+- Source role: Backend
+- Target role: Frontend
+- Type: ready
+- Related area: `apps/web/public/sample-images` public hosting path
+- Summary: Backend added a batch upload script in `apps/api` and used it to upload 18 files from `apps/web/public/sample-images` to public Cloudflare R2 URLs. This keeps the API on local `localhost:4000` for now while making the image layer public and Sweetbook-compatible.
+- Required action: Frontend can replace local sample-image references with the uploaded public R2 URLs when ready, without waiting for the whole app to move to Railway. If a fileName-to-URL manifest is needed, request the latest upload output from backend.
+- User notified: yes
+- Status: open
