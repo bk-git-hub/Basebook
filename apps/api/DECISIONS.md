@@ -674,7 +674,6 @@
 - Owner: User
 - Status: `approved`
 - Related Docs:
-  - `apps/api/docs/railway-deploy.md`
   - `apps/api/Dockerfile`
   - `apps/api/.env.example`
 - Related Milestones:

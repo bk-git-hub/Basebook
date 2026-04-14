@@ -57,19 +57,6 @@ Important production-like settings:
 - `R2_BUCKET`
 - `R2_PUBLIC_BASE_URL`
 
-## Railway Deployment
-
-Railway deployment steps live here:
-
-- `apps/api/docs/railway-deploy.md`
-
-Current deployment shape:
-
-- Railway runs the Nest API
-- SQLite lives on a mounted Railway volume
-- Cloudflare R2 serves uploaded images in deployed mode
-- Sweetbook secrets stay in Railway service variables
-
 ## Current Backend Scope
 
 - `GET /health`

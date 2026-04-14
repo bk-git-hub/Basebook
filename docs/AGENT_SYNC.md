@@ -233,6 +233,6 @@
 - Type: blocker
 - Related area: `apps/api` Railway deployment
 - Summary: Backend Railway deployment assets are prepared and local build plus tests passed, but the first real deploy is blocked because Railway CLI login cannot complete in this non-interactive Codex session.
-- Required action: Authenticate Railway once from the user's interactive terminal or browser session, then resume backend deployment with the prepared `apps/api/docs/railway-deploy.md` steps.
+- Required action: Authenticate Railway once from the user's interactive terminal or browser session, then resume backend deployment with the prepared Dockerfile, mounted volume, and Railway service variables.
 - User notified: yes
 - Status: open

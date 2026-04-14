@@ -100,5 +100,5 @@ Last known result: all three passed on 2026-04-14 after the Railway deployment-p
 
 1. Read `docs/AGENT_SYNC.md` and this file.
 2. Run `git status --short --branch`.
-3. If Railway login is ready, complete the first backend deploy using `apps/api/docs/railway-deploy.md`.
+3. If Railway login is ready, complete the first backend deploy using the prepared Dockerfile and Railway env settings.
 4. Verify the deployed `/health` endpoint and one R2-backed upload before moving to the next backend slice.

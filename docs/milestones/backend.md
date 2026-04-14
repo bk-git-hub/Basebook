@@ -283,7 +283,7 @@
 - Summary:
   - `apps/api` now includes a Railway-ready Dockerfile for the monorepo structure
   - production env loading no longer falls back to placeholder example values on Railway
-  - backend deployment documentation now covers Railway variables, persistent SQLite volume setup, and R2-based upload hosting
+  - backend deployment assets now cover the required Railway variables, persistent SQLite volume setup, and R2-based upload hosting
 - Related Decision IDs:
   - `API-024`
 - Blocking Items:
