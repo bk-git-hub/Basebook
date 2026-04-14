@@ -1,190 +1,171 @@
 import type { TeamCode } from "@basebook/contracts";
 
-export type TeamBadgeCharacter =
-  | "cat"
-  | "bear"
-  | "puppy"
-  | "hero"
-  | "wizard"
-  | "dino"
-  | "tiger"
-  | "seagull"
-  | "lion"
-  | "eagle";
-
-export type TeamBadgeHeadwear =
-  | "bow"
-  | "cap"
-  | "helmet"
-  | "halo"
-  | "none";
-
 export type TeamMeta = {
   code: TeamCode;
   label: string;
-  shortLabel: string;
-  initials: string;
+  capLetter: string;
   palette: {
-    primary: string;
-    secondary: string;
-    accent: string;
+    backgroundStart: string;
+    backgroundEnd: string;
+    cap: string;
+    capBrim: string;
+    capText: string;
     face: string;
+    hair: string;
+    blush: string;
   };
-  character: TeamBadgeCharacter;
-  headwear: TeamBadgeHeadwear;
-  foreheadMark?: "heart" | "star" | "diamond" | "stripe" | "none";
 };
 
 export const TEAM_META: Record<TeamCode, TeamMeta> = {
   LG: {
     code: "LG",
     label: "LG 트윈스",
-    shortLabel: "트윈스",
-    initials: "LG",
+    capLetter: "T",
     palette: {
-      primary: "#D94A74",
-      secondary: "#F8BECF",
-      accent: "#8D1F43",
-      face: "#FFF6EE",
+      backgroundStart: "#F8BECF",
+      backgroundEnd: "#D94A74",
+      cap: "#AA214F",
+      capBrim: "#80133A",
+      capText: "#FFF9FB",
+      face: "#FFF3E8",
+      hair: "#5A3429",
+      blush: "#F2A9BA",
     },
-    character: "cat",
-    headwear: "bow",
-    foreheadMark: "heart",
   },
   DOOSAN: {
     code: "DOOSAN",
     label: "두산 베어스",
-    shortLabel: "베어스",
-    initials: "DS",
+    capLetter: "D",
     palette: {
-      primary: "#1F2A44",
-      secondary: "#B8C6E5",
-      accent: "#4D5F8C",
-      face: "#FFF5EA",
+      backgroundStart: "#D4DEF3",
+      backgroundEnd: "#7C96C9",
+      cap: "#22355E",
+      capBrim: "#172643",
+      capText: "#F4F8FF",
+      face: "#FFF4EA",
+      hair: "#4D3429",
+      blush: "#D8C2BD",
     },
-    character: "bear",
-    headwear: "cap",
-    foreheadMark: "none",
   },
   SSG: {
     code: "SSG",
     label: "SSG 랜더스",
-    shortLabel: "랜더스",
-    initials: "SSG",
+    capLetter: "L",
     palette: {
-      primary: "#C8CDD8",
-      secondary: "#EEF1F6",
-      accent: "#C53D43",
-      face: "#FFF7F1",
+      backgroundStart: "#F3F4F7",
+      backgroundEnd: "#C8CDD8",
+      cap: "#6D7583",
+      capBrim: "#C53D43",
+      capText: "#FFFFFF",
+      face: "#FFF5EC",
+      hair: "#5C4336",
+      blush: "#E7C6CB",
     },
-    character: "puppy",
-    headwear: "none",
-    foreheadMark: "star",
   },
   KIWOOM: {
     code: "KIWOOM",
     label: "키움 히어로즈",
-    shortLabel: "히어로즈",
-    initials: "KW",
+    capLetter: "K",
     palette: {
-      primary: "#7E2947",
-      secondary: "#E7B9C8",
-      accent: "#4F1732",
-      face: "#FFF3EE",
+      backgroundStart: "#E8BCD0",
+      backgroundEnd: "#9D4466",
+      cap: "#7E2947",
+      capBrim: "#4F1732",
+      capText: "#FFF7FB",
+      face: "#FFF1EB",
+      hair: "#513127",
+      blush: "#E7B2C6",
     },
-    character: "hero",
-    headwear: "helmet",
-    foreheadMark: "diamond",
   },
   KT: {
     code: "KT",
     label: "KT 위즈",
-    shortLabel: "위즈",
-    initials: "KT",
+    capLetter: "W",
     palette: {
-      primary: "#232225",
-      secondary: "#F39AA5",
-      accent: "#C3374B",
-      face: "#FFF4EB",
+      backgroundStart: "#F7B0BC",
+      backgroundEnd: "#D44961",
+      cap: "#232225",
+      capBrim: "#C3374B",
+      capText: "#FFF8F9",
+      face: "#FFF3EA",
+      hair: "#403129",
+      blush: "#F0B0B5",
     },
-    character: "wizard",
-    headwear: "halo",
-    foreheadMark: "stripe",
   },
   NC: {
     code: "NC",
     label: "NC 다이노스",
-    shortLabel: "다이노스",
-    initials: "NC",
+    capLetter: "D",
     palette: {
-      primary: "#2E6370",
-      secondary: "#B3E4EF",
-      accent: "#153B4B",
-      face: "#FDF5EE",
+      backgroundStart: "#CBEFF6",
+      backgroundEnd: "#71BFD2",
+      cap: "#2E6370",
+      capBrim: "#153B4B",
+      capText: "#F6FDFF",
+      face: "#FFF5ED",
+      hair: "#4B3429",
+      blush: "#BFE0E6",
     },
-    character: "dino",
-    headwear: "none",
-    foreheadMark: "none",
   },
   KIA: {
     code: "KIA",
     label: "KIA 타이거즈",
-    shortLabel: "타이거즈",
-    initials: "KIA",
+    capLetter: "T",
     palette: {
-      primary: "#B6233D",
-      secondary: "#FFD5C7",
-      accent: "#15304F",
-      face: "#FFF4EA",
+      backgroundStart: "#FFD6C7",
+      backgroundEnd: "#E79B86",
+      cap: "#B6233D",
+      capBrim: "#15304F",
+      capText: "#FFF8FA",
+      face: "#FFF2E7",
+      hair: "#5E3628",
+      blush: "#F0BCB3",
     },
-    character: "tiger",
-    headwear: "none",
-    foreheadMark: "stripe",
   },
   LOTTE: {
     code: "LOTTE",
     label: "롯데 자이언츠",
-    shortLabel: "자이언츠",
-    initials: "LO",
+    capLetter: "G",
     palette: {
-      primary: "#0E3766",
-      secondary: "#BFD7F4",
-      accent: "#D73A4A",
-      face: "#FFF5ED",
+      backgroundStart: "#D2E0FA",
+      backgroundEnd: "#87A9DD",
+      cap: "#0E3766",
+      capBrim: "#D73A4A",
+      capText: "#F7FBFF",
+      face: "#FFF4EB",
+      hair: "#503227",
+      blush: "#D3C2C0",
     },
-    character: "seagull",
-    headwear: "cap",
-    foreheadMark: "diamond",
   },
   SAMSUNG: {
     code: "SAMSUNG",
     label: "삼성 라이온즈",
-    shortLabel: "라이온즈",
-    initials: "SL",
+    capLetter: "S",
     palette: {
-      primary: "#1455C0",
-      secondary: "#C6DCFF",
-      accent: "#0E3580",
-      face: "#FFF6EE",
+      backgroundStart: "#D7E6FF",
+      backgroundEnd: "#90B8F6",
+      cap: "#1455C0",
+      capBrim: "#0E3580",
+      capText: "#F6FAFF",
+      face: "#FFF4EA",
+      hair: "#5B392A",
+      blush: "#C4D8F6",
     },
-    character: "lion",
-    headwear: "none",
-    foreheadMark: "star",
   },
   HANWHA: {
     code: "HANWHA",
     label: "한화 이글스",
-    shortLabel: "이글스",
-    initials: "HE",
+    capLetter: "E",
     palette: {
-      primary: "#F1792B",
-      secondary: "#FFD9AD",
-      accent: "#A64718",
-      face: "#FFF4E9",
+      backgroundStart: "#FFE0BE",
+      backgroundEnd: "#F5AF61",
+      cap: "#F1792B",
+      capBrim: "#A64718",
+      capText: "#FFF9F4",
+      face: "#FFF2E6",
+      hair: "#573528",
+      blush: "#F4C6A0",
     },
-    character: "eagle",
-    headwear: "none",
-    foreheadMark: "heart",
   },
 };
 

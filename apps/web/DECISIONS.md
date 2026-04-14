@@ -524,3 +524,23 @@
 - Status: `approved`
 - Related Docs:
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+
+### WEB-023
+
+- Date: `2026-04-14`
+- Time: `14:34`
+- Agenda: 팀 배지를 종별 캐릭터 해석으로 유지할지, 사람 얼굴과 모자 중심의 단순 이모티콘으로 다시 정리할지 결정
+- Participants: User, Codex
+- Options Considered:
+  - 종별 캐릭터 모티프를 유지하면서 디테일만 계속 보정한다
+  - 배지를 전부 웃는 사람 얼굴 + 팀별 컬러 모자 구조로 통일하고, 모자 전면 한 글자로만 팀 차이를 준다
+- Decision: 팀 선택 배지는 웃는 사람 얼굴과 야구모자 구조로 통일하고, 팀별 차이는 배경색, 모자색, 모자 앞 한 글자 이니셜로만 표현한다. 모자 글자는 `LG:T`, `두산:D`, `SSG:L`, `키움:K`, `KT:W`, `NC:D`, `KIA:T`, `롯데:G`, `삼성:S`, `한화:E`로 고정하며, 카드의 상단 이니셜 칩과 하단 `OO 배지` 보조 문구는 제거한다.
+- Rationale: 이전 버전은 개성은 있었지만 배지마다 시각 문법이 달라져 제품 전체 인상이 약간 산만해졌다. 사람 얼굴 이모티콘과 모자 중심으로 통일하면 더 귀엽고 읽기 쉬우며, 팀별 컬러와 한 글자만으로도 충분한 구분감을 만들 수 있다.
+- Impact:
+  - 팀 선택 카드가 더 단순하고 통일된 인상으로 정리된다
+  - 별도 이니셜 칩이 사라져 카드 상단 밀도가 낮아진다
+  - 2글자, 3글자 대응 문제 없이 모든 팀을 동일한 구조로 렌더링할 수 있다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`

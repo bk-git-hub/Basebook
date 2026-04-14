@@ -3,7 +3,7 @@
 import type { TeamCode } from "@basebook/contracts";
 
 import { TeamBadge } from "@/components/team-badge";
-import { TEAM_META, TEAM_OPTIONS } from "@/lib/team-meta";
+import { TEAM_OPTIONS } from "@/lib/team-meta";
 
 type TeamPickerProps = {
   label: string;
@@ -31,9 +31,7 @@ export function TeamPicker({
         className="grid grid-cols-2 gap-3 sm:grid-cols-5"
       >
         {TEAM_OPTIONS.map((option) => {
-          const team = TEAM_META[option.value];
           const isSelected = option.value === value;
-          const isWideInitials = team.initials.length >= 3;
 
           return (
             <button
@@ -48,33 +46,13 @@ export function TeamPicker({
                   : "border-stone-200 bg-stone-50 text-stone-900 hover:border-stone-300 hover:bg-white"
               }`}
             >
-              <div className="flex items-center justify-between gap-2">
-                <TeamBadge team={option.value} size={52} />
-                <span
-                  className={`inline-flex items-center justify-center rounded-full py-1 font-semibold ${
-                    isWideInitials
-                      ? "min-w-[3.6rem] px-2.5 text-[9px] tracking-[0.12em]"
-                      : "min-w-[3.15rem] px-2 text-[10px] tracking-[0.18em]"
-                  } ${
-                    isSelected
-                      ? "bg-white/12 text-stone-200"
-                      : "bg-white text-stone-500 ring-1 ring-stone-200"
-                  }`}
-                >
-                  {team.initials}
-                </span>
+              <div className="flex justify-center">
+                <TeamBadge team={option.value} size={60} />
               </div>
 
-              <div className="mt-3 space-y-1">
-                <p className="text-sm font-semibold">{option.label}</p>
-                <p
-                  className={`text-xs ${
-                    isSelected ? "text-stone-300" : "text-stone-500"
-                  }`}
-                >
-                  {team.shortLabel} 배지
-                </p>
-              </div>
+              <p className="mt-3 text-center text-sm font-semibold">
+                {option.label}
+              </p>
             </button>
           );
         })}
