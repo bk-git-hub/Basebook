@@ -223,3 +223,16 @@
 - Required action: Frontend does not need a new call immediately, but can assume `GET /season-books/:projectId/status` may change after asynchronous webhook delivery without a direct user action.
 - User notified: yes
 - Status: open
+
+## SYNC-016
+
+- Date: 2026-04-14
+- Time: 14:27
+- Source role: Backend
+- Target role: CTO
+- Type: blocker
+- Related area: `apps/api` Railway deployment
+- Summary: Backend Railway deployment assets are prepared and local build plus tests passed, but the first real deploy is blocked because Railway CLI login cannot complete in this non-interactive Codex session.
+- Required action: Authenticate Railway once from the user's interactive terminal or browser session, then resume backend deployment with the prepared `apps/api/docs/railway-deploy.md` steps.
+- User notified: yes
+- Status: open

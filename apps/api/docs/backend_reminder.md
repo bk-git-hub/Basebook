@@ -53,6 +53,7 @@ This file is a quick restart note for the next backend work session.
 - `API-021`: Persist season-book shipping info in SQLite and keep `db:init` auto-upgrading existing local databases.
 - `API-022`: Expand the season-book status contract so the existing status response can also return shipping prefill data.
 - `API-023`: Webhook signature verification is optional in local development and enforced when the webhook secret is configured.
+- `API-024`: Railway is the chosen backend deployment target for the assignment demo; SQLite stays on a Railway volume and uploads should use Cloudflare R2 in deployed mode.
 
 ## Environment Notes
 
@@ -72,6 +73,8 @@ This file is a quick restart note for the next backend work session.
 - `SWEETBOOK_ORDER_MODE=sandbox` can place Sweetbook sandbox orders and may deduct sandbox credits, so only enable it intentionally.
 - `SWEETBOOK_WEBHOOK_SECRET` can stay blank for local development; when filled, incoming Sweetbook webhooks must pass HMAC-SHA256 signature verification.
 - `npm run db:init` now also appends missing nullable shipping columns on existing local SQLite files, so old local DBs upgrade automatically without a manual reset.
+- Railway deployment should use `DATABASE_URL=file:/data/dev.db` with a mounted `/data` volume.
+- Railway deployment should set `UPLOAD_STORAGE_DRIVER=r2` so uploaded images are public and survive restarts independently of the API container.
 
 ## Last Verified Commands
 
@@ -83,17 +86,19 @@ npm test -- --runInBand
 npm run test:e2e -- --runInBand
 ```
 
-Last known result: all three passed on 2026-04-14 after the status-shipping slice.
+Last known result: all three passed on 2026-04-14 after the Railway deployment-prep slice.
 
 ## Known Open Backend Follow-Ups
 
 - Real Sweetbook order placement is wired for sandbox mode, but production/live ordering remains a separate risk decision.
 - After the user finishes Cloudflare setup, run `npm run r2:check` from `apps/api` to verify a real public image upload.
 - If R2 check passes, test the frontend upload-to-estimate path again so Sweetbook can receive a public `coverPhotoUrl`.
+- Railway deployment still requires Railway CLI login on the user's machine before the first real deploy can be executed.
+- After the first Railway deploy, record the generated public API URL and use it to verify `GET /health` plus one real upload request.
 
 ## Next Session Suggested Start
 
 1. Read `docs/AGENT_SYNC.md` and this file.
 2. Run `git status --short --branch`.
-3. Ask the user whether to prioritize real Sweetbook sandbox validation or production deployment prep.
-4. If validating Sweetbook sandbox ordering, first confirm sandbox credit usage risk before running a real order request.
+3. If Railway login is ready, complete the first backend deploy using `apps/api/docs/railway-deploy.md`.
+4. Verify the deployed `/health` endpoint and one R2-backed upload before moving to the next backend slice.

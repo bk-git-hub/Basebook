@@ -646,3 +646,36 @@
   - `apps/api/src/webhooks/sweetbook-webhooks.service.ts`
 - Related Milestones:
   - `docs/milestones/backend.md`
+
+### API-024
+
+- Date: `2026-04-14`
+- Time: `16:20`
+- Agenda: Assignment demo backend deployment target and persistence shape
+- Participants: User, Codex
+- Options Considered:
+  - Keep backend local-only and postpone deployment
+  - Deploy backend on a lower-level infrastructure stack such as AWS
+  - Deploy backend on Railway with the current SQLite plus R2 architecture
+- Decision:
+  - Use Railway as the backend deployment target for the assignment demo
+  - Keep the current SQLite-backed backend for this phase, but place the database file on a mounted Railway volume
+  - Use Cloudflare R2 for deployed image hosting instead of relying on container-local uploads
+- Rationale:
+  - The user wants a final runnable deployed form in addition to the mandatory local run path, but does not want to take on unnecessary infrastructure complexity
+  - Railway reduces operational burden compared with a lower-level cloud setup while still allowing a persistent disk and a public backend URL
+  - Keeping SQLite for the assignment minimizes migration risk, while a mounted volume removes the biggest deployment-time failure mode for local-file databases
+  - Deployed image URLs must stay public and stable for Sweetbook integration, which makes R2 the safer deployed storage path
+- Impact:
+  - backend deployment preparation should target Railway first, not AWS or another custom host
+  - deployment setup must include a persistent `/data` volume and `DATABASE_URL=file:/data/dev.db`
+  - deployment docs should treat `UPLOAD_STORAGE_DRIVER=r2` as the deployed default
+  - local execution remains unchanged and still uses app-level env files plus local fallbacks where appropriate
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `apps/api/docs/railway-deploy.md`
+  - `apps/api/Dockerfile`
+  - `apps/api/.env.example`
+- Related Milestones:
+  - `docs/milestones/backend.md`

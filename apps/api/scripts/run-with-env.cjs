@@ -13,9 +13,23 @@ if (!command) {
   process.exit(1);
 }
 
-const envFilePath = existsSync(envPath) ? envPath : fallbackEnvPath;
+function shouldLoadFallbackEnvExample(env = process.env) {
+  const runningOnRailway = Boolean(
+    env.RAILWAY_PROJECT_ID ||
+      env.RAILWAY_ENVIRONMENT_ID ||
+      env.RAILWAY_SERVICE_ID,
+  );
 
-if (existsSync(envFilePath)) {
+  return !runningOnRailway && env.NODE_ENV !== 'production';
+}
+
+const envFilePath = existsSync(envPath)
+  ? envPath
+  : shouldLoadFallbackEnvExample()
+    ? fallbackEnvPath
+    : null;
+
+if (envFilePath && existsSync(envFilePath)) {
   dotenv.config({ path: envFilePath });
 }
 

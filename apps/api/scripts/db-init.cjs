@@ -8,6 +8,16 @@ const apiRoot = resolve(__dirname, '..');
 const envPath = resolve(apiRoot, '.env');
 const fallbackEnvPath = resolve(apiRoot, '.env.example');
 
+function shouldLoadFallbackEnvExample(env = process.env) {
+  const runningOnRailway = Boolean(
+    env.RAILWAY_PROJECT_ID ||
+      env.RAILWAY_ENVIRONMENT_ID ||
+      env.RAILWAY_SERVICE_ID,
+  );
+
+  return !runningOnRailway && env.NODE_ENV !== 'production';
+}
+
 const quoteForCmd = (value) => {
   if (!/[\s"]/u.test(value)) {
     return value;
@@ -17,9 +27,13 @@ const quoteForCmd = (value) => {
 };
 
 function loadEnv() {
-  const envFilePath = existsSync(envPath) ? envPath : fallbackEnvPath;
+  const envFilePath = existsSync(envPath)
+    ? envPath
+    : shouldLoadFallbackEnvExample()
+      ? fallbackEnvPath
+      : null;
 
-  if (existsSync(envFilePath)) {
+  if (envFilePath && existsSync(envFilePath)) {
     dotenv.config({ path: envFilePath });
   }
 }

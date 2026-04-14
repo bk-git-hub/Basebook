@@ -273,3 +273,20 @@
   - user verification pending
 - Next Step:
   - decide whether to spend the next slice on real Sweetbook sandbox validation or deployment-readiness cleanup
+
+### BE-MILESTONE-015
+
+- Date: `2026-04-14`
+- Time: `16:20`
+- Milestone: Railway deployment path prepared for the backend API
+- Status: `ready_for_review`
+- Summary:
+  - `apps/api` now includes a Railway-ready Dockerfile for the monorepo structure
+  - production env loading no longer falls back to placeholder example values on Railway
+  - backend deployment documentation now covers Railway variables, persistent SQLite volume setup, and R2-based upload hosting
+- Related Decision IDs:
+  - `API-024`
+- Blocking Items:
+  - Railway CLI login and first real deploy still require the user's authenticated Railway session
+- Next Step:
+  - authenticate Railway on the user's machine and execute the first backend deployment
