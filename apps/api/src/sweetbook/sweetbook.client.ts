@@ -49,6 +49,9 @@ export type SweetbookOrderDetail = {
   orderStatus?: number;
   orderStatusDisplay?: string;
   totalAmount?: number;
+  refundAmount?: number;
+  cancelReason?: string;
+  cancelledAt?: string;
   orderedAt?: string;
 };
 
@@ -204,6 +207,19 @@ export class SweetbookClient {
   async getOrder(orderUid: string): Promise<SweetbookOrderDetail> {
     return this.request<SweetbookOrderDetail>({
       path: `/orders/${encodeURIComponent(orderUid)}`,
+    });
+  }
+
+  async cancelOrder(
+    orderUid: string,
+    cancelReason: string,
+  ): Promise<SweetbookOrderDetail> {
+    return this.request<SweetbookOrderDetail>({
+      path: `/orders/${encodeURIComponent(orderUid)}/cancel`,
+      method: 'POST',
+      body: {
+        cancelReason,
+      },
     });
   }
 

@@ -7,6 +7,7 @@ describe('SeasonBooksService', () => {
   const prisma = {
     seasonBookProject: {
       findFirst: jest.fn(),
+      update: jest.fn(),
     },
   } as unknown as PrismaService;
   const estimator = {} as never;
@@ -14,6 +15,7 @@ describe('SeasonBooksService', () => {
   const sweetbookClient = {
     isConfigured: jest.fn(),
     getOrder: jest.fn(),
+    cancelOrder: jest.fn(),
   } as unknown as SweetbookClient;
 
   const service = new SeasonBooksService(
@@ -137,6 +139,42 @@ describe('SeasonBooksService', () => {
 
     await expect(service.getSeasonBookStatus('missing-project')).rejects.toBeInstanceOf(
       NotFoundException,
+    );
+  });
+
+  it('cancels a local order while keeping the project in ordered history', async () => {
+    prisma.seasonBookProject.findFirst.mockResolvedValue({
+      id: 'project-3',
+      ownerId: 'demo-user-001',
+      orderUid: 'local-order-123',
+      projectStatus: 'ORDERED',
+      orderStatus: 'CONFIRMED',
+      updatedAt: new Date('2026-04-14T13:00:00Z'),
+    });
+    prisma.seasonBookProject.update.mockResolvedValue({
+      id: 'project-3',
+      ownerId: 'demo-user-001',
+      orderUid: 'local-order-123',
+      projectStatus: 'ORDERED',
+      orderStatus: 'CANCELLED_REFUND',
+    });
+
+    const result = await service.cancelSeasonBookOrder('project-3', {
+      cancelReason: '테스트 취소',
+    });
+
+    expect(result.projectId).toBe('project-3');
+    expect(result.orderUid).toBe('local-order-123');
+    expect(result.projectStatus).toBe('ORDERED');
+    expect(result.orderStatus).toBe('CANCELLED_REFUND');
+    expect(result.cancelReason).toBe('테스트 취소');
+    expect(prisma.seasonBookProject.update).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          projectStatus: 'ORDERED',
+          orderStatus: 'CANCELLED_REFUND',
+        }),
+      }),
     );
   });
 });

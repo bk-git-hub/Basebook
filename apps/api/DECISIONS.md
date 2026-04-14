@@ -530,3 +530,29 @@
   - `docs/planning/BACKEND_FUNCTIONAL_SPEC.md`
 - Related Milestones:
   - `docs/milestones/backend.md`
+
+### API-020
+
+- Date: `2026-04-14`
+- Time: `13:19`
+- Agenda: Project state handling after season-book order cancellation
+- Participants: User, Codex
+- Options Considered:
+  - Return the project to an orderable state after cancellation
+  - Keep the project in an ordered lifecycle state and preserve cancellation as final order history
+- Decision:
+  - Keep `projectStatus` as `ORDERED` after cancellation
+  - Use `orderStatus` such as `CANCELLED_REFUND` to represent the terminal cancelled state
+  - Do not make cancellation behave like a reversible order/unorder toggle in the current product flow
+- Rationale: The user wants cancellation to remain a historical order result, not a UI toggle that silently reopens the same project for ordering again.
+- Impact:
+  - frontend only needs to render cancellation as a terminal order state
+  - backend should not automatically reopen the same project for re-order from the cancellation path
+  - future re-order support, if ever needed, should be treated as a separate explicit product feature
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/CONTRACT_SPEC.md`
+  - `docs/planning/BACKEND_FUNCTIONAL_SPEC.md`
+- Related Milestones:
+  - `docs/milestones/backend.md`

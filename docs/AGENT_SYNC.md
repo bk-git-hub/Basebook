@@ -147,3 +147,15 @@
 - Required action: Frontend may plan or stub the related order-management UI against the fixed request and response shapes while backend implementation follows in later slices.
 - User notified: yes
 - Status: open
+
+## SYNC-011
+- Date: 2026-04-14
+- Time: 13:23
+- Source role: Backend
+- Target role: Frontend
+- Type: ready
+- Related area: `POST /season-books/:projectId/cancel`
+- Summary: Backend implemented the season-book cancel endpoint. Cancellation keeps `projectStatus` as `ORDERED` and returns terminal order history through `orderStatus` such as `CANCELLED_REFUND`.
+- Required action: Frontend can wire the cancel action and render cancelled orders as terminal history, not as a reopened reorderable project.
+- User notified: yes
+- Status: open

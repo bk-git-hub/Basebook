@@ -35,6 +35,7 @@ This file is a quick restart note for the next backend work session.
 - `POST /season-books/estimate` is implemented with local fallback and Sweetbook-backed `auto` mode.
 - `POST /season-books/order` is implemented as a local order completion path for already estimated projects.
 - `GET /season-books/:projectId/status` is implemented for order-progress polling with local fallback and optional Sweetbook order refresh.
+- `POST /season-books/:projectId/cancel` is implemented for local cancellation history and Sweetbook-backed cancel calls when configured.
 - Sweetbook sandbox readiness check script exists.
 
 ## Important Decisions
@@ -46,6 +47,7 @@ This file is a quick restart note for the next backend work session.
 - `API-014`: Keep local upload default; add optional Cloudflare R2 image storage without adding a new SDK dependency in that slice.
 - `API-015`: Implement the first order endpoint locally and keep real Sweetbook order placement as a follow-up decision.
 - `API-016`: Add Sweetbook sandbox order wiring behind an explicit `SWEETBOOK_ORDER_MODE=sandbox` flag while keeping local order as the default.
+- `API-020`: Keep cancelled orders as terminal order history instead of reopening the project for reorder by default.
 
 ## Environment Notes
 
@@ -79,6 +81,7 @@ Last known result: all three passed on 2026-04-14 after the Sweetbook sandbox or
 ## Known Open Backend Follow-Ups
 
 - Real Sweetbook order placement is wired for sandbox mode, but production/live ordering remains a separate risk decision.
+- Shipping update and webhook receive endpoints are still contract-defined but not implemented yet.
 - After the user finishes Cloudflare setup, run `npm run r2:check` from `apps/api` to verify a real public image upload.
 - If R2 check passes, test the frontend upload-to-estimate path again so Sweetbook can receive a public `coverPhotoUrl`.
 

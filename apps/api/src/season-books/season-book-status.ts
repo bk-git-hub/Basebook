@@ -40,6 +40,18 @@ export function mapSweetbookOrderStatus(
     return 'DELIVERED';
   }
 
+  if (status === 80) {
+    return 'CANCELLED';
+  }
+
+  if (status === 81) {
+    return 'CANCELLED_REFUND';
+  }
+
+  if (status === 90) {
+    return 'ERROR';
+  }
+
   return 'UNKNOWN';
 }
 
@@ -93,6 +105,15 @@ export function resolveProgressStepKey(input: {
 
   if (input.orderStatus === 'DELIVERED') {
     return 'DELIVERED';
+  }
+
+  if (
+    input.orderStatus === 'CANCELLED' ||
+    input.orderStatus === 'CANCELLED_REFUND' ||
+    input.orderStatus === 'ERROR' ||
+    input.orderStatus === 'UNKNOWN'
+  ) {
+    return null;
   }
 
   return null;

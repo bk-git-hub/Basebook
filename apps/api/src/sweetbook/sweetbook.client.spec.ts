@@ -149,6 +149,47 @@ describe('SweetbookClient', () => {
     );
   });
 
+  it('cancels orders with a cancel reason payload', async () => {
+    const fetchMock = jest.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => ({
+        data: {
+          orderUid: 'or_test123',
+          orderStatus: 81,
+          cancelReason: '고객 요청',
+          refundAmount: 3100,
+          cancelledAt: '2026-04-14T04:00:00Z',
+        },
+      }),
+    });
+    global.fetch = fetchMock as unknown as typeof fetch;
+
+    await expect(
+      new SweetbookClient().cancelOrder('or_test123', '고객 요청'),
+    ).resolves.toEqual({
+      orderUid: 'or_test123',
+      orderStatus: 81,
+      cancelReason: '고객 요청',
+      refundAmount: 3100,
+      cancelledAt: '2026-04-14T04:00:00Z',
+    });
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      'https://api-sandbox.sweetbook.com/v1/orders/or_test123/cancel',
+      expect.objectContaining({
+        method: 'POST',
+        headers: expect.objectContaining({
+          Authorization: 'Bearer SB.test-key',
+          'Content-Type': 'application/json',
+        }),
+        body: JSON.stringify({
+          cancelReason: '고객 요청',
+        }),
+      }),
+    );
+  });
+
   it('fails safely when the sandbox key is missing', async () => {
     process.env.SWEETBOOK_API_KEY = 'your_sandbox_api_key_here';
 

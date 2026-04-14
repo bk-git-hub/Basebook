@@ -320,6 +320,53 @@ describe('AppController (e2e)', () => {
       });
   });
 
+  it('/season-books/:projectId/cancel (POST) cancels a local order and keeps ordered history', async () => {
+    const estimateResponse = await request(baseUrl)
+      .post('/season-books/estimate')
+      .send({
+        seasonYear: 2026,
+        title: '2026 LG 직관 기록',
+        coverPhotoUrl: 'http://localhost:4000/uploads/local/cover-photo.png',
+        selectedEntryIds: ['entry-lg-2026-03-22'],
+      })
+      .expect(201);
+
+    await request(baseUrl)
+      .post('/season-books/order')
+      .send({
+        projectId: estimateResponse.body.projectId,
+        recipientName: '홍길동',
+        recipientPhone: '010-1234-5678',
+        postalCode: '06236',
+        address1: '서울특별시 강남구 테헤란로 123',
+      })
+      .expect(201);
+
+    await request(baseUrl)
+      .post(`/season-books/${estimateResponse.body.projectId}/cancel`)
+      .send({
+        cancelReason: '테스트 취소',
+      })
+      .expect(201)
+      .expect(({ body }) => {
+        expect(body.projectId).toBe(estimateResponse.body.projectId);
+        expect(body.orderUid).toMatch(/^local-order-/);
+        expect(body.projectStatus).toBe('ORDERED');
+        expect(body.orderStatus).toBe('CANCELLED_REFUND');
+        expect(body.cancelReason).toBe('테스트 취소');
+        expect(body.cancelledAt).toBeTruthy();
+      });
+
+    await request(baseUrl)
+      .get(`/season-books/${estimateResponse.body.projectId}/status`)
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body.projectStatus).toBe('ORDERED');
+        expect(body.orderStatus).toBe('CANCELLED_REFUND');
+        expect(body.source).toBe('LOCAL');
+      });
+  });
+
   it('/season-books/order (POST) rejects missing projects', () => {
     return request(baseUrl)
       .post('/season-books/order')

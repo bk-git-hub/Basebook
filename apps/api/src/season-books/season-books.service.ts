@@ -6,6 +6,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import type {
+  CancelSeasonBookOrderResponse,
   CurrencyCode,
   GetSeasonBookStatusResponse,
   SeasonBookEstimateResponse,
@@ -17,6 +18,7 @@ import { randomUUID } from 'node:crypto';
 import { DEMO_OWNER_ID } from '../entries/demo-owner';
 import { PrismaService } from '../prisma/prisma.service';
 import { SweetbookClient } from '../sweetbook/sweetbook.client';
+import type { CancelSeasonBookOrderDto } from './dto/cancel-season-book-order.dto';
 import type { EstimateSeasonBookDto } from './dto/estimate-season-book.dto';
 import type { OrderSeasonBookDto } from './dto/order-season-book.dto';
 import {
@@ -87,6 +89,68 @@ export class SeasonBooksService {
         occurredAt,
       ),
       updatedAt: project.updatedAt.toISOString(),
+    };
+  }
+
+  async cancelSeasonBookOrder(
+    projectId: string,
+    body: CancelSeasonBookOrderDto,
+  ): Promise<CancelSeasonBookOrderResponse> {
+    const project = await this.prisma.seasonBookProject.findFirst({
+      where: {
+        id: projectId,
+        ownerId: DEMO_OWNER_ID,
+      },
+    });
+
+    if (!project) {
+      throw new NotFoundException(`Season book project not found: ${projectId}`);
+    }
+
+    if (!project.orderUid) {
+      throw new BadRequestException(
+        'Season book project does not have an order to cancel.',
+      );
+    }
+
+    if (
+      project.orderStatus === 'CANCELLED' ||
+      project.orderStatus === 'CANCELLED_REFUND'
+    ) {
+      return {
+        projectId: project.id,
+        orderUid: project.orderUid,
+        projectStatus: project.projectStatus as SeasonBookProjectStatus,
+        orderStatus: project.orderStatus as SeasonBookOrderStatus,
+        cancelReason: body.cancelReason,
+        cancelledAt: project.updatedAt.toISOString(),
+      };
+    }
+
+    const cancelResult = await this.cancelOrder(project.orderUid, body.cancelReason);
+
+    const cancelledProject = await this.prisma.seasonBookProject.update({
+      where: {
+        id: project.id,
+      },
+      data: {
+        projectStatus: 'ORDERED',
+        orderStatus: cancelResult.orderStatus as
+          | 'CANCELLED'
+          | 'CANCELLED_REFUND'
+          | 'ERROR'
+          | 'UNKNOWN',
+      },
+    });
+
+    return {
+      projectId: cancelledProject.id,
+      orderUid: cancelledProject.orderUid ?? project.orderUid,
+      projectStatus: cancelledProject.projectStatus as SeasonBookProjectStatus,
+      orderStatus: cancelledProject.orderStatus as SeasonBookOrderStatus,
+      cancelReason: cancelResult.cancelReason,
+      refundAmount: cancelResult.refundAmount,
+      cancelledAt: cancelResult.cancelledAt,
     };
   }
 
@@ -231,6 +295,35 @@ export class SeasonBooksService {
     }
 
     return uniqueEntryIds;
+  }
+
+  private async cancelOrder(orderUid: string, cancelReason: string) {
+    if (orderUid.startsWith('local-order-')) {
+      return {
+        orderStatus: 'CANCELLED_REFUND' as const,
+        cancelReason,
+        refundAmount: undefined,
+        cancelledAt: new Date().toISOString(),
+      };
+    }
+
+    if (!this.sweetbookClient.isConfigured()) {
+      throw new BadRequestException(
+        'Sweetbook order cancellation requires a configured Sandbox API key.',
+      );
+    }
+
+    const cancelledOrder = await this.sweetbookClient.cancelOrder(
+      orderUid,
+      cancelReason,
+    );
+
+    return {
+      orderStatus: mapSweetbookOrderStatus(cancelledOrder.orderStatus),
+      cancelReason: cancelledOrder.cancelReason ?? cancelReason,
+      refundAmount: cancelledOrder.refundAmount,
+      cancelledAt: cancelledOrder.cancelledAt,
+    };
   }
 
   private async tryRefreshSweetbookOrderStatus(orderUid: string | null) {

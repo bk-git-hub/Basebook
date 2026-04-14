@@ -186,3 +186,21 @@
   - backend implementation pending for the three new endpoints
 - Next Step:
   - implement `POST /season-books/:projectId/cancel` as the next smallest backend slice
+
+### BE-MILESTONE-010
+
+- Date: `2026-04-14`
+- Time: `13:23`
+- Milestone: Season-book order cancellation endpoint implemented
+- Status: `ready_for_review`
+- Summary:
+  - `POST /season-books/:projectId/cancel` is now available
+  - local orders can be cancelled into terminal history without reopening the project
+  - Sweetbook cancel wiring is prepared for configured external orders
+  - build, unit tests, and e2e tests all passed after Prisma client regeneration
+- Related Decision IDs:
+  - `API-020`
+- Blocking Items:
+  - user verification pending
+- Next Step:
+  - implement `PATCH /season-books/:projectId/shipping`
