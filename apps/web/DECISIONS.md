@@ -966,6 +966,26 @@
 - Related Docs:
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
 
+### WEB-047
+
+- Date: `2026-04-14`
+- Time: `20:26`
+- Agenda: `/entries/new`에서 관람 형태가 `직관`이 아닐 때도 직관 전용 카피와 입력 필드를 그대로 유지할지 결정
+- Participants: User, Codex
+- Options Considered:
+  - 헤더/사진 안내 문구는 그대로 두고, `관람 형태`만 값으로 저장한다
+  - 관람 형태에 따라 상단 문구를 조정하고, `직관` 전용 입력인 경기장/좌석은 현장 관람일 때만 노출한다
+- Decision: `/entries/new`에서는 관람 형태에 따라 상단 문구를 조정하고, 경기장/좌석은 `직관`일 때만 노출한다.
+- Rationale: 현재 화면은 `TV`, `모바일 시청`, `기타`를 지원하면서도 문구와 입력이 계속 직관 전제로 읽혀 의미가 어긋난다. 관람 형태가 바뀌면 화면도 그 맥락을 따라가야 사용자가 무엇을 왜 적는지 더 빠르게 이해할 수 있다.
+- Impact:
+  - `직관`이 아닐 때는 화면 카피가 더 중립적인 경기 기록 문맥으로 바뀐다
+  - 비직관 기록에서는 경기장/좌석 입력이 사라져 입력 피로가 줄어든다
+  - 브라우저 메타데이터도 `경기 기록 작성` 기준으로 정리되어 실제 지원 범위와 더 잘 맞는다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+
 ### WEB-044
 
 - Date: `2026-04-14`

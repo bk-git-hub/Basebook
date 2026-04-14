@@ -184,6 +184,23 @@ export function EntryCreateForm() {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const isStadiumVisit = values.watchType === "STADIUM";
+  const entryPageLabel = isStadiumVisit ? "새 직관 기록 작성" : "새 경기 기록 작성";
+  const entryPageHeading = isStadiumVisit
+    ? "오늘의 직관 기록을 남겨보세요"
+    : "오늘의 경기 기록을 남겨보세요";
+  const entryPageDescription = isStadiumVisit
+    ? "점수와 관람 정보를 빠르게 정리하고 사진과 감상을 더해, 시즌북에 담을 수 있는 한 경기의 기억을 완성합니다."
+    : "점수와 시청 정보를 빠르게 정리하고 사진과 감상을 더해, 시즌북에 담을 수 있는 한 경기의 기억을 완성합니다.";
+  const watchInfoHeading = isStadiumVisit
+    ? "결과와 관람 정보"
+    : "결과와 시청 정보";
+  const photoSectionDescription = isStadiumVisit
+    ? "사진을 먼저 올려두면 저장할 때 이번 기록에 함께 담깁니다. 저장 전에는 언제든 제외할 수 있습니다."
+    : "응원 장면이나 화면 캡처를 먼저 올려두면 저장할 때 이번 기록에 함께 담깁니다. 저장 전에는 언제든 제외할 수 있습니다.";
+  const emptyPhotoCopy = isStadiumVisit
+    ? "아직 업로드된 사진이 없습니다. 경기장의 분위기나 기억에 남는 장면을 함께 남겨보세요."
+    : "아직 업로드된 사진이 없습니다. 기억에 남는 장면이나 화면 캡처를 함께 남겨보세요.";
 
   function setFieldValue<K extends keyof EntryFormValues>(
     field: K,
@@ -200,6 +217,22 @@ export function EntryCreateForm() {
 
       const next = { ...current };
       delete next[field];
+      return next;
+    });
+  }
+
+  function handleWatchTypeChange(nextWatchType: WatchType) {
+    setValues((current) => ({
+      ...current,
+      watchType: nextWatchType,
+      stadium: nextWatchType === "STADIUM" ? current.stadium : "",
+      seat: nextWatchType === "STADIUM" ? current.seat : "",
+    }));
+    setFieldErrors((current) => {
+      const next = { ...current };
+      delete next.watchType;
+      delete next.stadium;
+      delete next.seat;
       return next;
     });
   }
@@ -324,14 +357,13 @@ export function EntryCreateForm() {
             </span>
             <div className="space-y-2">
               <p className="text-sm font-medium text-[#5a6f91]">
-                새 직관 기록 작성
+                {entryPageLabel}
               </p>
               <h1 className="text-3xl font-semibold tracking-tight text-[#11284f] sm:text-4xl">
-                오늘의 직관 기록을 남겨보세요
+                {entryPageHeading}
               </h1>
               <p className="max-w-2xl text-sm leading-7 text-[#4e6284]">
-                점수와 관람 정보를 빠르게 정리하고 사진과 감상을 더해, 시즌북에
-                담을 수 있는 한 경기의 기억을 완성합니다.
+                {entryPageDescription}
               </p>
             </div>
           </div>
@@ -408,7 +440,7 @@ export function EntryCreateForm() {
 
           <article className={SURFACE_PANEL_CLASS}>
             <h2 className="text-xl font-semibold tracking-tight text-[#11284f]">
-              결과와 관람 정보
+              {watchInfoHeading}
             </h2>
             <div className="mt-6 grid gap-4 sm:grid-cols-2">
               <label className="space-y-2">
@@ -437,7 +469,7 @@ export function EntryCreateForm() {
                 <select
                   value={values.watchType}
                   onChange={(event) =>
-                    setFieldValue("watchType", event.target.value as WatchType)
+                    handleWatchTypeChange(event.target.value as WatchType)
                   }
                   className={FIELD_CLASS}
                 >
@@ -487,40 +519,48 @@ export function EntryCreateForm() {
                 ) : null}
               </label>
 
-              <label className="space-y-2">
-                <span className="text-sm font-medium text-[#11284f]">
-                  경기장
-                </span>
-                <select
-                  value={values.stadium}
-                  onChange={(event) =>
-                    setFieldValue("stadium", event.target.value)
-                  }
-                  className={FIELD_CLASS}
-                >
-                  <option value="">경기장을 선택하세요</option>
-                  {KBO_STADIUM_OPTIONS.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-                {fieldErrors.stadium ? (
-                  <p className="text-sm text-[#c42d3c]">{fieldErrors.stadium}</p>
-                ) : null}
-              </label>
+              {isStadiumVisit ? (
+                <>
+                  <label className="space-y-2">
+                    <span className="text-sm font-medium text-[#11284f]">
+                      경기장
+                    </span>
+                    <select
+                      value={values.stadium}
+                      onChange={(event) =>
+                        setFieldValue("stadium", event.target.value)
+                      }
+                      className={FIELD_CLASS}
+                    >
+                      <option value="">경기장을 선택하세요</option>
+                      {KBO_STADIUM_OPTIONS.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                    {fieldErrors.stadium ? (
+                      <p className="text-sm text-[#c42d3c]">
+                        {fieldErrors.stadium}
+                      </p>
+                    ) : null}
+                  </label>
 
-              <label className="space-y-2">
-                <span className="text-sm font-medium text-[#11284f]">
-                  좌석
-                </span>
-                <input
-                  type="text"
-                  value={values.seat}
-                  onChange={(event) => setFieldValue("seat", event.target.value)}
-                  className={FIELD_CLASS}
-                />
-              </label>
+                  <label className="space-y-2">
+                    <span className="text-sm font-medium text-[#11284f]">
+                      좌석
+                    </span>
+                    <input
+                      type="text"
+                      value={values.seat}
+                      onChange={(event) =>
+                        setFieldValue("seat", event.target.value)
+                      }
+                      className={FIELD_CLASS}
+                    />
+                  </label>
+                </>
+              ) : null}
             </div>
           </article>
         </section>
@@ -585,8 +625,7 @@ export function EntryCreateForm() {
                 사진 업로드
               </h2>
               <p className="mt-2 text-sm leading-6 text-[#5a6f91]">
-                사진을 먼저 올려두면 저장할 때 이번 기록에 함께 담깁니다. 저장 전에는
-                언제든 제외할 수 있습니다.
+                {photoSectionDescription}
               </p>
             </div>
 
@@ -659,8 +698,7 @@ export function EntryCreateForm() {
               </ul>
             ) : (
               <div className="rounded-[24px] border border-dashed border-[#d7e3f2] bg-[#fbfdff] px-4 py-5 text-sm leading-7 text-[#5a6f91]">
-                아직 업로드된 사진이 없습니다. 경기장의 분위기나 기억에 남는 장면을
-                함께 남겨보세요.
+                {emptyPhotoCopy}
               </div>
             )}
           </article>
