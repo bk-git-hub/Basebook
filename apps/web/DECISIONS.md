@@ -824,3 +824,23 @@
 - Status: `approved`
 - Related Docs:
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+
+### WEB-038
+
+- Date: `2026-04-14`
+- Time: `19:23`
+- Agenda: `/entries/new`에서 공통 상단 네비게이션바를 유지할지, 페이지 히어로만 남길지 결정
+- Participants: User, Codex
+- Options Considered:
+  - 공통 `AppShell`을 유지하되 상단 네비게이션 pill만 제거하고 `홈으로 돌아가기` 줄은 남긴다
+  - `/entries/new`에서는 공통 상단 헤더 카드를 제거하고, 페이지 히어로 안에 `홈으로 돌아가기` 액션만 남긴다
+- Decision: `/entries/new`는 공통 상단 헤더 카드를 제거하고, 페이지 히어로 안에 `홈으로 돌아가기` 액션만 남긴다.
+- Rationale: 새 일지 작성 화면은 둘러보는 화면보다 바로 입력을 시작하는 화면에 가깝다. 공통 네비게이션 카드가 남아 있으면 첫 화면에서 읽어야 하는 정보가 한 겹 더 생겨 모바일 입력 시작점이 늦어진다. 반면 사용자는 홈 복귀 동선은 유지하길 원했으므로, 상단 액션은 페이지 히어로 내부에만 남기는 편이 가장 간결하다.
+- Impact:
+  - `/entries/new` 첫 화면이 공통 네비게이션 없이 바로 페이지 히어로부터 시작된다
+  - `홈으로 돌아가기` 액션은 유지되지만, 상단 chrome 높이는 줄어든다
+  - 이후 다른 입력형 화면도 같은 기준으로 공통 셸 사용 여부를 다시 판단할 수 있다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`

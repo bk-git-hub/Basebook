@@ -433,10 +433,10 @@ export function EntryCreateForm() {
 
           <div className="flex flex-wrap gap-3">
             <Link
-              href="/season"
+              href="/"
               className={SECONDARY_BUTTON_CLASS}
             >
-              시즌 대시보드로 돌아가기
+              홈으로 돌아가기
             </Link>
           </div>
         </div>
