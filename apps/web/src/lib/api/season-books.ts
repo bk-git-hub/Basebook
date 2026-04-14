@@ -1,4 +1,5 @@
 import type {
+  GetSeasonBookStatusResponse,
   SeasonBookEstimateRequest,
   SeasonBookEstimateResponse,
   SeasonBookOrderRequest,
@@ -33,4 +34,12 @@ export async function createSeasonBookOrder(
       body: JSON.stringify(payload),
     },
   });
+}
+
+export async function getSeasonBookStatus(
+  projectId: string,
+): Promise<GetSeasonBookStatusResponse> {
+  return fetchJson<GetSeasonBookStatusResponse>(
+    `/season-books/${encodeURIComponent(projectId)}/status`,
+  );
 }

@@ -394,3 +394,24 @@
 - Related Docs:
   - `docs/planning/CONTRACT_SPEC.md`
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+
+### WEB-017
+
+- Date: `2026-04-14`
+- Time: `13:00`
+- Agenda: 주문 상태 조회를 기존 `/order/[projectId]` 안에서 처리할지, 별도 상태 화면으로 분리할지 결정
+- Participants: User, Codex
+- Options Considered:
+  - 기존 `/order/[projectId]` 안에서 배송 입력, 주문 완료, 진행 상태 조회를 모두 처리
+  - `/order/[projectId]/status` 별도 화면을 추가하고, 주문 입력 화면은 생성에만 집중
+- Decision: 주문 상태 조회는 `/order/[projectId]/status` 전용 화면으로 분리한다.
+- Rationale: 주문 입력과 주문 추적은 사용자의 목적이 다르다. 별도 화면으로 분리하면 재진입과 새로고침에 강하고, 백엔드가 내려주는 `progress[]` 타임라인 응답을 자연스럽게 표현할 수 있다.
+- Impact:
+  - `/order/[projectId]/status` 라우트와 상태 조회 UI가 추가된다
+  - 주문 성공 후 사용자는 별도 상태 화면에서 제작 및 배송 진행 단계를 확인할 수 있다
+  - 기존 `/order/[projectId]`는 배송 정보 입력과 주문 접수에 집중한다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/CONTRACT_SPEC.md`
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`

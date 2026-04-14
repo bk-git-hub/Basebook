@@ -88,6 +88,10 @@ function formatPrice(value: number): string {
   return new Intl.NumberFormat("ko-KR").format(value);
 }
 
+function buildOrderStatusHref(projectId: string) {
+  return `/order/${encodeURIComponent(projectId)}/status`;
+}
+
 export function SeasonBookOrderForm({
   estimateSummary,
   projectId,
@@ -334,6 +338,12 @@ export function SeasonBookOrderForm({
                 <dd className="font-semibold">{orderResult.projectStatus}</dd>
               </div>
             </dl>
+            <Link
+              href={buildOrderStatusHref(orderResult.projectId)}
+              className="inline-flex w-full items-center justify-center rounded-full bg-emerald-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-emerald-800"
+            >
+              주문 진행 상태 보기
+            </Link>
           </div>
         ) : null}
 
