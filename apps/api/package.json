@@ -12,6 +12,7 @@
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "postinstall": "npm run db:generate",
     "r2:check": "node -r ts-node/register -r tsconfig-paths/register scripts/check-r2-upload.cjs",
+    "r2:upload-samples": "node -r ts-node/register -r tsconfig-paths/register scripts/upload-sample-images.cjs",
     "sweetbook:check": "node scripts/check-sweetbook-sandbox.cjs",
     "start": "npm run db:init && nest start",
     "start:dev": "npm run db:init && nest start --watch",
