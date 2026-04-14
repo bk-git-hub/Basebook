@@ -32,13 +32,19 @@ describe("Season dashboard QA smoke", () => {
     rerender(
       <SeasonDashboardErrorState
         message="백엔드 서버 연결에 실패했습니다."
-        apiBaseUrl="http://localhost:4000"
       />,
     );
 
     expect(
       screen.getByRole("heading", { name: "시즌 기록을 불러오지 못했습니다" }),
     ).toBeInTheDocument();
-    expect(screen.getByText(/http:\/\/localhost:4000/)).toBeInTheDocument();
+    expect(
+      screen.getByText("백엔드 서버 연결에 실패했습니다."),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "잠시 후 다시 시도해 주세요. 문제가 계속되면 기록 저장 상태를 확인해 보겠습니다.",
+      ),
+    ).toBeInTheDocument();
   });
 });

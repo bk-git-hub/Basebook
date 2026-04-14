@@ -36,13 +36,19 @@ describe("Entry detail QA smoke", () => {
     render(
       <EntryDetailErrorState
         message="GET /entries/:id 호출이 실패했습니다."
-        apiBaseUrl="http://localhost:4000"
       />,
     );
 
     expect(
       screen.getByRole("heading", { name: "기록 상세를 불러오지 못했습니다" }),
     ).toBeInTheDocument();
-    expect(screen.getByText(/http:\/\/localhost:4000/)).toBeInTheDocument();
+    expect(
+      screen.getByText("GET /entries/:id 호출이 실패했습니다."),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "잠시 후 다시 시도하거나, 시즌 대시보드에서 기록을 다시 선택해 주세요.",
+      ),
+    ).toBeInTheDocument();
   });
 });

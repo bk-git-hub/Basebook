@@ -53,7 +53,7 @@ describe("Entry create QA smoke", () => {
     render(<EntryCreateForm />);
 
     await user.selectOptions(screen.getByLabelText("상대 팀"), "SSG");
-    await user.type(screen.getByLabelText("gameId (선택)"), "game-smoke-test");
+    await user.type(screen.getByLabelText("연결된 경기"), "game-smoke-test");
     await user.type(screen.getByLabelText("우리 팀 점수"), "8");
     await user.type(screen.getByLabelText("상대 팀 점수"), "6");
     await user.type(screen.getByLabelText("경기장"), "QA Stadium");

@@ -35,7 +35,7 @@ describe("Entry edit QA smoke", () => {
     await user.click(screen.getByRole("button", { name: "수정 내용 저장" }));
 
     expect(
-      screen.getByText("변경된 항목이 없어 저장 요청을 보내지 않았습니다."),
+      screen.getByText("변경된 항목이 없어 저장하지 않았습니다."),
     ).toBeInTheDocument();
     expect(updateEntryMock).not.toHaveBeenCalled();
   });
