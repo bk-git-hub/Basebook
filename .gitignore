@@ -17,6 +17,7 @@ coverage/
 apikey.txt
 private/
 incident-reports/
+apps/api/assets/
 
 # database
 *.db
