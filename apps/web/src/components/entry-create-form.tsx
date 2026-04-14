@@ -498,18 +498,6 @@ export function EntryCreateForm() {
                 disabledTeams={[values.favoriteTeam]}
               />
 
-              <label className="space-y-2 sm:col-span-2">
-                <span className="text-sm font-medium text-[#11284f]">
-                  연결된 경기
-                </span>
-                <input
-                  type="text"
-                  value={values.gameId}
-                  onChange={(event) => setFieldValue("gameId", event.target.value)}
-                  placeholder="경기 후보를 선택하면 자동으로 연결됩니다"
-                  className={FIELD_CLASS}
-                />
-              </label>
             </div>
           </article>
 
