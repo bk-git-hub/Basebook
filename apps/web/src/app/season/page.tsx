@@ -10,8 +10,8 @@ import { getEntries } from "@/lib/api/entries";
 import { ApiClientError } from "@/lib/api/http";
 
 export const metadata: Metadata = {
-  title: "시즌 대시보드 | Basebook",
-  description: "한 시즌의 직관 기록과 승패 요약을 확인하는 화면",
+  title: "시즌 기록 | Basebook",
+  description: "최신 시즌의 기록 요약과 최근 일지를 확인하는 화면",
 };
 
 export const dynamic = "force-dynamic";
@@ -44,8 +44,9 @@ export default async function SeasonPage() {
   return (
     <AppShell
       activeSection="season"
-      title="시즌 대시보드"
-      description="한 시즌 동안 쌓인 기록의 흐름과 최근 경기를 같은 자리에서 확인합니다."
+      title="시즌 기록"
+      description="최신 시즌 기준으로 응원 기록과 최근 일지를 빠르게 확인합니다."
+      tone="home"
     >
       {result.status === "error" ? (
         <SeasonDashboardErrorState message={result.message} />

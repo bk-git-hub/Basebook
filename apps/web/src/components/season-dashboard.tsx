@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 import type {
@@ -5,22 +6,13 @@ import type {
   GameResult,
   GetEntriesResponse,
   TeamCode,
+  WatchType,
 } from "@basebook/contracts";
 
-const RECENT_ENTRY_LIMIT = 4;
+import { TeamBadge } from "@/components/team-badge";
+import { getTeamLabel } from "@/lib/team-meta";
 
-const TEAM_LABELS: Record<TeamCode, string> = {
-  LG: "LG 트윈스",
-  DOOSAN: "두산 베어스",
-  SSG: "SSG 랜더스",
-  KIWOOM: "키움 히어로즈",
-  KT: "KT 위즈",
-  NC: "NC 다이노스",
-  KIA: "KIA 타이거즈",
-  LOTTE: "롯데 자이언츠",
-  SAMSUNG: "삼성 라이온즈",
-  HANWHA: "한화 이글스",
-};
+const RECENT_ENTRY_LIMIT = 4;
 
 const RESULT_LABELS: Record<GameResult, string> = {
   WIN: "승",
@@ -30,10 +22,17 @@ const RESULT_LABELS: Record<GameResult, string> = {
 };
 
 const RESULT_TONE: Record<GameResult, string> = {
-  WIN: "bg-emerald-100 text-emerald-900 ring-emerald-300/80",
-  LOSE: "bg-rose-100 text-rose-900 ring-rose-300/80",
-  DRAW: "bg-amber-100 text-amber-900 ring-amber-300/80",
-  UNKNOWN: "bg-stone-100 text-stone-600 ring-stone-500/10",
+  WIN: "border-[#d9e4f4] bg-[#eef3fb] text-[#11284f]",
+  LOSE: "border-[#f3c9cf] bg-[#fff3f4] text-[#c42d3c]",
+  DRAW: "border-[#e1e8f3] bg-[#f8fbff] text-[#5a6f91]",
+  UNKNOWN: "border-[#e1e8f3] bg-[#f5f7fb] text-[#6a7d9f]",
+};
+
+const WATCH_TYPE_LABELS: Record<WatchType, string> = {
+  STADIUM: "직관",
+  TV: "TV 시청",
+  MOBILE: "모바일 시청",
+  OTHER: "기타",
 };
 
 function formatEntryDate(date: string): string {
@@ -41,6 +40,13 @@ function formatEntryDate(date: string): string {
     month: "long",
     day: "numeric",
     weekday: "short",
+  }).format(new Date(date));
+}
+
+function formatCompactDate(date: string): string {
+  return new Intl.DateTimeFormat("ko-KR", {
+    month: "numeric",
+    day: "numeric",
   }).format(new Date(date));
 }
 
@@ -55,21 +61,135 @@ function formatScore(entry: DiaryEntry): string {
   return "점수 미기록";
 }
 
-function getDashboardHeading(entries: DiaryEntry[]) {
-  const latestEntry = entries[0];
+function sortEntries(entries: DiaryEntry[]) {
+  return [...entries].sort((left, right) => {
+    const dateCompare = right.date.localeCompare(left.date);
 
-  if (!latestEntry) {
-    return {
-      seasonLabel: "시즌 대시보드",
-      teamLabel: "응원 팀 미설정",
-      helperText: "첫 직관 기록을 남기면 시즌 요약이 채워집니다.",
-    };
+    if (dateCompare !== 0) {
+      return dateCompare;
+    }
+
+    return right.createdAt.localeCompare(left.createdAt);
+  });
+}
+
+function inferFavoriteTeam(entries: DiaryEntry[]): TeamCode {
+  const counters = new Map<
+    TeamCode,
+    {
+      count: number;
+      lastSeen: string;
+    }
+  >();
+
+  for (const entry of entries) {
+    const current = counters.get(entry.favoriteTeam);
+
+    if (!current) {
+      counters.set(entry.favoriteTeam, {
+        count: 1,
+        lastSeen: `${entry.date}-${entry.createdAt}`,
+      });
+      continue;
+    }
+
+    counters.set(entry.favoriteTeam, {
+      count: current.count + 1,
+      lastSeen:
+        `${entry.date}-${entry.createdAt}` > current.lastSeen
+          ? `${entry.date}-${entry.createdAt}`
+          : current.lastSeen,
+    });
   }
 
+  const [favoriteTeam] =
+    [...counters.entries()].sort((left, right) => {
+      if (right[1].count !== left[1].count) {
+        return right[1].count - left[1].count;
+      }
+
+      return right[1].lastSeen.localeCompare(left[1].lastSeen);
+    })[0] ?? [];
+
+  return favoriteTeam ?? entries[0].favoriteTeam;
+}
+
+type SeasonDashboardView = {
+  latestSeasonYear: number;
+  favoriteTeam: TeamCode;
+  latestEntry: DiaryEntry;
+  recentEntries: DiaryEntry[];
+  totalGames: number;
+  wins: number;
+  losses: number;
+  draws: number;
+  unknownGames: number;
+  stadiumGames: number;
+  photoCount: number;
+  trackedGames: number;
+  winRate: number;
+};
+
+function buildSeasonDashboardView(
+  entries: DiaryEntry[],
+): SeasonDashboardView | null {
+  const sortedEntries = sortEntries(entries);
+  const latestEntry = sortedEntries[0];
+
+  if (!latestEntry) {
+    return null;
+  }
+
+  const latestSeasonYear = latestEntry.seasonYear;
+  const seasonEntries = sortedEntries.filter(
+    (entry) => entry.seasonYear === latestSeasonYear,
+  );
+
+  let wins = 0;
+  let losses = 0;
+  let draws = 0;
+  let unknownGames = 0;
+  let stadiumGames = 0;
+  let photoCount = 0;
+
+  for (const entry of seasonEntries) {
+    if (entry.watchType === "STADIUM") {
+      stadiumGames += 1;
+    }
+
+    photoCount += entry.photos.length;
+
+    switch (entry.result) {
+      case "WIN":
+        wins += 1;
+        break;
+      case "LOSE":
+        losses += 1;
+        break;
+      case "DRAW":
+        draws += 1;
+        break;
+      default:
+        unknownGames += 1;
+    }
+  }
+
+  const trackedGames = wins + losses + draws;
+
   return {
-    seasonLabel: `${latestEntry.seasonYear} 시즌`,
-    teamLabel: TEAM_LABELS[latestEntry.favoriteTeam],
-    helperText: "승패 흐름과 최근 직관 기록을 한눈에 확인하세요.",
+    latestSeasonYear,
+    favoriteTeam: inferFavoriteTeam(seasonEntries),
+    latestEntry: seasonEntries[0],
+    recentEntries: seasonEntries.slice(0, RECENT_ENTRY_LIMIT),
+    totalGames: seasonEntries.length,
+    wins,
+    losses,
+    draws,
+    unknownGames,
+    stadiumGames,
+    photoCount,
+    trackedGames,
+    winRate: trackedGames ? Math.round((wins / trackedGames) * 100) : 0,
   };
 }
 
@@ -77,131 +197,242 @@ type SeasonDashboardProps = {
   dashboard: GetEntriesResponse;
 };
 
-export function SeasonDashboard({ dashboard }: SeasonDashboardProps) {
-  const sortedEntries = [...dashboard.entries].sort((left, right) =>
-    right.date.localeCompare(left.date),
+function InfoChip({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-full border border-[#dce6f3] bg-[#fbfdff] px-3 py-1.5">
+      <span className="text-[0.68rem] font-semibold tracking-[0.18em] text-[#6a7d9f] uppercase">
+        {label}
+      </span>
+      <span className="ml-2 text-sm font-semibold text-[#11284f]">{value}</span>
+    </div>
   );
-  const recentEntries = sortedEntries.slice(0, RECENT_ENTRY_LIMIT);
-  const heading = getDashboardHeading(sortedEntries);
+}
+
+function SummaryStatCard({
+  label,
+  value,
+  helper,
+  className,
+}: {
+  label: string;
+  value: string;
+  helper: string;
+  className: string;
+}) {
+  return (
+    <article className={`rounded-[24px] border px-4 py-4 sm:px-5 ${className}`}>
+      <p className="text-xs font-semibold tracking-[0.18em] uppercase">{label}</p>
+      <p className="mt-3 text-2xl font-semibold tracking-tight sm:text-[2rem]">
+        {value}
+      </p>
+      <p className="mt-2 text-sm leading-6">{helper}</p>
+    </article>
+  );
+}
+
+export function SeasonDashboard({ dashboard }: SeasonDashboardProps) {
+  const view = buildSeasonDashboardView(dashboard.entries);
+
+  if (!view) {
+    return null;
+  }
 
   return (
     <div className="space-y-8">
-      <section className="rounded-[32px] bg-stone-950 px-8 py-10 text-white shadow-xl shadow-stone-950/10">
-        <div className="space-y-4">
-          <span className="inline-flex rounded-full bg-white/12 px-3 py-1 text-xs font-semibold tracking-[0.2em] text-stone-200 uppercase">
-            Season Dashboard
-          </span>
-          <div className="space-y-2">
-            <p className="text-sm font-medium text-stone-300">
-              {heading.seasonLabel}
-            </p>
-            <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-              {heading.teamLabel}
-            </h1>
-            <p className="max-w-2xl text-sm leading-7 text-stone-300">
-              {heading.helperText}
-            </p>
+      <section className="rounded-[32px] border border-[#e5ecf6] bg-white px-5 py-6 shadow-[0_18px_48px_rgba(17,40,79,0.06)] sm:px-8 sm:py-8">
+        <div className="flex flex-col gap-6 xl:flex-row xl:items-start xl:justify-between">
+          <div className="min-w-0 space-y-4">
+            <span className="inline-flex rounded-full border border-[#dce6f3] bg-[#fbfdff] px-3 py-1 text-xs font-semibold tracking-[0.2em] text-[#c42d3c] uppercase">
+              season dashboard
+            </span>
+
+            <div className="flex items-center gap-4">
+              <div className="rounded-[24px] border border-[#e5ecf6] bg-[#fbfdff] p-3">
+                <TeamBadge team={view.favoriteTeam} size={72} />
+              </div>
+
+              <div className="min-w-0">
+                <p className="text-sm font-semibold text-[#5a6f91]">
+                  {view.latestSeasonYear} 시즌
+                </p>
+                <h1 className="mt-1 text-[1.9rem] font-semibold tracking-tight text-[#11284f] sm:text-[2.4rem]">
+                  {getTeamLabel(view.favoriteTeam)} 기록 흐름
+                </h1>
+                <p className="mt-2 text-sm leading-6 text-[#5a6f91] sm:text-[0.97rem]">
+                  최근 기록 {formatCompactDate(view.latestEntry.date)}까지
+                  반영해 승무패와 기록 흐름을 한 자리에서 바로 읽을 수 있게
+                  정리했습니다.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              <InfoChip
+                label="최근 기록"
+                value={formatCompactDate(view.latestEntry.date)}
+              />
+              <InfoChip label="직관" value={`${view.stadiumGames}경기`} />
+              <InfoChip label="사진" value={`${view.photoCount}장`} />
+            </div>
           </div>
+
+          <aside className="rounded-[28px] border border-[#e5ecf6] bg-[#fbfdff] p-4 sm:p-5 xl:max-w-xs">
+            <p className="text-xs font-semibold tracking-[0.18em] text-[#c42d3c] uppercase">
+              season snapshot
+            </p>
+            <p className="mt-3 text-3xl font-semibold tracking-tight text-[#11284f] sm:text-[2.2rem]">
+              {view.trackedGames > 0 ? `${view.winRate}%` : "-"}
+            </p>
+            <p className="mt-2 text-sm leading-6 text-[#5a6f91]">
+              {view.trackedGames > 0
+                ? `${view.wins}승 ${view.draws}무 ${view.losses}패 기준 승률`
+                : "승무패가 기록된 경기부터 승률이 계산됩니다."}
+            </p>
+
+            <div className="mt-4 flex flex-col gap-2 sm:flex-row xl:flex-col">
+              <Link
+                href="/entries/new"
+                className="inline-flex items-center justify-center rounded-full bg-[#11284f] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#0b1d3b]"
+              >
+                새 일지 남기기
+              </Link>
+              <Link
+                href="/season-book/new"
+                className="inline-flex items-center justify-center rounded-full border border-[#11284f] bg-white px-4 py-2.5 text-sm font-semibold text-[#11284f] transition hover:bg-[#f8fbff]"
+              >
+                시즌북 제작
+              </Link>
+            </div>
+          </aside>
         </div>
       </section>
 
-      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <article className="rounded-[24px] border border-stone-200 bg-white p-6 shadow-sm">
-          <p className="text-sm font-medium text-stone-500">총 경기 수</p>
-          <p className="mt-3 text-3xl font-semibold tracking-tight text-stone-950">
-            {dashboard.summary.totalGames}
+      <section className="space-y-3">
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          <SummaryStatCard
+            label="시즌 기록"
+            value={`${view.totalGames}건`}
+            helper={`${view.latestSeasonYear} 시즌에 남긴 전체 기록`}
+            className="border-[#e5ecf6] bg-[#fbfdff] text-[#11284f]"
+          />
+          <SummaryStatCard
+            label="승리"
+            value={`${view.wins}`}
+            helper="결과가 승리로 저장된 경기 수"
+            className="border-[#d9e4f4] bg-[#eef3fb] text-[#11284f]"
+          />
+          <SummaryStatCard
+            label="패배"
+            value={`${view.losses}`}
+            helper="결과가 패배로 저장된 경기 수"
+            className="border-[#f3c9cf] bg-[#fff3f4] text-[#c42d3c]"
+          />
+          <SummaryStatCard
+            label="무승부"
+            value={`${view.draws}`}
+            helper="결과가 무승부로 저장된 경기 수"
+            className="border-[#e1e8f3] bg-[#f8fbff] text-[#5a6f91]"
+          />
+        </div>
+
+        {view.unknownGames > 0 ? (
+          <p className="rounded-[22px] border border-[#e5ecf6] bg-white px-4 py-3 text-sm leading-6 text-[#5a6f91]">
+            결과 미정으로 남아 있는 기록 {view.unknownGames}건은 승무패
+            집계에서 제외됩니다.
           </p>
-        </article>
-        <article className="rounded-[24px] border border-emerald-200 bg-emerald-50 p-6 shadow-sm">
-          <p className="text-sm font-medium text-emerald-700">승리</p>
-          <p className="mt-3 text-3xl font-semibold tracking-tight text-emerald-900">
-            {dashboard.summary.wins}
-          </p>
-        </article>
-        <article className="rounded-[24px] border border-rose-200 bg-rose-50 p-6 shadow-sm">
-          <p className="text-sm font-medium text-rose-700">패배</p>
-          <p className="mt-3 text-3xl font-semibold tracking-tight text-rose-900">
-            {dashboard.summary.losses}
-          </p>
-        </article>
-        <article className="rounded-[24px] border border-amber-200 bg-amber-50 p-6 shadow-sm">
-          <p className="text-sm font-medium text-amber-700">무승부</p>
-          <p className="mt-3 text-3xl font-semibold tracking-tight text-amber-900">
-            {dashboard.summary.draws}
-          </p>
-        </article>
+        ) : null}
       </section>
 
-      <section className="rounded-[28px] border border-stone-200 bg-white p-6 shadow-sm">
-        <div className="flex flex-col gap-2 border-b border-stone-100 pb-4 sm:flex-row sm:items-end sm:justify-between">
+      <section className="rounded-[30px] border border-[#e5ecf6] bg-white p-5 shadow-[0_18px_48px_rgba(17,40,79,0.06)] sm:p-6">
+        <div className="flex flex-col gap-2 border-b border-[#edf2f8] pb-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h2 className="text-xl font-semibold tracking-tight text-stone-950">
+            <p className="text-xs font-semibold tracking-[0.18em] text-[#c42d3c] uppercase">
+              recent entries
+            </p>
+            <h2 className="mt-1 text-xl font-semibold tracking-tight text-[#11284f] sm:text-2xl">
               최근 기록
             </h2>
-            <p className="text-sm leading-6 text-stone-500">
-              최신 경기 기준 상위 {recentEntries.length}건을 표시합니다.
+            <p className="mt-1 text-sm leading-6 text-[#5a6f91]">
+              이번 시즌에서 최신 {view.recentEntries.length}건을 먼저
+              보여줍니다.
             </p>
           </div>
-          <p className="text-xs font-medium tracking-[0.18em] text-stone-400 uppercase">
-            Latest notes
+          <p className="text-sm font-medium text-[#5a6f91]">
+            전체 {view.totalGames}건
           </p>
         </div>
 
         <div className="mt-4 space-y-3">
-          {recentEntries.map((entry) => (
+          {view.recentEntries.map((entry) => (
             <Link
               key={entry.id}
               href={`/entries/${entry.id}`}
-              className="block rounded-[22px] border border-stone-100 bg-stone-50/80 px-5 py-4 transition hover:border-stone-200 hover:bg-stone-50 hover:shadow-sm"
+              className="group block rounded-[24px] border border-[#e7eef8] bg-[#fbfdff] px-4 py-4 transition hover:border-[#cfdaea] hover:bg-white hover:shadow-[0_18px_32px_rgba(17,40,79,0.06)] sm:px-5"
             >
-              <article>
-                <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
-                  <div className="flex min-w-0 flex-1 items-start justify-between gap-4">
-                    <div className="min-w-0 space-y-2">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <span
-                          className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ring-inset ${RESULT_TONE[entry.result]}`}
-                        >
-                          {RESULT_LABELS[entry.result]}
+              <article className="space-y-3">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span
+                    className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-semibold ${RESULT_TONE[entry.result]}`}
+                  >
+                    {RESULT_LABELS[entry.result]}
+                  </span>
+                  <span className="inline-flex rounded-full border border-[#dce6f3] bg-white px-2.5 py-1 text-xs font-semibold text-[#5a6f91]">
+                    {WATCH_TYPE_LABELS[entry.watchType]}
+                  </span>
+                  <span className="text-sm font-medium text-[#5a6f91]">
+                    {formatEntryDate(entry.date)}
+                  </span>
+                </div>
+
+                <div className="flex items-start justify-between gap-4">
+                  <div className="min-w-0 flex-1 space-y-2">
+                    <h3 className="text-base font-semibold tracking-tight text-[#11284f] sm:text-lg">
+                      {getTeamLabel(entry.favoriteTeam)} vs{" "}
+                      {getTeamLabel(entry.opponentTeam)}
+                    </h3>
+                    <p className="text-sm leading-6 text-[#4e6284]">
+                      {entry.highlight}
+                    </p>
+                    <div className="flex flex-wrap gap-2 text-xs font-medium text-[#5a6f91]">
+                      <span className="rounded-full border border-[#dce6f3] bg-white px-2.5 py-1">
+                        점수 {formatScore(entry)}
+                      </span>
+                      {entry.playerOfTheDay ? (
+                        <span className="rounded-full border border-[#dce6f3] bg-white px-2.5 py-1">
+                          오늘의 선수 {entry.playerOfTheDay}
                         </span>
-                        <span className="text-sm font-medium text-stone-500">
-                          {formatEntryDate(entry.date)}
+                      ) : null}
+                      {entry.watchType === "STADIUM" && entry.stadium ? (
+                        <span className="rounded-full border border-[#dce6f3] bg-white px-2.5 py-1">
+                          {entry.stadium}
                         </span>
-                      </div>
-                      <h3 className="text-lg font-semibold text-stone-950">
-                        {TEAM_LABELS[entry.favoriteTeam]} vs{" "}
-                        {TEAM_LABELS[entry.opponentTeam]}
-                      </h3>
-                      <p className="text-sm leading-6 text-stone-600">
-                        {entry.highlight}
-                      </p>
+                      ) : null}
                     </div>
-
-                    {entry.photos[0] ? (
-                      <div className="h-20 w-16 shrink-0 overflow-hidden rounded-[18px] border border-stone-200 bg-white sm:h-24 sm:w-20">
-                        <img
-                          src={entry.photos[0].url}
-                          alt={`${TEAM_LABELS[entry.favoriteTeam]} 경기 대표 사진`}
-                          loading="lazy"
-                          className="h-full w-full object-cover"
-                        />
-                      </div>
-                    ) : null}
                   </div>
 
-                  <div className="rounded-2xl bg-white px-4 py-3 text-right shadow-sm ring-1 ring-stone-200">
-                    <p className="text-xs font-medium tracking-[0.16em] text-stone-400 uppercase">
-                      Score
-                    </p>
-                    <p className="mt-1 text-lg font-semibold tracking-tight text-stone-950">
-                      {formatScore(entry)}
-                    </p>
-                    {entry.photos.length > 0 ? (
-                      <p className="mt-2 text-xs font-medium text-stone-500">
-                        사진 {entry.photos.length}장
-                      </p>
-                    ) : null}
-                  </div>
+                  {entry.photos[0] ? (
+                    <div className="relative h-20 w-16 shrink-0 overflow-hidden rounded-[18px] border border-[#dbe4f0] bg-white sm:h-24 sm:w-20">
+                      <Image
+                        src={entry.photos[0].url}
+                        alt={`${getTeamLabel(entry.favoriteTeam)} 경기 대표 사진`}
+                        fill
+                        unoptimized
+                        sizes="(min-width: 640px) 80px, 64px"
+                        className="object-cover"
+                      />
+                    </div>
+                  ) : null}
+                </div>
+
+                <div className="flex items-center justify-between gap-3 border-t border-[#edf2f8] pt-3 text-sm text-[#5a6f91]">
+                  <span>
+                    {entry.photos.length > 0
+                      ? `사진 ${entry.photos.length}장`
+                      : "사진 없음"}
+                  </span>
+                  <span className="font-semibold text-[#11284f] transition group-hover:text-[#0b1d3b]">
+                    상세 보기
+                  </span>
                 </div>
               </article>
             </Link>

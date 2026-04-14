@@ -1105,3 +1105,23 @@
 - Status: `approved`
 - Related Docs:
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+
+### WEB-053
+
+- Date: `2026-04-14`
+- Time: `22:05`
+- Agenda: `/season` 화면을 기존 stone 계열 대시보드처럼 유지할지, 홈 톤에 맞추면서 최신 시즌 기준 정보 위계를 다시 잡을지 결정
+- Participants: User, Codex
+- Options Considered:
+  - `/season`은 기존 summary 카드와 최근 기록 리스트 구조를 유지하고 색감만 홈 톤으로 바꾼다
+  - `/season`은 홈과 같은 화이트/네이비/레드 포인트 톤으로 재구성하고, 최신 시즌 기준 요약과 모바일 첫 화면 정보 위계를 함께 정리한다
+- Decision: `/season`은 홈과 같은 화이트/네이비/레드 포인트 톤으로 재구성하고, 최신 시즌 기준 요약과 모바일 첫 화면 정보 위계를 함께 정리한다.
+- Rationale: 시즌 화면은 홈 다음으로 자주 쓰는 핵심 운영 화면인데, 현재는 검은 히어로와 stone 카드 조합이 남아 있어 같은 제품처럼 이어지지 않는다. 단순 색상 교체만으로는 모바일 첫 화면의 정보 밀도 문제까지 해결되지 않으므로, 최신 시즌 기준 요약과 행동 버튼을 더 먼저 읽히게 재배치하는 편이 체감 품질이 크다.
+- Impact:
+  - `/season`은 홈과 같은 톤으로 정리되어 화면 전환 시 제품 일관성이 높아진다
+  - 대시보드 요약은 최신 기록이 속한 시즌 기준으로 묶여 더 명확하게 읽힌다
+  - 모바일에서는 팀 정보, 핵심 집계, 다음 행동이 첫 화면에서 더 빠르게 스캔된다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
