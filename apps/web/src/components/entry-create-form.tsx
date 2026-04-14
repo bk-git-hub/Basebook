@@ -68,8 +68,8 @@ const WATCH_TYPE_OPTIONS: { value: WatchType; label: string }[] = [
 const INITIAL_VALUES: EntryFormValues = {
   seasonYear: String(new Date().getFullYear()),
   date: new Date().toISOString().slice(0, 10),
-  favoriteTeam: "LG",
-  opponentTeam: "DOOSAN",
+  favoriteTeam: "DOOSAN",
+  opponentTeam: "LG",
   scoreFor: "",
   scoreAgainst: "",
   result: "UNKNOWN",
