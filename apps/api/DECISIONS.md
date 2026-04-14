@@ -468,3 +468,38 @@
   - `docs/planning/BACKEND_FUNCTIONAL_SPEC.md`
 - Related Milestones:
   - `docs/milestones/backend.md`
+
+### API-018 [IMPORTANT]
+
+- Date: `2026-04-14`
+- Time: `12:44`
+- Agenda: Sweetbook integration method drift between planning documents and backend implementation
+- Participants: User, Codex
+- Priority: `high`
+- Options Considered:
+  - Stop and refactor the backend Sweetbook layer back to the official Node.js SDK
+  - Keep the implemented direct REST API client approach and correct the planning/decision trail
+- Decision:
+  - Keep the current backend Sweetbook integration based on direct REST API calls
+  - Do not roll back the implemented `apps/api/src/sweetbook/sweetbook.client.ts` flow to the official SDK in the current assignment timeline
+  - Record this as an explicit orchestration drift case: planning/spec documents assumed SDK usage, but implementation moved to direct API calls without timely decision-log and planning-document updates
+- Rationale:
+  - The assignment brief allows both SDK usage and direct API usage, so the implementation is still valid against the external requirement
+  - During implementation, a small Nest-owned client gave tighter control over request payloads, idempotency headers, sandbox readiness checks, and error normalization
+  - The implemented flow has already been validated against the Sweetbook sandbox for estimate, order creation, and credit deduction behavior, so replacing it now would add risk without clear product gain
+  - The real failure was not the technical choice itself, but the orchestration gap: the team allowed the code path to diverge from planning assumptions without immediately updating the decision trail and planning specs
+- Impact:
+  - Direct HTTPS API calls are now the official backend integration method for the current codebase
+  - Existing backend Sweetbook code remains valid and should be extended rather than rewritten to the SDK unless a later decision explicitly reverses this
+  - `docs/planning/BASEBOOK_PLAN.md`, `docs/planning/BACKEND_FUNCTIONAL_SPEC.md`, and any other planning docs that still describe SDK-first integration must be corrected in a follow-up documentation slice
+  - This entry preserves the reason for the drift and the user-approved decision to continue with the implemented approach so future agents do not misinterpret the mismatch as an unresolved bug
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `AGENTS.md`
+  - `docs/planning/BASEBOOK_PLAN.md`
+  - `docs/planning/BACKEND_FUNCTIONAL_SPEC.md`
+  - `docs/planning/BOOK_PRINT_API_ANALYSIS.md`
+  - `apps/api/src/sweetbook/sweetbook.client.ts`
+- Related Milestones:
+  - `docs/milestones/backend.md`
