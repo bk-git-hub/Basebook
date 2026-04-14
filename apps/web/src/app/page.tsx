@@ -28,8 +28,6 @@ const RESULT_TONE: Record<GameResult, string> = {
 };
 
 const PRIMARY_NAVIGATION = [
-  { href: "/entries/new", label: "새 기록" },
-  { href: "/season-book/new", label: "시즌북 제작" },
   { href: "/about", label: "서비스 알아보기" },
 ];
 

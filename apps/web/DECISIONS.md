@@ -784,3 +784,23 @@
 - Status: `approved`
 - Related Docs:
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+
+### WEB-036
+
+- Date: `2026-04-14`
+- Time: `19:00`
+- Agenda: 홈 화면에서 중복되는 행동 CTA를 헤더와 본문 중 어디에 남길지 결정
+- Participants: User, Codex
+- Options Considered:
+  - 헤더의 `새 기록`, `시즌북 제작` 링크를 유지하고 본문 CTA를 제거한다
+  - 본문의 `새 일지 남기기`, `시즌북 제작` CTA를 유지하고 헤더에서는 중복 행동 링크를 제거한다
+- Decision: 홈 화면에서는 본문 CTA를 유지하고, 헤더에서는 중복되는 `새 기록`, `시즌북 제작` 링크를 제거한 뒤 `서비스 알아보기`만 남긴다.
+- Rationale: 홈은 사용자의 현재 상태를 보여준 뒤 바로 다음 행동으로 이어지게 만드는 화면이라, 핵심 CTA는 요약 맥락 바로 아래에 두는 편이 자연스럽다. 같은 행동이 헤더와 본문에 동시에 있으면 모바일과 데스크톱 모두 화면이 산만해진다.
+- Impact:
+  - 홈 상단 내비게이션은 정보성 링크 위주로 단순화된다
+  - `새 일지 남기기`, `시즌북 제작`은 본문 CTA 영역이 유일한 진입점이 된다
+  - 한 화면 안에서 같은 행동이 두 번 반복되는 문제가 사라진다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
