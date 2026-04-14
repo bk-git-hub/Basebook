@@ -111,3 +111,15 @@
 - Required action: QA can verify the frontend order screen against the backend endpoint without requiring real Sweetbook order placement by default.
 - User notified: yes
 - Status: resolved
+
+## SYNC-008
+- Date: 2026-04-14
+- Time: 12:06
+- Source role: QA
+- Target role: Frontend, Backend
+- Type: resolved
+- Related area: `POST /season-books/order`
+- Summary: QA verified the browser flow from `/season-book/new` through estimate creation, `/order/[projectId]` navigation, shipping form submission, and order completion. The frontend received HTTP 201 from both `POST /season-books/estimate` and `POST /season-books/order`, and the final screen displayed `CONFIRMED` order status with `ORDERED` project status.
+- Required action: Frontend and backend may treat SYNC-004 as resolved for the implemented local/R2-backed integration flow. QA still has a separate tests/web unit test maintenance issue where older assertions no longer match updated UI copy.
+- User notified: yes
+- Status: resolved
