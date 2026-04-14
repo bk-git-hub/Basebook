@@ -1,5 +1,6 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import type {
+  GetSeasonBookStatusResponse,
   SeasonBookEstimateResponse,
   SeasonBookOrderResponse,
 } from '@basebook/contracts';
@@ -10,6 +11,13 @@ import { SeasonBooksService } from './season-books.service';
 @Controller('season-books')
 export class SeasonBooksController {
   constructor(private readonly seasonBooksService: SeasonBooksService) {}
+
+  @Get(':projectId/status')
+  getSeasonBookStatus(
+    @Param('projectId') projectId: string,
+  ): Promise<GetSeasonBookStatusResponse> {
+    return this.seasonBooksService.getSeasonBookStatus(projectId);
+  }
 
   @Post('estimate')
   estimateSeasonBook(

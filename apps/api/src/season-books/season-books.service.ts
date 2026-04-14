@@ -2,10 +2,12 @@ import {
   BadRequestException,
   Inject,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import type {
   CurrencyCode,
+  GetSeasonBookStatusResponse,
   SeasonBookEstimateResponse,
   SeasonBookOrderResponse,
   SeasonBookOrderStatus,
@@ -14,6 +16,7 @@ import type {
 import { randomUUID } from 'node:crypto';
 import { DEMO_OWNER_ID } from '../entries/demo-owner';
 import { PrismaService } from '../prisma/prisma.service';
+import { SweetbookClient } from '../sweetbook/sweetbook.client';
 import type { EstimateSeasonBookDto } from './dto/estimate-season-book.dto';
 import type { OrderSeasonBookDto } from './dto/order-season-book.dto';
 import {
@@ -24,16 +27,68 @@ import {
   SEASON_BOOK_ORDER_PLACER,
   type SeasonBookOrderPlacerPort,
 } from './order/season-book-order.port';
+import {
+  buildProgressTimeline,
+  mapSweetbookOrderStatus,
+  resolveProgressStepKey,
+} from './season-book-status';
 
 @Injectable()
 export class SeasonBooksService {
+  private readonly logger = new Logger(SeasonBooksService.name);
+
   constructor(
     private readonly prisma: PrismaService,
     @Inject(SEASON_BOOK_ESTIMATOR)
     private readonly estimator: SeasonBookEstimatorPort,
     @Inject(SEASON_BOOK_ORDER_PLACER)
     private readonly orderPlacer: SeasonBookOrderPlacerPort,
+    private readonly sweetbookClient: SweetbookClient,
   ) {}
+
+  async getSeasonBookStatus(
+    projectId: string,
+  ): Promise<GetSeasonBookStatusResponse> {
+    const project = await this.prisma.seasonBookProject.findFirst({
+      where: {
+        id: projectId,
+        ownerId: DEMO_OWNER_ID,
+      },
+    });
+
+    if (!project) {
+      throw new NotFoundException(`Season book project not found: ${projectId}`);
+    }
+
+    const sweetbookStatus = await this.tryRefreshSweetbookOrderStatus(
+      project.orderUid,
+    );
+    const orderStatus = sweetbookStatus?.orderStatus
+      ? sweetbookStatus.orderStatus
+      : (project.orderStatus as SeasonBookOrderStatus);
+    const occurredAt =
+      sweetbookStatus?.orderedAt ??
+      (project.orderUid ? project.updatedAt.toISOString() : undefined);
+
+    return {
+      projectId: project.id,
+      bookUid: project.bookUid ?? undefined,
+      orderUid: project.orderUid ?? undefined,
+      projectStatus: project.projectStatus as SeasonBookProjectStatus,
+      orderStatus,
+      source: sweetbookStatus ? 'SWEETBOOK' : 'LOCAL',
+      sweetbookStatusCode: sweetbookStatus?.statusCode,
+      sweetbookStatusDisplay: sweetbookStatus?.statusDisplay,
+      progress: buildProgressTimeline(
+        resolveProgressStepKey({
+          orderStatus,
+          sweetbookStatusCode: sweetbookStatus?.statusCode,
+        }),
+        occurredAt,
+      ),
+      updatedAt: project.updatedAt.toISOString(),
+    };
+  }
 
   async estimateSeasonBook(
     body: EstimateSeasonBookDto,
@@ -170,6 +225,35 @@ export class SeasonBooksService {
     }
 
     return uniqueEntryIds;
+  }
+
+  private async tryRefreshSweetbookOrderStatus(orderUid: string | null) {
+    if (
+      !orderUid ||
+      !orderUid.startsWith('or_') ||
+      !this.sweetbookClient.isConfigured()
+    ) {
+      return null;
+    }
+
+    try {
+      const order = await this.sweetbookClient.getOrder(orderUid);
+
+      return {
+        orderStatus: mapSweetbookOrderStatus(order.orderStatus),
+        statusCode: order.orderStatus,
+        statusDisplay: order.orderStatusDisplay,
+        orderedAt: order.orderedAt,
+      };
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : 'Unknown Sweetbook error';
+
+      this.logger.warn(
+        `Failed to refresh Sweetbook order status for ${orderUid}: ${message}`,
+      );
+      return null;
+    }
   }
 
   private toOrderResponse(project: {

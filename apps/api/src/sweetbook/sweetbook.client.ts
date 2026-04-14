@@ -40,7 +40,16 @@ export type SweetbookOrderEstimate = {
 export type SweetbookCreatedOrder = {
   orderUid?: string;
   orderStatus?: number;
+  orderStatusDisplay?: string;
   totalAmount?: number;
+};
+
+export type SweetbookOrderDetail = {
+  orderUid?: string;
+  orderStatus?: number;
+  orderStatusDisplay?: string;
+  totalAmount?: number;
+  orderedAt?: string;
 };
 
 export type SweetbookReadiness = {
@@ -189,6 +198,12 @@ export class SweetbookClient {
         },
         externalRef: input.externalRef,
       },
+    });
+  }
+
+  async getOrder(orderUid: string): Promise<SweetbookOrderDetail> {
+    return this.request<SweetbookOrderDetail>({
+      path: `/orders/${encodeURIComponent(orderUid)}`,
     });
   }
 

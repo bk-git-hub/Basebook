@@ -34,6 +34,7 @@ This file is a quick restart note for the next backend work session.
 - Optional Cloudflare R2 storage is prepared for public image hosting.
 - `POST /season-books/estimate` is implemented with local fallback and Sweetbook-backed `auto` mode.
 - `POST /season-books/order` is implemented as a local order completion path for already estimated projects.
+- `GET /season-books/:projectId/status` is implemented for order-progress polling with local fallback and optional Sweetbook order refresh.
 - Sweetbook sandbox readiness check script exists.
 
 ## Important Decisions

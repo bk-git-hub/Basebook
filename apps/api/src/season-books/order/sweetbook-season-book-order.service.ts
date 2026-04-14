@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import type { SeasonBookOrderStatus } from '@basebook/contracts';
 import { SweetbookClient } from '../../sweetbook/sweetbook.client';
+import { mapSweetbookOrderStatus } from '../season-book-status';
 import type {
   SeasonBookOrderInput,
   SeasonBookOrderPlacerPort,
@@ -36,31 +36,7 @@ export class SweetbookSeasonBookOrderService implements SeasonBookOrderPlacerPor
       orderUid: order.orderUid,
       totalPrice: Math.round(order.totalAmount ?? input.totalPrice),
       currency: 'KRW',
-      orderStatus: this.mapSweetbookOrderStatus(order.orderStatus),
+      orderStatus: mapSweetbookOrderStatus(order.orderStatus),
     };
-  }
-
-  private mapSweetbookOrderStatus(status?: number): SeasonBookOrderStatus {
-    if (status === 20 || status === 25) {
-      return 'PAID';
-    }
-
-    if (status === 30) {
-      return 'CONFIRMED';
-    }
-
-    if (status === 40 || status === 45 || status === 50) {
-      return 'IN_PRODUCTION';
-    }
-
-    if (status === 60) {
-      return 'SHIPPED';
-    }
-
-    if (status === 70) {
-      return 'DELIVERED';
-    }
-
-    return 'UNKNOWN';
   }
 }

@@ -115,6 +115,40 @@ describe('SweetbookClient', () => {
     );
   });
 
+  it('fetches order detail by order uid', async () => {
+    const fetchMock = jest.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => ({
+        data: {
+          orderUid: 'or_test123',
+          orderStatus: 25,
+          orderStatusDisplay: 'PDF 준비 완료',
+          orderedAt: '2026-04-14T03:07:00Z',
+        },
+      }),
+    });
+    global.fetch = fetchMock as unknown as typeof fetch;
+
+    await expect(new SweetbookClient().getOrder('or_test123')).resolves.toEqual({
+      orderUid: 'or_test123',
+      orderStatus: 25,
+      orderStatusDisplay: 'PDF 준비 완료',
+      orderedAt: '2026-04-14T03:07:00Z',
+    });
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      'https://api-sandbox.sweetbook.com/v1/orders/or_test123',
+      expect.objectContaining({
+        method: 'GET',
+        headers: expect.objectContaining({
+          Authorization: 'Bearer SB.test-key',
+          Accept: 'application/json',
+        }),
+      }),
+    );
+  });
+
   it('fails safely when the sandbox key is missing', async () => {
     process.env.SWEETBOOK_API_KEY = 'your_sandbox_api_key_here';
 

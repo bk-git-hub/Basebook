@@ -272,6 +272,54 @@ describe('AppController (e2e)', () => {
       });
   });
 
+  it('/season-books/:projectId/status (GET) returns local progress data for the order-status screen', async () => {
+    const estimateResponse = await request(baseUrl)
+      .post('/season-books/estimate')
+      .send({
+        seasonYear: 2026,
+        title: '2026 LG 직관 기록',
+        coverPhotoUrl: 'http://localhost:4000/uploads/local/cover-photo.png',
+        selectedEntryIds: ['entry-lg-2026-03-22'],
+      })
+      .expect(201);
+
+    await request(baseUrl)
+      .post('/season-books/order')
+      .send({
+        projectId: estimateResponse.body.projectId,
+        recipientName: '홍길동',
+        recipientPhone: '010-1234-5678',
+        postalCode: '06236',
+        address1: '서울특별시 강남구 테헤란로 123',
+      })
+      .expect(201);
+
+    await request(baseUrl)
+      .get(`/season-books/${estimateResponse.body.projectId}/status`)
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body.projectId).toBe(estimateResponse.body.projectId);
+        expect(body.bookUid).toMatch(/^local-book-/);
+        expect(body.orderUid).toMatch(/^local-order-/);
+        expect(body.projectStatus).toBe('ORDERED');
+        expect(body.orderStatus).toBe('CONFIRMED');
+        expect(body.source).toBe('LOCAL');
+        expect(body.progress).toEqual([
+          expect.objectContaining({ key: 'PAID', state: 'completed' }),
+          expect.objectContaining({ key: 'PDF_READY', state: 'completed' }),
+          expect.objectContaining({ key: 'CONFIRMED', state: 'current' }),
+          expect.objectContaining({ key: 'IN_PRODUCTION', state: 'pending' }),
+          expect.objectContaining({
+            key: 'PRODUCTION_COMPLETE',
+            state: 'pending',
+          }),
+          expect.objectContaining({ key: 'SHIPPED', state: 'pending' }),
+          expect.objectContaining({ key: 'DELIVERED', state: 'pending' }),
+        ]);
+        expect(body.updatedAt).toBeTruthy();
+      });
+  });
+
   it('/season-books/order (POST) rejects missing projects', () => {
     return request(baseUrl)
       .post('/season-books/order')
