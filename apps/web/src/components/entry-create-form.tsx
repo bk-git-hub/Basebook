@@ -72,7 +72,7 @@ const INITIAL_VALUES: EntryFormValues = {
   opponentTeam: "DOOSAN",
   scoreFor: "",
   scoreAgainst: "",
-  result: "WIN",
+  result: "UNKNOWN",
   watchType: "STADIUM",
   stadium: "",
   seat: "",

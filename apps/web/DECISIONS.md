@@ -965,3 +965,23 @@
 - Status: `approved`
 - Related Docs:
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+
+### WEB-045
+
+- Date: `2026-04-14`
+- Time: `20:23`
+- Agenda: `/entries/new`의 경기 결과 기본값을 즉시 승패 중 하나로 둘지, 안전한 미정 상태로 둘지 결정
+- Participants: User, Codex
+- Options Considered:
+  - 경기 결과 기본값을 기존처럼 `승리`로 두고 사용자가 필요하면 수정하게 한다
+  - 경기 결과 기본값을 `미정`으로 두어 사용자가 직접 최종 결과를 선택하게 한다
+- Decision: `/entries/new`의 경기 결과 기본값은 `미정`으로 둔다.
+- Rationale: 새 기록 작성 화면에서 기본값이 `승리`로 잡혀 있으면 사용자가 결과 선택을 건드리지 않아도 실제와 다른 기록이 저장될 수 있다. 이 경우 잘못된 데이터가 매우 자연스럽게 쌓이기 때문에, 기본값은 중립 상태로 두는 편이 더 안전하다.
+- Impact:
+  - 새 기록 진입 시 결과 셀렉트는 `미정`으로 시작한다
+  - 사용자는 결과를 직접 선택해야 하며, 의도하지 않은 `승리` 저장 가능성이 줄어든다
+  - 홈과 시즌 요약에서 잘못된 승패 집계가 누적될 위험이 낮아진다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
