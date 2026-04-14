@@ -584,3 +584,23 @@
 - Status: `approved`
 - Related Docs:
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+
+### WEB-026
+
+- Date: `2026-04-14`
+- Time: `14:57`
+- Agenda: 사용자가 제공한 팀 캡 캐릭터 시트를 바로 UI에 연결할지, 먼저 개별 PNG 자산으로 분할해 준비 단계로 둘지 결정
+- Participants: User, Codex
+- Options Considered:
+  - `capimage.png`를 바로 현재 팀 선택 UI에 연결하면서 자산 교체와 UI 검증을 한 번에 진행한다
+  - 먼저 시트를 개별 PNG 10장으로 분할해 `public/team-badges`에 정리하고, UI 교체는 다음 작업으로 분리한다
+- Decision: 이번 작업은 시트 분할만 수행하고, 개별 PNG 자산을 `apps/web/public/team-badges`에 준비한 뒤 UI 연결은 별도 atomic 작업으로 분리한다.
+- Rationale: 현재 팀 배지 관련 UI는 롤백과 방향 재정리가 동시에 걸려 있어, 자산 준비와 UI 교체를 한 커밋에 섞으면 리뷰 포인트가 흐려진다. 먼저 개별 PNG를 확보하면 다음 단계에서 카드 레이아웃과 실제 적용 방식을 더 명확하게 회의할 수 있다.
+- Impact:
+  - `capimage.png`에서 잘라낸 팀별 PNG 10장을 즉시 재사용할 수 있다
+  - 다음 회의에서 `TeamBadge`를 PNG 기반으로 교체할지, 선택 화면만 부분 적용할지 분리해서 결정할 수 있다
+  - 이번 커밋은 자산 준비 범위에만 머물러 기존 팀 선택 UI 변경과 충돌하지 않는다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
