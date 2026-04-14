@@ -1,4 +1,5 @@
 import type {
+  CancelSeasonBookOrderResponse,
   GetSeasonBookStatusResponse,
   SeasonBookEstimateRequest,
   SeasonBookEstimateResponse,
@@ -34,6 +35,25 @@ export async function createSeasonBookOrder(
       body: JSON.stringify(payload),
     },
   });
+}
+
+export async function cancelSeasonBookOrder(
+  projectId: string,
+): Promise<CancelSeasonBookOrderResponse> {
+  return fetchJson<CancelSeasonBookOrderResponse>(
+    `/season-books/${encodeURIComponent(projectId)}/cancel`,
+    {
+      init: {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          cancelReason: "USER_REQUESTED",
+        }),
+      },
+    },
+  );
 }
 
 export async function getSeasonBookStatus(

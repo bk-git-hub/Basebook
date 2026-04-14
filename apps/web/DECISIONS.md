@@ -437,3 +437,26 @@
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
 - Related Milestones:
   - `docs/milestones/frontend.md`
+
+### WEB-019
+
+- Date: `2026-04-14`
+- Time: `13:21`
+- Agenda: 주문 취소 기능에서 취소 사유 입력을 받을지, 즉시 취소로 처리할지 결정
+- Participants: User, Codex
+- Options Considered:
+  - 사용자가 취소 사유를 입력한 뒤 `POST /season-books/:projectId/cancel`을 호출한다
+  - 주문 상태 화면에서 사유 입력 없이 바로 취소 요청을 보낸다
+- Decision: 주문 취소는 `/order/[projectId]/status` 화면에서 사유 입력 없이 바로 실행하고, 프론트는 계약 호환을 위해 고정 `cancelReason` 값을 함께 전송한다.
+- Rationale: 현재 MVP에서는 취소 흐름의 마찰을 줄이는 것이 더 중요하다. 사유 입력을 붙이면 한 번 더 멈추게 되고, 백엔드 계약상 문자열이 필요하므로 프론트에서 고정값으로 호환만 맞춘다.
+- Impact:
+  - 주문 상태 화면에 즉시 실행 가능한 취소 액션이 추가된다
+  - 프론트는 `cancelReason: "USER_REQUESTED"`를 고정값으로 전송한다
+  - 취소 사유 수집 UI는 후속 운영 요구가 생길 때 별도 슬라이스로 분리된다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/CONTRACT_SPEC.md`
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+- Related Milestones:
+  - `docs/milestones/frontend.md`
