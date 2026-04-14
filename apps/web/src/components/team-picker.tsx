@@ -47,7 +47,9 @@ export function TeamPicker({
               }`}
             >
               <TeamBadge team={option.value} size={88} />
-              <p className="mt-3 text-sm font-semibold leading-5">{option.label}</p>
+              <p className="mt-3 text-[12px] font-semibold leading-5">
+                {option.label}
+              </p>
             </button>
           );
         })}

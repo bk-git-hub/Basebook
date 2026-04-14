@@ -624,3 +624,23 @@
 - Status: `approved`
 - Related Docs:
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+
+### WEB-028
+
+- Date: `2026-04-14`
+- Time: `15:33`
+- Agenda: PNG 팀 배지 적용 후 팀명 줄바꿈 문제를 카드 구조 변경 없이 먼저 완화할지 결정
+- Participants: User, Codex
+- Options Considered:
+  - 카드 폭 보장이나 2줄 강제 규칙으로 바로 넘어간다
+  - 우선 팀명 폰트만 2px 줄여서 현재 카드 구조에서 줄바꿈이 얼마나 완화되는지 확인한다
+- Decision: 이번 slice에서는 팀 선택 카드 라벨 폰트만 2px 줄여서 반응을 먼저 본다.
+- Rationale: 구조 변경이나 라벨 규칙 변경은 선택지가 여러 개라 판단 포인트가 커진다. 반면 폰트 축소는 가장 작은 실험 단위라서, 현재 레이아웃을 유지한 채 문제를 얼마나 줄일 수 있는지 빠르게 확인하기 좋다.
+- Impact:
+  - 팀 선택 카드의 라벨 가로 수용 폭이 소폭 늘어난다
+  - 카드 구조와 줄바꿈 정책은 유지되므로 다음 회의에서 더 큰 방향 전환이 가능하다
+  - 효과가 부족하면 이후 `카드 폭 확장` 또는 `2줄 고정` 안으로 자연스럽게 이어갈 수 있다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
