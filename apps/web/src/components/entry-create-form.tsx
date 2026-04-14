@@ -6,19 +6,15 @@ import { startTransition, useState } from "react";
 
 import type {
   CreateDiaryEntryInput,
-  GameCandidate,
   GameResult,
-  GameStatus,
   PhotoAsset,
   TeamCode,
   WatchType,
 } from "@basebook/contracts";
 
 import { createEntry } from "@/lib/api/entries";
-import { getGames } from "@/lib/api/games";
 import { ApiClientError } from "@/lib/api/http";
-import { KBO_STADIUM_OPTIONS, normalizeKboStadium } from "@/lib/stadium-meta";
-import { getTeamLabel } from "@/lib/team-meta";
+import { KBO_STADIUM_OPTIONS } from "@/lib/stadium-meta";
 import { uploadImage } from "@/lib/api/uploads";
 import { TeamPicker } from "@/components/team-picker";
 
@@ -33,7 +29,6 @@ type EntryFormField =
   | "scoreAgainst"
   | "result"
   | "watchType"
-  | "gameId"
   | "stadium"
   | "seat"
   | "playerOfTheDay"
@@ -49,7 +44,6 @@ type EntryFormValues = {
   scoreAgainst: string;
   result: GameResult;
   watchType: WatchType;
-  gameId: string;
   stadium: string;
   seat: string;
   playerOfTheDay: string;
@@ -71,12 +65,6 @@ const WATCH_TYPE_OPTIONS: { value: WatchType; label: string }[] = [
   { value: "OTHER", label: "기타" },
 ];
 
-const GAME_STATUS_LABELS: Record<GameStatus, string> = {
-  SCHEDULED: "예정",
-  IN_PROGRESS: "진행 중",
-  FINAL: "종료",
-};
-
 const INITIAL_VALUES: EntryFormValues = {
   seasonYear: String(new Date().getFullYear()),
   date: new Date().toISOString().slice(0, 10),
@@ -86,7 +74,6 @@ const INITIAL_VALUES: EntryFormValues = {
   scoreAgainst: "",
   result: "WIN",
   watchType: "STADIUM",
-  gameId: "",
   stadium: "",
   seat: "",
   playerOfTheDay: "",
@@ -164,7 +151,6 @@ function buildCreateInput(
   photos: PhotoAsset[],
 ): CreateDiaryEntryInput {
   return {
-    gameId: toOptionalString(values.gameId),
     seasonYear: Number(values.seasonYear),
     date: values.date,
     favoriteTeam: values.favoriteTeam,
@@ -182,43 +168,10 @@ function buildCreateInput(
   };
 }
 
-function buildGamesQuery(values: EntryFormValues) {
-  return {
-    favoriteTeam: values.favoriteTeam,
-    date: values.date || undefined,
-    seasonYear: values.seasonYear ? Number(values.seasonYear) : undefined,
-  };
-}
-
-function applyGameCandidateToValues(
-  currentValues: EntryFormValues,
-  game: GameCandidate,
-): EntryFormValues {
-  return {
-    ...currentValues,
-    gameId: game.id,
-    seasonYear: String(game.seasonYear),
-    date: game.date,
-    favoriteTeam: game.favoriteTeam,
-    opponentTeam: game.opponentTeam,
-    scoreFor:
-      typeof game.scoreFor === "number" ? String(game.scoreFor) : "",
-    scoreAgainst:
-      typeof game.scoreAgainst === "number" ? String(game.scoreAgainst) : "",
-    result: game.result,
-    stadium: normalizeKboStadium(game.stadium),
-  };
-}
-
 export function EntryCreateForm() {
   const router = useRouter();
   const [values, setValues] = useState<EntryFormValues>(INITIAL_VALUES);
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
-  const [gameLookupError, setGameLookupError] = useState<string | null>(null);
-  const [gameLookupNote, setGameLookupNote] = useState<string | null>(null);
-  const [gameCandidates, setGameCandidates] = useState<GameCandidate[]>([]);
-  const [hasRequestedGames, setHasRequestedGames] = useState(false);
-  const [isLoadingGames, setIsLoadingGames] = useState(false);
   const [uploadedPhotos, setUploadedPhotos] = useState<PhotoAsset[]>([]);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [uploadNote, setUploadNote] = useState<string | null>(null);
@@ -243,59 +196,6 @@ export function EntryCreateForm() {
 
       const next = { ...current };
       delete next[field];
-      return next;
-    });
-  }
-
-  async function handleLoadGames() {
-    setGameLookupError(null);
-    setGameLookupNote(null);
-    setHasRequestedGames(true);
-    setIsLoadingGames(true);
-
-    try {
-      const response = await getGames(buildGamesQuery(values));
-      const sortedGames = response.games.toSorted((left, right) =>
-        left.date.localeCompare(right.date),
-      );
-      setGameCandidates(sortedGames);
-
-      if (sortedGames.length === 0) {
-        setGameLookupNote(
-          "조회 조건에 맞는 경기 후보가 없습니다. 날짜나 응원 팀을 바꿔 다시 시도해 주세요.",
-        );
-        return;
-      }
-
-      setGameLookupNote(
-        "후보를 확인한 뒤 원하는 경기를 선택하면 폼이 자동으로 채워집니다.",
-      );
-    } catch (error) {
-      setGameCandidates([]);
-
-      if (error instanceof ApiClientError) {
-        setGameLookupError(error.message);
-      } else {
-        setGameLookupError(
-          "예상하지 못한 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.",
-        );
-      }
-    } finally {
-      setIsLoadingGames(false);
-    }
-  }
-
-  function handleSelectGameCandidate(game: GameCandidate) {
-    setValues((current) => applyGameCandidateToValues(current, game));
-    setGameLookupNote(
-      "선택한 경기 후보를 폼에 반영했습니다. 필요한 항목은 계속 수정할 수 있습니다.",
-    );
-    setFieldErrors((current) => {
-      const next = { ...current };
-      delete next.date;
-      delete next.opponentTeam;
-      delete next.scoreFor;
-      delete next.scoreAgainst;
       return next;
     });
   }
@@ -426,8 +326,8 @@ export function EntryCreateForm() {
                 오늘의 직관 기록을 남겨보세요
               </h1>
               <p className="max-w-2xl text-sm leading-7 text-[#4e6284]">
-                경기 정보를 불러오고 사진과 감상을 더해, 시즌북에 담을 수 있는
-                한 경기의 기억을 완성합니다.
+                점수와 관람 정보를 빠르게 정리하고 사진과 감상을 더해, 시즌북에
+                담을 수 있는 한 경기의 기억을 완성합니다.
               </p>
             </div>
           </div>
@@ -486,7 +386,7 @@ export function EntryCreateForm() {
                 label="응원 팀"
                 value={values.favoriteTeam}
                 onChange={(team) => setFieldValue("favoriteTeam", team)}
-                hint="나를 대표하는 팀을 먼저 고르면 이후 경기 후보 조회에도 그대로 반영됩니다."
+                hint="오늘 기록의 기준이 되는 팀을 먼저 골라 주세요."
                 disabledTeams={[values.opponentTeam]}
               />
 
@@ -616,118 +516,6 @@ export function EntryCreateForm() {
               </label>
             </div>
           </article>
-        </section>
-
-        <section className={SURFACE_PANEL_CLASS}>
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-            <div className="space-y-2">
-              <h2 className="text-xl font-semibold tracking-tight text-[#11284f]">
-                경기 후보 조회
-              </h2>
-              <p className="max-w-2xl text-sm leading-6 text-[#5a6f91]">
-                날짜와 응원 팀에 맞는 경기 후보를 불러온 뒤, 원하는 경기를 선택해
-                기본 정보를 채울 수 있습니다.
-              </p>
-            </div>
-
-            <button
-              type="button"
-              onClick={handleLoadGames}
-              disabled={isLoadingGames}
-              className={PRIMARY_BUTTON_CLASS}
-            >
-              {isLoadingGames ? "경기 불러오는 중..." : "경기 후보 불러오기"}
-            </button>
-          </div>
-
-          {gameLookupError ? (
-            <p className="mt-6 rounded-2xl border border-[#f3c9cf] bg-[#fff7f8] px-4 py-3 text-sm text-[#c42d3c]">
-              {gameLookupError}
-            </p>
-          ) : null}
-
-          {gameLookupNote ? (
-            <p className="mt-6 rounded-2xl border border-[#e6eef8] bg-[#fbfdff] px-4 py-3 text-sm text-[#5a6f91]">
-              {gameLookupNote}
-            </p>
-          ) : null}
-
-          {hasRequestedGames && gameCandidates.length > 0 ? (
-            <div className="mt-6 grid gap-3">
-              {gameCandidates.map((game) => {
-                const isSelected = values.gameId === game.id;
-
-                return (
-                  <button
-                    key={game.id}
-                    type="button"
-                    onClick={() => handleSelectGameCandidate(game)}
-                    className={`rounded-[24px] border px-5 py-4 text-left transition ${
-                      isSelected
-                        ? "border-[#11284f] bg-[#11284f] text-white shadow-[0_18px_40px_rgba(17,40,79,0.18)]"
-                        : "border-[#e5ecf6] bg-white text-[#11284f] hover:border-[#cfdcf0] hover:bg-[#f8fbff]"
-                    }`}
-                  >
-                    <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
-                      <div className="space-y-2">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <span
-                            className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${
-                              isSelected
-                                ? "bg-white/15 text-white"
-                                : "border border-[#dce6f3] bg-[#fbfdff] text-[#4d6284]"
-                            }`}
-                          >
-                            {GAME_STATUS_LABELS[game.status]}
-                          </span>
-                          <span
-                            className={`text-sm font-medium ${
-                              isSelected ? "text-[#d7e3f2]" : "text-[#6a7d9f]"
-                            }`}
-                          >
-                            {game.date} · {game.source}
-                          </span>
-                        </div>
-                        <h3 className="text-lg font-semibold">
-                          {getTeamLabel(game.favoriteTeam)}
-                          {" vs "}
-                          {getTeamLabel(game.opponentTeam)}
-                        </h3>
-                        <p
-                          className={`text-sm ${
-                            isSelected ? "text-[#dbe7f7]" : "text-[#5a6f91]"
-                          }`}
-                        >
-                          구장: {game.stadium || "미정"} / 결과: {game.result}
-                        </p>
-                      </div>
-
-                      <div
-                        className={`rounded-2xl px-4 py-3 text-right ${
-                          isSelected
-                            ? "bg-white/10 text-white"
-                            : "border border-[#e6eef8] bg-[#fbfdff] text-[#11284f]"
-                        }`}
-                      >
-                        <p className="text-xs font-medium uppercase tracking-[0.16em]">
-                          경기 연결
-                        </p>
-                        <p className="mt-1 break-all font-mono text-xs">
-                          {game.id}
-                        </p>
-                        <p className="mt-3 text-sm font-semibold">
-                          {typeof game.scoreFor === "number" &&
-                          typeof game.scoreAgainst === "number"
-                            ? `${game.scoreFor} : ${game.scoreAgainst}`
-                            : "점수 미확정"}
-                        </p>
-                      </div>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          ) : null}
         </section>
 
         <section className="grid gap-4 lg:grid-cols-[1.3fr_0.9fr]">
