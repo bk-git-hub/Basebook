@@ -14,6 +14,7 @@ import type {
 
 import { ApiClientError } from "@/lib/api/http";
 import { updateEntry } from "@/lib/api/entries";
+import { TeamPicker } from "@/components/team-picker";
 
 type FieldErrors = Partial<Record<EntryFormField, string>>;
 
@@ -47,19 +48,6 @@ type EntryFormValues = {
   highlight: string;
   rawMemo: string;
 };
-
-const TEAM_OPTIONS: { value: TeamCode; label: string }[] = [
-  { value: "LG", label: "LG 트윈스" },
-  { value: "DOOSAN", label: "두산 베어스" },
-  { value: "SSG", label: "SSG 랜더스" },
-  { value: "KIWOOM", label: "키움 히어로즈" },
-  { value: "KT", label: "KT 위즈" },
-  { value: "NC", label: "NC 다이노스" },
-  { value: "KIA", label: "KIA 타이거즈" },
-  { value: "LOTTE", label: "롯데 자이언츠" },
-  { value: "SAMSUNG", label: "삼성 라이온즈" },
-  { value: "HANWHA", label: "한화 이글스" },
-];
 
 const RESULT_OPTIONS: { value: GameResult; label: string }[] = [
   { value: "WIN", label: "승리" },
@@ -363,48 +351,20 @@ export function EntryEditForm({ entry }: EntryEditFormProps) {
                 ) : null}
               </label>
 
-              <label className="space-y-2">
-                <span className="text-sm font-medium text-stone-700">
-                  응원 팀
-                </span>
-                <select
-                  value={values.favoriteTeam}
-                  onChange={(event) =>
-                    setFieldValue("favoriteTeam", event.target.value as TeamCode)
-                  }
-                  className="w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-sm text-stone-950 outline-none transition focus:border-stone-400"
-                >
-                  {TEAM_OPTIONS.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-              </label>
+              <TeamPicker
+                label="응원 팀"
+                value={values.favoriteTeam}
+                onChange={(team) => setFieldValue("favoriteTeam", team)}
+                hint="수정하면서 응원 팀을 바꾸더라도 나머지 감상 정보는 그대로 유지됩니다."
+              />
 
-              <label className="space-y-2">
-                <span className="text-sm font-medium text-stone-700">
-                  상대 팀
-                </span>
-                <select
-                  value={values.opponentTeam}
-                  onChange={(event) =>
-                    setFieldValue("opponentTeam", event.target.value as TeamCode)
-                  }
-                  className="w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-sm text-stone-950 outline-none transition focus:border-stone-400"
-                >
-                  {TEAM_OPTIONS.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-                {fieldErrors.opponentTeam ? (
-                  <p className="text-sm text-rose-600">
-                    {fieldErrors.opponentTeam}
-                  </p>
-                ) : null}
-              </label>
+              <TeamPicker
+                label="상대 팀"
+                value={values.opponentTeam}
+                onChange={(team) => setFieldValue("opponentTeam", team)}
+                error={fieldErrors.opponentTeam}
+                hint="응원 팀과 상대 팀은 같을 수 없습니다."
+              />
             </div>
           </article>
 

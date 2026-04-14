@@ -483,3 +483,24 @@
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
 - Related Milestones:
   - `docs/milestones/frontend.md`
+
+### WEB-021
+
+- Date: `2026-04-14`
+- Time: `14:13`
+- Agenda: 팀 선택 UI를 텍스트 드롭다운으로 유지할지, 오리지널 SVG 배지 선택기로 바꿀지 결정
+- Participants: User, Codex
+- Options Considered:
+  - 기존 텍스트 `select`를 유지하고 카피와 간격만 다듬는다
+  - 팀별 개별 SVG 파일을 두고 선택 UI에 붙인다
+  - 공용 SVG 배지 컴포넌트와 팀 메타데이터를 만들고, 팀별 컬러·이니셜·캐릭터 변형만 주는 방식으로 선택 UI를 교체한다
+- Decision: 공식 로고 대신 공용 SVG 배지 시스템을 만들고, `favoriteTeam`과 `opponentTeam` 입력은 귀여운 오리지널 배지 선택기로 교체한다.
+- Rationale: 현재 드롭다운은 팀 인지가 느리고 제품 인상이 약하다. 반면 공식 로고나 마스코트를 직접 쓰지 않고도 팀 컬러, 이니셜, 오리지널 캐릭터 변형으로 충분한 구분감과 감정적 매력을 줄 수 있다. 공용 컴포넌트 구조로 두면 향후 라이선스 확보 시 공식 에셋 교체도 쉬워진다.
+- Impact:
+  - `/entries/new`와 `/entries/[id]/edit`의 팀 선택이 시각적 배지 기반 UX로 바뀐다
+  - 팀명, 이니셜, 색상 체계가 공용 메타데이터로 정리된다
+  - 향후 대시보드와 상세 화면에도 같은 배지를 확장할 수 있는 기반이 생긴다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
