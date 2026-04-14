@@ -10,17 +10,17 @@ function EntryEditStateCard({
   hint,
 }: EntryEditStateCardProps) {
   return (
-    <section className="rounded-[28px] border border-stone-200 bg-white p-8 shadow-sm">
+    <section className="rounded-[28px] border border-[#e5ecf6] bg-white p-8 shadow-[0_16px_40px_rgba(17,40,79,0.05)]">
       <div className="max-w-2xl space-y-3">
-        <span className="inline-flex rounded-full bg-stone-100 px-3 py-1 text-xs font-semibold tracking-[0.18em] text-stone-500 uppercase">
+        <span className="inline-flex rounded-full border border-[#dce6f3] bg-[#fbfdff] px-3 py-1 text-xs font-semibold tracking-[0.18em] text-[#c42d3c] uppercase">
           Entry Edit
         </span>
-        <h1 className="text-2xl font-semibold tracking-tight text-stone-950">
+        <h1 className="text-2xl font-semibold tracking-tight text-[#11284f]">
           {title}
         </h1>
-        <p className="text-sm leading-7 text-stone-600">{description}</p>
+        <p className="text-sm leading-7 text-[#5a6f91]">{description}</p>
         {hint ? (
-          <p className="rounded-2xl bg-stone-50 px-4 py-3 text-sm leading-6 text-stone-500">
+          <p className="rounded-2xl border border-[#e6eef8] bg-[#fbfdff] px-4 py-3 text-sm leading-6 text-[#5a6f91]">
             {hint}
           </p>
         ) : null}

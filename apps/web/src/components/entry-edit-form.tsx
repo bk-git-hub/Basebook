@@ -12,8 +12,10 @@ import type {
   WatchType,
 } from "@basebook/contracts";
 
-import { ApiClientError } from "@/lib/api/http";
 import { updateEntry } from "@/lib/api/entries";
+import { ApiClientError } from "@/lib/api/http";
+import { KBO_STADIUM_OPTIONS } from "@/lib/stadium-meta";
+import { getTeamLabel } from "@/lib/team-meta";
 import { TeamPicker } from "@/components/team-picker";
 
 type FieldErrors = Partial<Record<EntryFormField, string>>;
@@ -62,6 +64,18 @@ const WATCH_TYPE_OPTIONS: { value: WatchType; label: string }[] = [
   { value: "MOBILE", label: "모바일 시청" },
   { value: "OTHER", label: "기타" },
 ];
+
+const SURFACE_PANEL_CLASS =
+  "rounded-[28px] border border-[#e5ecf6] bg-white p-6 shadow-[0_16px_40px_rgba(17,40,79,0.05)]";
+
+const FIELD_CLASS =
+  "w-full rounded-2xl border border-[#d7e3f2] bg-white px-4 py-3 text-sm text-[#11284f] outline-none transition focus:border-[#11284f] focus:ring-4 focus:ring-[#dbe7f7]";
+
+const PRIMARY_BUTTON_CLASS =
+  "inline-flex items-center justify-center rounded-full bg-[#11284f] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#0b1d3b] disabled:cursor-not-allowed disabled:bg-[#91a5c5]";
+
+const SECONDARY_BUTTON_CLASS =
+  "inline-flex items-center justify-center rounded-full border border-[#d4ddeb] bg-white px-5 py-3 text-sm font-semibold text-[#11284f] transition hover:border-[#aebfd8] hover:bg-[#f8fbff]";
 
 function toOptionalString(value: string): string | undefined {
   const trimmed = value.trim();
@@ -127,6 +141,10 @@ function validateValues(values: EntryFormValues): FieldErrors {
 
   if (hasScoreAgainst && Number(values.scoreAgainst) < 0) {
     errors.scoreAgainst = "실점은 0 이상의 숫자여야 합니다.";
+  }
+
+  if (values.watchType === "STADIUM" && !values.stadium.trim()) {
+    errors.stadium = "직관 기록에는 경기장을 선택해 주세요.";
   }
 
   if (!values.highlight.trim()) {
@@ -218,6 +236,14 @@ export function EntryEditForm({ entry }: EntryEditFormProps) {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const isStadiumVisit = values.watchType === "STADIUM";
+  const entryPageLabel = isStadiumVisit ? "직관 기록 수정" : "경기 기록 수정";
+  const entryPageDescription = isStadiumVisit
+    ? "저장된 기록을 바탕으로 결과와 현장 관람 정보를 다시 다듬을 수 있습니다."
+    : "저장된 기록을 바탕으로 결과와 시청 정보를 다시 다듬을 수 있습니다.";
+  const watchInfoHeading = isStadiumVisit
+    ? "결과와 관람 정보"
+    : "결과와 시청 정보";
 
   function setFieldValue<K extends keyof EntryFormValues>(
     field: K,
@@ -234,6 +260,22 @@ export function EntryEditForm({ entry }: EntryEditFormProps) {
 
       const next = { ...current };
       delete next[field];
+      return next;
+    });
+  }
+
+  function handleWatchTypeChange(nextWatchType: WatchType) {
+    setValues((current) => ({
+      ...current,
+      watchType: nextWatchType,
+      stadium: nextWatchType === "STADIUM" ? current.stadium : "",
+      seat: nextWatchType === "STADIUM" ? current.seat : "",
+    }));
+    setFieldErrors((current) => {
+      const next = { ...current };
+      delete next.watchType;
+      delete next.stadium;
+      delete next.seat;
       return next;
     });
   }
@@ -281,31 +323,28 @@ export function EntryEditForm({ entry }: EntryEditFormProps) {
 
   return (
     <div className="space-y-8">
-      <section className="rounded-[32px] bg-stone-950 px-8 py-10 text-white shadow-xl shadow-stone-950/10">
+      <section className="rounded-[32px] border border-[#e5ecf6] bg-white px-6 py-8 shadow-[0_18px_48px_rgba(17,40,79,0.06)] sm:px-8 sm:py-10">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div className="space-y-4">
-            <span className="inline-flex rounded-full bg-white/12 px-3 py-1 text-xs font-semibold tracking-[0.2em] text-stone-200 uppercase">
+            <span className="inline-flex rounded-full border border-[#dce6f3] bg-[#fbfdff] px-3 py-1 text-xs font-semibold tracking-[0.2em] text-[#c42d3c] uppercase">
               Entry Edit
             </span>
             <div className="space-y-2">
-              <p className="text-sm font-medium text-stone-300">
-                {entry.seasonYear} 시즌 기록 수정
+              <p className="text-sm font-medium text-[#5a6f91]">
+                {entryPageLabel}
               </p>
-              <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-                {entry.highlight}
+              <h1 className="text-3xl font-semibold tracking-tight text-[#11284f] sm:text-4xl">
+                {getTeamLabel(values.favoriteTeam)} vs{" "}
+                {getTeamLabel(values.opponentTeam)}
               </h1>
-              <p className="max-w-2xl text-sm leading-7 text-stone-300">
-                경기 정보와 감상을 다시 다듬고, 저장 후 상세 화면에서 확인할 수
-                있습니다.
+              <p className="max-w-2xl text-sm leading-7 text-[#4e6284]">
+                {entryPageDescription}
               </p>
             </div>
           </div>
 
           <div className="flex flex-wrap gap-3">
-            <Link
-              href={`/entries/${entry.id}`}
-              className="inline-flex items-center justify-center rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-stone-950 transition hover:bg-stone-100"
-            >
+            <Link href={`/entries/${entry.id}`} className={SECONDARY_BUTTON_CLASS}>
               상세 화면으로 돌아가기
             </Link>
           </div>
@@ -314,13 +353,13 @@ export function EntryEditForm({ entry }: EntryEditFormProps) {
 
       <form className="space-y-8" onSubmit={handleSubmit}>
         <section className="grid gap-4 lg:grid-cols-2">
-          <article className="rounded-[28px] border border-stone-200 bg-white p-6 shadow-sm">
-            <h2 className="text-xl font-semibold tracking-tight text-stone-950">
+          <article className={SURFACE_PANEL_CLASS}>
+            <h2 className="text-xl font-semibold tracking-tight text-[#11284f]">
               경기 기본 정보
             </h2>
             <div className="mt-6 grid gap-4 sm:grid-cols-2">
               <label className="space-y-2">
-                <span className="text-sm font-medium text-stone-700">
+                <span className="text-sm font-medium text-[#11284f]">
                   시즌 연도
                 </span>
                 <input
@@ -329,25 +368,25 @@ export function EntryEditForm({ entry }: EntryEditFormProps) {
                   onChange={(event) =>
                     setFieldValue("seasonYear", event.target.value)
                   }
-                  className="w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-sm text-stone-950 outline-none transition focus:border-stone-400"
+                  className={FIELD_CLASS}
                 />
                 {fieldErrors.seasonYear ? (
-                  <p className="text-sm text-rose-600">{fieldErrors.seasonYear}</p>
+                  <p className="text-sm text-[#c42d3c]">{fieldErrors.seasonYear}</p>
                 ) : null}
               </label>
 
               <label className="space-y-2">
-                <span className="text-sm font-medium text-stone-700">
+                <span className="text-sm font-medium text-[#11284f]">
                   관람 날짜
                 </span>
                 <input
                   type="date"
                   value={values.date}
                   onChange={(event) => setFieldValue("date", event.target.value)}
-                  className="w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-sm text-stone-950 outline-none transition focus:border-stone-400"
+                  className={FIELD_CLASS}
                 />
                 {fieldErrors.date ? (
-                  <p className="text-sm text-rose-600">{fieldErrors.date}</p>
+                  <p className="text-sm text-[#c42d3c]">{fieldErrors.date}</p>
                 ) : null}
               </label>
 
@@ -355,7 +394,7 @@ export function EntryEditForm({ entry }: EntryEditFormProps) {
                 label="응원 팀"
                 value={values.favoriteTeam}
                 onChange={(team) => setFieldValue("favoriteTeam", team)}
-                hint="수정하면서 응원 팀을 바꾸더라도 나머지 감상 정보는 그대로 유지됩니다."
+                hint="오늘 기록의 기준이 되는 팀을 먼저 골라 주세요."
                 disabledTeams={[values.opponentTeam]}
               />
 
@@ -364,19 +403,19 @@ export function EntryEditForm({ entry }: EntryEditFormProps) {
                 value={values.opponentTeam}
                 onChange={(team) => setFieldValue("opponentTeam", team)}
                 error={fieldErrors.opponentTeam}
-                hint="응원 팀과 상대 팀은 같을 수 없습니다."
+                hint="응원 팀과 다른 팀을 골라 주세요. 같은 팀을 고르면 저장 전에 알려드립니다."
                 disabledTeams={[values.favoriteTeam]}
               />
             </div>
           </article>
 
-          <article className="rounded-[28px] border border-stone-200 bg-white p-6 shadow-sm">
-            <h2 className="text-xl font-semibold tracking-tight text-stone-950">
-              결과와 관람 정보
+          <article className={SURFACE_PANEL_CLASS}>
+            <h2 className="text-xl font-semibold tracking-tight text-[#11284f]">
+              {watchInfoHeading}
             </h2>
             <div className="mt-6 grid gap-4 sm:grid-cols-2">
               <label className="space-y-2">
-                <span className="text-sm font-medium text-stone-700">
+                <span className="text-sm font-medium text-[#11284f]">
                   결과
                 </span>
                 <select
@@ -384,7 +423,7 @@ export function EntryEditForm({ entry }: EntryEditFormProps) {
                   onChange={(event) =>
                     setFieldValue("result", event.target.value as GameResult)
                   }
-                  className="w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-sm text-stone-950 outline-none transition focus:border-stone-400"
+                  className={FIELD_CLASS}
                 >
                   {RESULT_OPTIONS.map((option) => (
                     <option key={option.value} value={option.value}>
@@ -395,15 +434,15 @@ export function EntryEditForm({ entry }: EntryEditFormProps) {
               </label>
 
               <label className="space-y-2">
-                <span className="text-sm font-medium text-stone-700">
+                <span className="text-sm font-medium text-[#11284f]">
                   관람 형태
                 </span>
                 <select
                   value={values.watchType}
                   onChange={(event) =>
-                    setFieldValue("watchType", event.target.value as WatchType)
+                    handleWatchTypeChange(event.target.value as WatchType)
                   }
-                  className="w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-sm text-stone-950 outline-none transition focus:border-stone-400"
+                  className={FIELD_CLASS}
                 >
                   {WATCH_TYPE_OPTIONS.map((option) => (
                     <option key={option.value} value={option.value}>
@@ -414,7 +453,7 @@ export function EntryEditForm({ entry }: EntryEditFormProps) {
               </label>
 
               <label className="space-y-2">
-                <span className="text-sm font-medium text-stone-700">
+                <span className="text-sm font-medium text-[#11284f]">
                   우리 팀 점수
                 </span>
                 <input
@@ -424,15 +463,15 @@ export function EntryEditForm({ entry }: EntryEditFormProps) {
                   onChange={(event) =>
                     setFieldValue("scoreFor", event.target.value)
                   }
-                  className="w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-sm text-stone-950 outline-none transition focus:border-stone-400"
+                  className={FIELD_CLASS}
                 />
                 {fieldErrors.scoreFor ? (
-                  <p className="text-sm text-rose-600">{fieldErrors.scoreFor}</p>
+                  <p className="text-sm text-[#c42d3c]">{fieldErrors.scoreFor}</p>
                 ) : null}
               </label>
 
               <label className="space-y-2">
-                <span className="text-sm font-medium text-stone-700">
+                <span className="text-sm font-medium text-[#11284f]">
                   상대 팀 점수
                 </span>
                 <input
@@ -442,52 +481,69 @@ export function EntryEditForm({ entry }: EntryEditFormProps) {
                   onChange={(event) =>
                     setFieldValue("scoreAgainst", event.target.value)
                   }
-                  className="w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-sm text-stone-950 outline-none transition focus:border-stone-400"
+                  className={FIELD_CLASS}
                 />
                 {fieldErrors.scoreAgainst ? (
-                  <p className="text-sm text-rose-600">
+                  <p className="text-sm text-[#c42d3c]">
                     {fieldErrors.scoreAgainst}
                   </p>
                 ) : null}
               </label>
 
-              <label className="space-y-2">
-                <span className="text-sm font-medium text-stone-700">
-                  경기장
-                </span>
-                <input
-                  type="text"
-                  value={values.stadium}
-                  onChange={(event) =>
-                    setFieldValue("stadium", event.target.value)
-                  }
-                  className="w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-sm text-stone-950 outline-none transition focus:border-stone-400"
-                />
-              </label>
+              {isStadiumVisit ? (
+                <>
+                  <label className="space-y-2">
+                    <span className="text-sm font-medium text-[#11284f]">
+                      경기장
+                    </span>
+                    <select
+                      value={values.stadium}
+                      onChange={(event) =>
+                        setFieldValue("stadium", event.target.value)
+                      }
+                      className={FIELD_CLASS}
+                    >
+                      <option value="">경기장을 선택하세요</option>
+                      {KBO_STADIUM_OPTIONS.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                    {fieldErrors.stadium ? (
+                      <p className="text-sm text-[#c42d3c]">
+                        {fieldErrors.stadium}
+                      </p>
+                    ) : null}
+                  </label>
 
-              <label className="space-y-2">
-                <span className="text-sm font-medium text-stone-700">
-                  좌석
-                </span>
-                <input
-                  type="text"
-                  value={values.seat}
-                  onChange={(event) => setFieldValue("seat", event.target.value)}
-                  className="w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-sm text-stone-950 outline-none transition focus:border-stone-400"
-                />
-              </label>
+                  <label className="space-y-2">
+                    <span className="text-sm font-medium text-[#11284f]">
+                      좌석
+                    </span>
+                    <input
+                      type="text"
+                      value={values.seat}
+                      onChange={(event) =>
+                        setFieldValue("seat", event.target.value)
+                      }
+                      className={FIELD_CLASS}
+                    />
+                  </label>
+                </>
+              ) : null}
             </div>
           </article>
         </section>
 
         <section className="grid gap-4">
-          <article className="rounded-[28px] border border-stone-200 bg-white p-6 shadow-sm">
-            <h2 className="text-xl font-semibold tracking-tight text-stone-950">
+          <article className={SURFACE_PANEL_CLASS}>
+            <h2 className="text-xl font-semibold tracking-tight text-[#11284f]">
               감상 수정
             </h2>
             <div className="mt-6 space-y-4">
               <label className="space-y-2">
-                <span className="text-sm font-medium text-stone-700">
+                <span className="text-sm font-medium text-[#11284f]">
                   오늘의 선수
                 </span>
                 <input
@@ -496,12 +552,12 @@ export function EntryEditForm({ entry }: EntryEditFormProps) {
                   onChange={(event) =>
                     setFieldValue("playerOfTheDay", event.target.value)
                   }
-                  className="w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-sm text-stone-950 outline-none transition focus:border-stone-400"
+                  className={FIELD_CLASS}
                 />
               </label>
 
               <label className="space-y-2">
-                <span className="text-sm font-medium text-stone-700">
+                <span className="text-sm font-medium text-[#11284f]">
                   한 줄 감상
                 </span>
                 <input
@@ -510,15 +566,15 @@ export function EntryEditForm({ entry }: EntryEditFormProps) {
                   onChange={(event) =>
                     setFieldValue("highlight", event.target.value)
                   }
-                  className="w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-sm text-stone-950 outline-none transition focus:border-stone-400"
+                  className={FIELD_CLASS}
                 />
                 {fieldErrors.highlight ? (
-                  <p className="text-sm text-rose-600">{fieldErrors.highlight}</p>
+                  <p className="text-sm text-[#c42d3c]">{fieldErrors.highlight}</p>
                 ) : null}
               </label>
 
               <label className="space-y-2">
-                <span className="text-sm font-medium text-stone-700">
+                <span className="text-sm font-medium text-[#11284f]">
                   상세 메모
                 </span>
                 <textarea
@@ -527,7 +583,7 @@ export function EntryEditForm({ entry }: EntryEditFormProps) {
                     setFieldValue("rawMemo", event.target.value)
                   }
                   rows={8}
-                  className="w-full rounded-[24px] border border-stone-200 bg-white px-4 py-3 text-sm leading-7 text-stone-950 outline-none transition focus:border-stone-400"
+                  className={`${FIELD_CLASS} rounded-[24px] leading-7`}
                 />
               </label>
             </div>
@@ -535,13 +591,13 @@ export function EntryEditForm({ entry }: EntryEditFormProps) {
         </section>
 
         {submitError ? (
-          <p className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+          <p className="rounded-2xl border border-[#f3c9cf] bg-[#fff7f8] px-4 py-3 text-sm text-[#c42d3c]">
             {submitError}
           </p>
         ) : null}
 
         {statusMessage ? (
-          <p className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+          <p className="rounded-2xl border border-[#dce6f3] bg-[#fbfdff] px-4 py-3 text-sm text-[#11284f]">
             {statusMessage}
           </p>
         ) : null}
@@ -550,14 +606,11 @@ export function EntryEditForm({ entry }: EntryEditFormProps) {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="inline-flex items-center justify-center rounded-full bg-stone-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-stone-800 disabled:cursor-not-allowed disabled:bg-stone-400"
+            className={PRIMARY_BUTTON_CLASS}
           >
             {isSubmitting ? "저장 중..." : "수정 내용 저장"}
           </button>
-          <Link
-            href={`/entries/${entry.id}`}
-            className="inline-flex items-center justify-center rounded-full border border-stone-200 bg-white px-5 py-3 text-sm font-semibold text-stone-700 transition hover:border-stone-300 hover:bg-stone-50"
-          >
+          <Link href={`/entries/${entry.id}`} className={SECONDARY_BUTTON_CLASS}>
             취소하고 돌아가기
           </Link>
         </div>

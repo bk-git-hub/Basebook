@@ -8,8 +8,8 @@ import { getEntry } from "@/lib/api/entries";
 import { ApiClientError } from "@/lib/api/http";
 
 export const metadata: Metadata = {
-  title: "직관 기록 수정 | Basebook",
-  description: "저장한 직관 기록의 경기 정보와 감상을 수정하는 화면",
+  title: "기록 수정 | Basebook",
+  description: "저장한 경기 기록의 정보와 감상을 수정하는 화면",
 };
 
 export const dynamic = "force-dynamic";
@@ -53,8 +53,9 @@ export default async function EntryEditPage({ params }: EntryEditPageProps) {
   return (
     <AppShell
       activeSection="entries"
-      title="직관 기록 수정"
+      title="기록 수정"
       description="변경한 항목만 저장하는 흐름 안에서 경기 정보와 감상을 다시 다듬습니다."
+      tone="home"
     >
       {result.status === "error" ? (
         <EntryEditErrorState message={result.message} />
