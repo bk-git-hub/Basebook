@@ -17,6 +17,7 @@ import type {
 import { createEntry } from "@/lib/api/entries";
 import { getGames } from "@/lib/api/games";
 import { ApiClientError } from "@/lib/api/http";
+import { KBO_STADIUM_OPTIONS, normalizeKboStadium } from "@/lib/stadium-meta";
 import { getTeamLabel } from "@/lib/team-meta";
 import { uploadImage } from "@/lib/api/uploads";
 import { TeamPicker } from "@/components/team-picker";
@@ -205,7 +206,7 @@ function applyGameCandidateToValues(
     scoreAgainst:
       typeof game.scoreAgainst === "number" ? String(game.scoreAgainst) : "",
     result: game.result,
-    stadium: game.stadium ?? "",
+    stadium: normalizeKboStadium(game.stadium),
   };
 }
 
@@ -586,14 +587,20 @@ export function EntryCreateForm() {
                 <span className="text-sm font-medium text-[#11284f]">
                   경기장
                 </span>
-                <input
-                  type="text"
+                <select
                   value={values.stadium}
                   onChange={(event) =>
                     setFieldValue("stadium", event.target.value)
                   }
                   className={FIELD_CLASS}
-                />
+                >
+                  <option value="">경기장을 선택하세요</option>
+                  {KBO_STADIUM_OPTIONS.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
               </label>
 
               <label className="space-y-2">
