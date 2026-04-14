@@ -925,3 +925,23 @@
 - Status: `approved`
 - Related Docs:
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+
+### WEB-044
+
+- Date: `2026-04-14`
+- Time: `20:11`
+- Agenda: `/entries/new`에서 `경기 후보 조회` 카드를 임시 유지할지, 현재 제품 단계에서는 제거할지 결정
+- Participants: User, Codex
+- Options Considered:
+  - `경기 후보 조회` 카드는 남겨두고, 실제 데이터 연동 전까지 보조 기능처럼 유지한다
+  - 실제 경기 DB 연동이 준비되기 전까지는 `경기 후보 조회` 카드를 제거하고 직접 입력 흐름에 집중한다
+- Decision: `/entries/new`에서는 실제 경기 DB 연동이 준비되기 전까지 `경기 후보 조회` 카드를 제거한다.
+- Rationale: 현재 단계에서는 해당 카드가 자동 채움 기대를 만들지만, 제품의 핵심 입력 흐름보다 먼저 크게 보이면서 작성 흐름을 끊는다. 특히 모바일에서는 첫 화면 높이를 많이 차지하므로, 보조 기능을 남기기보다 기록 작성 자체를 빠르게 시작하게 만드는 편이 더 적합하다.
+- Impact:
+  - `/entries/new`는 경기 기본 정보 -> 결과와 관람 정보 -> 감상 작성 -> 사진 업로드의 직접 입력 흐름으로 단순화된다
+  - 실제 경기 조회/연결과 관련된 안내 문구와 상태 UI가 함께 제거되어 화면 의도가 더 명확해진다
+  - 이후 실데이터 연동이 가능해지면 별도 slice에서 더 제품다운 경기 선택 UX로 다시 도입할 수 있다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
