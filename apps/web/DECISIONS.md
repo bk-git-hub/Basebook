@@ -644,3 +644,23 @@
 - Status: `approved`
 - Related Docs:
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+
+### WEB-029
+
+- Date: `2026-04-14`
+- Time: `15:38`
+- Agenda: 팀 선택 카드의 라벨 줄바꿈을 완화하기 위해 카드 가로 여백을 얼마나 줄일지 결정
+- Participants: User, Codex
+- Options Considered:
+  - 카드 구조는 유지하고 내부 가로 패딩만 `px-3`에서 `px-2`로 축소한다
+  - 패딩은 유지하고 카드 폭 확장이나 2줄 고정 규칙으로 바로 넘어간다
+- Decision: 이번 slice에서는 팀 선택 카드의 가로 패딩을 `px-3`에서 `px-2`로 줄여 본다.
+- Rationale: 폰트만 줄인 상태에서 아직 줄바꿈이 남아 있으므로, 다음으로 가장 작은 조정 단위는 내부 여백 축소다. 카드 구조를 흔들지 않으면서 텍스트가 들어갈 실효 폭을 조금 더 확보할 수 있다.
+- Impact:
+  - 팀 선택 카드 안에서 팀명에 배정되는 가로 폭이 소폭 늘어난다
+  - 카드 외곽 크기와 그리드 구조는 유지된다
+  - 효과가 부족하면 다음 단계에서 카드 폭 확대 또는 2줄 고정 규칙을 다시 논의할 수 있다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`

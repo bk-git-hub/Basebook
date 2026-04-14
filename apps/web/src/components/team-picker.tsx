@@ -40,7 +40,7 @@ export function TeamPicker({
               role="radio"
               aria-checked={isSelected}
               onClick={() => onChange(option.value)}
-              className={`group flex min-h-[10.5rem] flex-col items-center justify-center rounded-[28px] border px-3 py-4 text-center transition ${
+              className={`group flex min-h-[10.5rem] flex-col items-center justify-center rounded-[28px] border px-2 py-4 text-center transition ${
                 isSelected
                   ? "border-stone-950 bg-stone-100 text-stone-950 shadow-[0_16px_32px_rgba(15,23,42,0.12)]"
                   : "border-stone-200 bg-white text-stone-900 hover:border-stone-300 hover:bg-stone-50"
