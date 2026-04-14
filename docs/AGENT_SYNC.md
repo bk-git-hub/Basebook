@@ -123,3 +123,15 @@
 - Required action: Frontend and backend may treat SYNC-004 as resolved for the implemented local/R2-backed integration flow. QA still has a separate tests/web unit test maintenance issue where older assertions no longer match updated UI copy.
 - User notified: yes
 - Status: resolved
+
+## SYNC-009
+- Date: 2026-04-14
+- Time: 12:33
+- Source role: Backend
+- Target role: Frontend
+- Type: ready
+- Related area: `GET /season-books/:projectId/status`
+- Summary: Shared contract now defines the season-book order status query endpoint and its response shape, including progress timeline steps for the order-status screen.
+- Required action: Frontend may begin integrating the order-progress screen against the fixed contract while backend implementation follows in the next slice.
+- User notified: yes
+- Status: open

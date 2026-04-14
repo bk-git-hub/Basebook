@@ -15,6 +15,30 @@ export type SeasonBookOrderStatus =
   | "DELIVERED"
   | "UNKNOWN";
 
+export type GetSeasonBookStatusParams = {
+  projectId: EntityId;
+};
+
+export type SeasonBookProgressStepKey =
+  | "PAID"
+  | "PDF_READY"
+  | "CONFIRMED"
+  | "IN_PRODUCTION"
+  | "PRODUCTION_COMPLETE"
+  | "SHIPPED"
+  | "DELIVERED";
+
+export type SeasonBookProgressStepState = "completed" | "current" | "pending";
+
+export type SeasonBookStatusSource = "LOCAL" | "SWEETBOOK";
+
+export type SeasonBookProgressStep = {
+  key: SeasonBookProgressStepKey;
+  label: string;
+  state: SeasonBookProgressStepState;
+  occurredAt?: IsoDateTimeString;
+};
+
 export type SeasonBookEstimateRequest = {
   seasonYear: number;
   title: string;
@@ -49,6 +73,19 @@ export type SeasonBookOrderResponse = {
   currency: CurrencyCode;
   projectStatus: SeasonBookProjectStatus;
   orderStatus: SeasonBookOrderStatus;
+};
+
+export type GetSeasonBookStatusResponse = {
+  projectId: EntityId;
+  bookUid?: string;
+  orderUid?: string;
+  projectStatus: SeasonBookProjectStatus;
+  orderStatus: SeasonBookOrderStatus;
+  source: SeasonBookStatusSource;
+  sweetbookStatusCode?: number;
+  sweetbookStatusDisplay?: string;
+  progress: SeasonBookProgressStep[];
+  updatedAt: IsoDateTimeString;
 };
 
 export type SeasonBookProjectSummary = {

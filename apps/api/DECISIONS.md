@@ -442,3 +442,29 @@
   - `docs/planning/CONTRACT_SPEC.md`
 - Related Milestones:
   - `docs/milestones/backend.md`
+
+### API-017
+
+- Date: `2026-04-14`
+- Time: `12:33`
+- Agenda: 시즌북 주문 진행 조회 엔드포인트의 계약 고정 순서
+- Participants: User, Codex
+- Options Considered:
+  - 백엔드 구현을 먼저 하고 계약 문서와 공유 타입을 나중에 정리
+  - 공유 계약을 먼저 잠그고 그 shape를 기준으로 프론트와 백엔드를 맞춰 구현
+- Decision:
+  - `GET /season-books/:projectId/status` 계약을 먼저 `packages/contracts`와 계약 문서에 반영한다
+  - 응답은 현재 주문 상태뿐 아니라 진행 타임라인용 `progress` 배열까지 포함한다
+- Rationale: 프론트가 백엔드 구현 완료를 기다리지 않고도 주문 진행 화면을 같은 응답 shape로 바로 준비할 수 있게 하기 위함이다.
+- Impact:
+  - 시즌북 주문 진행 조회 응답 shape가 공유 계약에 추가된다
+  - 다음 백엔드 구현 슬라이스는 이 계약에 맞춰 상태 조회 API를 구현해야 한다
+  - 프론트는 임시 mocking 없이 고정된 필드명을 기준으로 작업할 수 있다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `packages/contracts/src/season-book.ts`
+  - `docs/planning/CONTRACT_SPEC.md`
+  - `docs/planning/BACKEND_FUNCTIONAL_SPEC.md`
+- Related Milestones:
+  - `docs/milestones/backend.md`

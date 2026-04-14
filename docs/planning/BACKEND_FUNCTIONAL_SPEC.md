@@ -74,6 +74,7 @@
 - 기록 선택 기반 시즌북 생성
 - 페이지 수 계산
 - 견적/주문 유스케이스
+- 주문 진행 상태 조회
 
 ### `sweetbook`
 
@@ -195,6 +196,14 @@
 - Sweetbook order 생성
 - `orderUid` 저장
 
+### `GET /season-books/:projectId/status`
+
+역할:
+
+- 저장된 시즌북 프로젝트와 주문 상태 조회
+- 필요 시 Sweetbook order 상태를 다시 읽어와 진행 단계로 변환
+- 프론트 주문 진행 화면용 타임라인 데이터 반환
+
 ### `GET /auth/session` (reserved)
 
 역할:
@@ -291,11 +300,13 @@
 
 - 주소 검증
 - order 생성
+- order status 조회
 - 결과 저장
 
 완료 기준:
 
 - `POST /season-books/order` 동작
+- `GET /season-books/:projectId/status` 동작
 
 ### Phase B8. auth/admin 확장 포인트 정리
 

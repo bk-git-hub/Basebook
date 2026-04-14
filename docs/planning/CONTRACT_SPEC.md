@@ -351,6 +351,63 @@ type SeasonBookOrderResponse = {
 };
 ```
 
+### `GET /season-books/:projectId/status`
+
+용도:
+
+- 시즌북 주문 진행 화면의 현재 상태 조회
+- 프론트가 polling 하거나 재진입 시 진행 단계를 다시 그릴 수 있는 기준 응답 제공
+
+경로 파라미터:
+
+```ts
+type GetSeasonBookStatusParams = {
+  projectId: EntityId;
+};
+```
+
+응답:
+
+```ts
+type GetSeasonBookStatusResponse = {
+  projectId: EntityId;
+  bookUid?: string;
+  orderUid?: string;
+  projectStatus: "DRAFT" | "ESTIMATED" | "ORDERED" | "FAILED";
+  orderStatus:
+    | "UNPLACED"
+    | "PAID"
+    | "CONFIRMED"
+    | "IN_PRODUCTION"
+    | "SHIPPED"
+    | "DELIVERED"
+    | "UNKNOWN";
+  source: "LOCAL" | "SWEETBOOK";
+  sweetbookStatusCode?: number;
+  sweetbookStatusDisplay?: string;
+  progress: {
+    key:
+      | "PAID"
+      | "PDF_READY"
+      | "CONFIRMED"
+      | "IN_PRODUCTION"
+      | "PRODUCTION_COMPLETE"
+      | "SHIPPED"
+      | "DELIVERED";
+    label: string;
+    state: "completed" | "current" | "pending";
+    occurredAt?: IsoDateTimeString;
+  }[];
+  updatedAt: IsoDateTimeString;
+};
+```
+
+참고:
+
+- `source`는 현재 상태가 로컬 개발용 상태인지, Sweetbook 조회 기반 상태인지를 구분한다
+- `progress`는 주문 진행 화면의 세로 타임라인 UI를 바로 그릴 수 있게 백엔드가 정리해서 내려준다
+- Sweetbook Sandbox에서는 일반적으로 `PAID` 이후 단계가 실제로 진행되지 않으므로 뒤 단계는 `pending`으로 남을 수 있다
+
 ## 예약된 확장 엔드포인트
 
 아래 엔드포인트는 MVP 필수는 아니지만, 추후 회원가입/로그인과 운영자 기능 확장을 위해 namespace를 먼저 고정한다.

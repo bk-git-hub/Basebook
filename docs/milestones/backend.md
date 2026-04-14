@@ -152,3 +152,20 @@
   - user verification pending
 - Next Step:
   - re-run browser integration against whichever local frontend port is active
+
+### BE-MILESTONE-008
+
+- Date: `2026-04-14`
+- Time: `12:33`
+- Milestone: Season-book order status query contract locked
+- Status: `ready_for_review`
+- Summary:
+  - shared contract now defines `GET /season-books/:projectId/status`
+  - response shape includes current order state plus progress timeline steps for the order-status UI
+  - frontend can start integrating against the fixed response before backend implementation lands
+- Related Decision IDs:
+  - `API-017`
+- Blocking Items:
+  - backend endpoint implementation pending
+- Next Step:
+  - implement `GET /season-books/:projectId/status` in `apps/api`
