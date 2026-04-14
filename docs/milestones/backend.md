@@ -239,3 +239,20 @@
   - backend implementation pending
 - Next Step:
   - update `apps/api` status endpoint implementation to return stored shipping data
+
+### BE-MILESTONE-013
+
+- Date: `2026-04-14`
+- Time: `14:37`
+- Milestone: Season-book status endpoint returns shipping prefill data
+- Status: `ready_for_review`
+- Summary:
+  - `GET /season-books/:projectId/status` now includes optional `shipping` when the project already has a saved address snapshot
+  - unit and e2e coverage now verify the status response includes shipping after order placement and after cancellation
+  - frontend can use the existing status query as the single source for both progress timeline and address form prefill
+- Related Decision IDs:
+  - `API-022`
+- Blocking Items:
+  - user verification pending
+- Next Step:
+  - implement `POST /webhooks/sweetbook`

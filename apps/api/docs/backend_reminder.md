@@ -34,7 +34,7 @@ This file is a quick restart note for the next backend work session.
 - Optional Cloudflare R2 storage is prepared for public image hosting.
 - `POST /season-books/estimate` is implemented with local fallback and Sweetbook-backed `auto` mode.
 - `POST /season-books/order` is implemented as a local order completion path for already estimated projects.
-- `GET /season-books/:projectId/status` is implemented for order-progress polling with local fallback and optional Sweetbook order refresh.
+- `GET /season-books/:projectId/status` is implemented for order-progress polling, local shipping prefill, and optional Sweetbook order refresh.
 - `POST /season-books/:projectId/cancel` is implemented for local cancellation history and Sweetbook-backed cancel calls when configured.
 - `PATCH /season-books/:projectId/shipping` is implemented for pre-shipment address updates with local persistence and optional Sweetbook forwarding.
 - Sweetbook sandbox readiness check script exists.
@@ -50,6 +50,7 @@ This file is a quick restart note for the next backend work session.
 - `API-016`: Add Sweetbook sandbox order wiring behind an explicit `SWEETBOOK_ORDER_MODE=sandbox` flag while keeping local order as the default.
 - `API-020`: Keep cancelled orders as terminal order history instead of reopening the project for reorder by default.
 - `API-021`: Persist season-book shipping info in SQLite and keep `db:init` auto-upgrading existing local databases.
+- `API-022`: Expand the season-book status contract so the existing status response can also return shipping prefill data.
 
 ## Environment Notes
 
@@ -79,7 +80,7 @@ npm test -- --runInBand
 npm run test:e2e -- --runInBand
 ```
 
-Last known result: all three passed on 2026-04-14 after the shipping-update slice.
+Last known result: all three passed on 2026-04-14 after the status-shipping slice.
 
 ## Known Open Backend Follow-Ups
 

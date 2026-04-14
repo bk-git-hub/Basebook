@@ -197,3 +197,16 @@
 - Required action: Frontend should treat `status.shipping` as the preferred prefill source once the backend implementation lands, instead of requiring full re-entry.
 - User notified: yes
 - Status: open
+
+## SYNC-014
+
+- Date: 2026-04-14
+- Time: 14:37
+- Source role: Backend
+- Target role: Frontend
+- Type: ready
+- Related area: `GET /season-books/:projectId/status`
+- Summary: Backend now returns saved shipping data through optional `status.shipping` when the season-book project already has a stored address snapshot.
+- Required action: Frontend can prefill the address-edit form from the existing status query response and only fall back to blank fields when `shipping` is absent.
+- User notified: yes
+- Status: open

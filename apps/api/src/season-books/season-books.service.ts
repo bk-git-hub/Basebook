@@ -101,6 +101,7 @@ export class SeasonBooksService {
       orderUid: project.orderUid ?? undefined,
       projectStatus: project.projectStatus as SeasonBookProjectStatus,
       orderStatus,
+      shipping: this.buildShippingSnapshot(project),
       source: sweetbookStatus ? 'SWEETBOOK' : 'LOCAL',
       sweetbookStatusCode: sweetbookStatus?.statusCode,
       sweetbookStatusDisplay: sweetbookStatus?.statusDisplay,
@@ -500,6 +501,33 @@ export class SeasonBooksService {
       shippingMemo: this.normalizeOptionalShippingField(
         body.shippingMemo ?? project.shippingMemo ?? undefined,
       ),
+    };
+  }
+
+  private buildShippingSnapshot(project: {
+    recipientName: string | null;
+    recipientPhone: string | null;
+    postalCode: string | null;
+    address1: string | null;
+    address2: string | null;
+    shippingMemo: string | null;
+  }): SeasonBookShippingInfo | undefined {
+    if (
+      !project.recipientName ||
+      !project.recipientPhone ||
+      !project.postalCode ||
+      !project.address1
+    ) {
+      return undefined;
+    }
+
+    return {
+      recipientName: project.recipientName,
+      recipientPhone: project.recipientPhone,
+      postalCode: project.postalCode,
+      address1: project.address1,
+      address2: project.address2 ?? undefined,
+      shippingMemo: project.shippingMemo ?? undefined,
     };
   }
 

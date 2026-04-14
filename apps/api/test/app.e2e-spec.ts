@@ -303,6 +303,12 @@ describe('AppController (e2e)', () => {
         expect(body.orderUid).toMatch(/^local-order-/);
         expect(body.projectStatus).toBe('ORDERED');
         expect(body.orderStatus).toBe('CONFIRMED');
+        expect(body.shipping).toEqual({
+          recipientName: '홍길동',
+          recipientPhone: '010-1234-5678',
+          postalCode: '06236',
+          address1: '서울특별시 강남구 테헤란로 123',
+        });
         expect(body.source).toBe('LOCAL');
         expect(body.progress).toEqual([
           expect.objectContaining({ key: 'PAID', state: 'completed' }),
@@ -363,6 +369,12 @@ describe('AppController (e2e)', () => {
       .expect(({ body }) => {
         expect(body.projectStatus).toBe('ORDERED');
         expect(body.orderStatus).toBe('CANCELLED_REFUND');
+        expect(body.shipping).toEqual({
+          recipientName: '홍길동',
+          recipientPhone: '010-1234-5678',
+          postalCode: '06236',
+          address1: '서울특별시 강남구 테헤란로 123',
+        });
         expect(body.source).toBe('LOCAL');
       });
   });
