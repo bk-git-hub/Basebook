@@ -905,3 +905,23 @@
 - Related Docs:
   - `docs/planning/CONTRACT_SPEC.md`
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+
+### WEB-043
+
+- Date: `2026-04-14`
+- Time: `20:06`
+- Agenda: `/entries/new`의 경기장 입력을 자유입력으로 유지할지, 현재 KBO 1군 구장 기준의 고정 선택으로 바꿀지 결정
+- Participants: User, Codex
+- Options Considered:
+  - 경기장 입력을 자유 텍스트로 유지해 포항, 울산 같은 예외 구장까지 직접 적을 수 있게 둔다
+  - 경기장 입력을 현재 KBO 1군 사용 구장 9개 고정 드롭다운으로 바꿔 입력값을 통일한다
+- Decision: `/entries/new`의 경기장 입력은 현재 KBO 1군 사용 구장 9개 고정 드롭다운으로 전환한다.
+- Rationale: 실제 경기 DB 연동이 아직 없는 상태에서는 자유입력이 모바일 입력 비용을 늘리고, 같은 구장도 여러 표기로 흩어질 가능성이 크다. 지금 단계에서는 예외 구장 일부를 열어두는 것보다 홈 통계와 기록 데이터의 일관성을 확보하는 편이 더 중요하다.
+- Impact:
+  - `/entries/new`에서는 `잠실야구장`, `고척스카이돔`, `인천SSG랜더스필드`, `수원 케이티 위즈 파크`, `대전 한화생명 볼파크`, `대구삼성라이온즈파크`, `창원NC파크`, `광주-기아 챔피언스 필드`, `사직야구장`만 선택할 수 있다
+  - 모바일에서 경기장 입력 단계가 더 짧아지고, 홈 화면 구장 관련 요약의 데이터 품질이 좋아진다
+  - 포항, 울산 같은 예외 구장은 실제 경기 연동이나 예외 케이스 검토가 준비된 후속 slice에서 다시 열어볼 수 있다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
