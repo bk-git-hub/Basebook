@@ -210,3 +210,16 @@
 - Required action: Frontend can prefill the address-edit form from the existing status query response and only fall back to blank fields when `shipping` is absent.
 - User notified: yes
 - Status: open
+
+## SYNC-015
+
+- Date: 2026-04-14
+- Time: 15:05
+- Source role: Backend
+- Target role: Frontend
+- Type: ready
+- Related area: `POST /webhooks/sweetbook`
+- Summary: Backend implemented the Sweetbook webhook receiver. Incoming events can now update stored order status asynchronously, and the status query reflects the updated value.
+- Required action: Frontend does not need a new call immediately, but can assume `GET /season-books/:projectId/status` may change after asynchronous webhook delivery without a direct user action.
+- User notified: yes
+- Status: open

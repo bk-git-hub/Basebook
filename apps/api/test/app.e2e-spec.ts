@@ -427,6 +427,51 @@ describe('AppController (e2e)', () => {
       });
   });
 
+  it('/webhooks/sweetbook (POST) updates a local order status asynchronously', async () => {
+    const estimateResponse = await request(baseUrl)
+      .post('/season-books/estimate')
+      .send({
+        seasonYear: 2026,
+        title: '2026 LG 직관 기록',
+        coverPhotoUrl: 'http://localhost:4000/uploads/local/cover-photo.png',
+        selectedEntryIds: ['entry-lg-2026-03-22'],
+      })
+      .expect(201);
+
+    const orderResponse = await request(baseUrl)
+      .post('/season-books/order')
+      .send({
+        projectId: estimateResponse.body.projectId,
+        recipientName: '홍길동',
+        recipientPhone: '010-1234-5678',
+        postalCode: '06236',
+        address1: '서울특별시 강남구 테헤란로 123',
+      })
+      .expect(201);
+
+    await request(baseUrl)
+      .post('/webhooks/sweetbook')
+      .send({
+        event_uid: 'evt-webhook-1',
+        event_type: 'shipping.delivered',
+        created_at: '2026-04-14T05:00:00Z',
+        data: {
+          orderUid: orderResponse.body.orderUid,
+        },
+      })
+      .expect(201)
+      .expect({
+        received: true,
+      });
+
+    await request(baseUrl)
+      .get(`/season-books/${estimateResponse.body.projectId}/status`)
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body.orderStatus).toBe('DELIVERED');
+      });
+  });
+
   it('/season-books/order (POST) rejects missing projects', () => {
     return request(baseUrl)
       .post('/season-books/order')

@@ -616,3 +616,33 @@
   - `docs/planning/BACKEND_FUNCTIONAL_SPEC.md`
 - Related Milestones:
   - `docs/milestones/backend.md`
+
+### API-023
+
+- Date: `2026-04-14`
+- Time: `15:05`
+- Agenda: Sweetbook webhook verification behavior across local development and deployment
+- Participants: User, Codex
+- Options Considered:
+  - Always require webhook signature verification, even in local development
+  - Enable signature verification when the webhook secret is configured and allow unsigned local development when it is blank
+- Decision:
+  - `POST /webhooks/sweetbook` supports HMAC-SHA256 signature verification using `SWEETBOOK_WEBHOOK_SECRET`
+  - When `SWEETBOOK_WEBHOOK_SECRET` is blank, local development and sandbox testing may still call the endpoint without signature headers
+- Rationale:
+  - The user wants local execution on an administrator PC to work without extra manual setup or hidden failure points
+  - Deployment readiness still requires real signature verification support, so the secure path should already exist in code
+  - This keeps the local take-home flow simple while avoiding a future rewrite when the app is deployed
+- Impact:
+  - Local and e2e testing can exercise webhook-driven status sync without requiring a configured Sweetbook webhook secret
+  - Deployed environments can turn on verification simply by setting `SWEETBOOK_WEBHOOK_SECRET`
+  - Future production setup docs should treat a blank webhook secret as development-only
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `apps/api/.env.example`
+  - `docs/planning/CONTRACT_SPEC.md`
+  - `docs/planning/BACKEND_FUNCTIONAL_SPEC.md`
+  - `apps/api/src/webhooks/sweetbook-webhooks.service.ts`
+- Related Milestones:
+  - `docs/milestones/backend.md`

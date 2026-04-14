@@ -256,3 +256,20 @@
   - user verification pending
 - Next Step:
   - implement `POST /webhooks/sweetbook`
+
+### BE-MILESTONE-014
+
+- Date: `2026-04-14`
+- Time: `15:05`
+- Milestone: Sweetbook webhook receiver implemented
+- Status: `ready_for_review`
+- Summary:
+  - `POST /webhooks/sweetbook` now receives contract-shaped webhook events and updates matching season-book orders by `orderUid`
+  - webhook signature verification is supported when `SWEETBOOK_WEBHOOK_SECRET` is configured, while local development can leave it blank
+  - unit tests and e2e tests cover asynchronous status sync through the webhook endpoint
+- Related Decision IDs:
+  - `API-023`
+- Blocking Items:
+  - user verification pending
+- Next Step:
+  - decide whether to spend the next slice on real Sweetbook sandbox validation or deployment-readiness cleanup
