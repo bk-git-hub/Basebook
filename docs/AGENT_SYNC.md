@@ -135,3 +135,15 @@
 - Required action: Frontend may begin integrating the order-progress screen against the fixed contract while backend implementation follows in the next slice.
 - User notified: yes
 - Status: open
+
+## SYNC-010
+- Date: 2026-04-14
+- Time: 13:05
+- Source role: Backend
+- Target role: Frontend
+- Type: ready
+- Related area: `POST /season-books/:projectId/cancel`, `PATCH /season-books/:projectId/shipping`
+- Summary: Shared contracts now define season-book order cancellation and shipping-update endpoints ahead of backend implementation.
+- Required action: Frontend may plan or stub the related order-management UI against the fixed request and response shapes while backend implementation follows in later slices.
+- User notified: yes
+- Status: open

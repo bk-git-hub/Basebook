@@ -13,6 +13,9 @@ export type SeasonBookOrderStatus =
   | "IN_PRODUCTION"
   | "SHIPPED"
   | "DELIVERED"
+  | "CANCELLED"
+  | "CANCELLED_REFUND"
+  | "ERROR"
   | "UNKNOWN";
 
 export type GetSeasonBookStatusParams = {
@@ -37,6 +40,15 @@ export type SeasonBookProgressStep = {
   label: string;
   state: SeasonBookProgressStepState;
   occurredAt?: IsoDateTimeString;
+};
+
+export type SeasonBookShippingInfo = {
+  recipientName: string;
+  recipientPhone: string;
+  postalCode: string;
+  address1: string;
+  address2?: string;
+  shippingMemo?: string;
 };
 
 export type SeasonBookEstimateRequest = {
@@ -75,6 +87,39 @@ export type SeasonBookOrderResponse = {
   orderStatus: SeasonBookOrderStatus;
 };
 
+export type CancelSeasonBookOrderParams = {
+  projectId: EntityId;
+};
+
+export type CancelSeasonBookOrderRequest = {
+  cancelReason: string;
+};
+
+export type CancelSeasonBookOrderResponse = {
+  projectId: EntityId;
+  orderUid: string;
+  projectStatus: SeasonBookProjectStatus;
+  orderStatus: SeasonBookOrderStatus;
+  cancelReason?: string;
+  refundAmount?: number;
+  cancelledAt?: IsoDateTimeString;
+};
+
+export type UpdateSeasonBookShippingParams = {
+  projectId: EntityId;
+};
+
+export type UpdateSeasonBookShippingRequest = Partial<SeasonBookShippingInfo>;
+
+export type UpdateSeasonBookShippingResponse = {
+  projectId: EntityId;
+  orderUid: string;
+  projectStatus: SeasonBookProjectStatus;
+  orderStatus: SeasonBookOrderStatus;
+  shipping: SeasonBookShippingInfo;
+  updatedAt: IsoDateTimeString;
+};
+
 export type GetSeasonBookStatusResponse = {
   projectId: EntityId;
   bookUid?: string;
@@ -86,6 +131,28 @@ export type GetSeasonBookStatusResponse = {
   sweetbookStatusDisplay?: string;
   progress: SeasonBookProgressStep[];
   updatedAt: IsoDateTimeString;
+};
+
+export type SweetbookWebhookEventType =
+  | "order.created"
+  | "order.cancelled"
+  | "order.restored"
+  | "production.confirmed"
+  | "production.started"
+  | "production.completed"
+  | "shipping.departed"
+  | "shipping.delivered";
+
+export type SweetbookWebhookRequest = {
+  event_uid: string;
+  event_type: SweetbookWebhookEventType;
+  created_at: IsoDateTimeString;
+  data: Record<string, unknown>;
+  isTest?: boolean;
+};
+
+export type SweetbookWebhookAckResponse = {
+  received: true;
 };
 
 export type SeasonBookProjectSummary = {

@@ -503,3 +503,30 @@
   - `apps/api/src/sweetbook/sweetbook.client.ts`
 - Related Milestones:
   - `docs/milestones/backend.md`
+
+### API-019
+
+- Date: `2026-04-14`
+- Time: `13:05`
+- Agenda: Order management and webhook contracts before implementation
+- Participants: User, Codex
+- Options Considered:
+  - Implement cancel, shipping update, and webhook handling first and document later
+  - Lock the shared contracts first so frontend and backend follow one response shape
+- Decision:
+  - Define shared contracts first for `POST /season-books/:projectId/cancel`
+  - Define shared contracts first for `PATCH /season-books/:projectId/shipping`
+  - Define shared contracts first for `POST /webhooks/sweetbook`
+- Rationale: The user wants the remaining order-management work to follow the same contract-first discipline used on the order-status slice so later implementation does not drift again.
+- Impact:
+  - frontend can plan cancel and address-edit screens against fixed request/response shapes
+  - backend implementation can proceed in smaller slices without renegotiating endpoint names later
+  - webhook handling now has a documented inbound payload shape and signature-verification expectation before code is written
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `packages/contracts/src/season-book.ts`
+  - `docs/planning/CONTRACT_SPEC.md`
+  - `docs/planning/BACKEND_FUNCTIONAL_SPEC.md`
+- Related Milestones:
+  - `docs/milestones/backend.md`

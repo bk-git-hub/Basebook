@@ -75,6 +75,8 @@
 - 페이지 수 계산
 - 견적/주문 유스케이스
 - 주문 진행 상태 조회
+- 주문 취소
+- 배송지 수정
 
 ### `sweetbook`
 
@@ -83,6 +85,7 @@
 - SDK 래핑
 - BookSpecs/Templates 조회
 - books/cover/contents/finalization/estimate/order 처리
+- webhook event 수신 동기화
 
 ### `auth` (reserved)
 
@@ -204,6 +207,26 @@
 - 필요 시 Sweetbook order 상태를 다시 읽어와 진행 단계로 변환
 - 프론트 주문 진행 화면용 타임라인 데이터 반환
 
+### `POST /season-books/:projectId/cancel`
+
+역할:
+
+- 취소 가능 상태의 주문 취소
+- 환불 결과와 주문 상태 반영
+
+### `PATCH /season-books/:projectId/shipping`
+
+역할:
+
+- 발송 전 주문의 배송지 정보 수정
+
+### `POST /webhooks/sweetbook`
+
+역할:
+
+- Sweetbook 웹훅 이벤트 수신
+- 우리 DB의 주문 상태와 진행 단계를 비동기 업데이트
+
 ### `GET /auth/session` (reserved)
 
 역할:
@@ -308,7 +331,21 @@
 - `POST /season-books/order` 동작
 - `GET /season-books/:projectId/status` 동작
 
-### Phase B8. auth/admin 확장 포인트 정리
+### Phase B8. 주문 관리 및 상태 동기화
+
+- order cancel
+- shipping update
+- webhook signature verification
+- webhook event persistence or status sync
+
+완료 기준:
+
+- `POST /season-books/:projectId/cancel` 동작
+- `PATCH /season-books/:projectId/shipping` 동작
+- `POST /webhooks/sweetbook` 동작
+- 주문 상태가 polling 없이도 갱신될 수 있는 구조가 문서와 코드에 반영됨
+
+### Phase B9. auth/admin 확장 포인트 정리
 
 - ownerId 필드 반영
 - current actor 개념 도입

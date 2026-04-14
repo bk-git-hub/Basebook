@@ -347,9 +347,124 @@ type SeasonBookOrderResponse = {
     | "IN_PRODUCTION"
     | "SHIPPED"
     | "DELIVERED"
+    | "CANCELLED"
+    | "CANCELLED_REFUND"
+    | "ERROR"
     | "UNKNOWN";
 };
 ```
+
+### `POST /season-books/:projectId/cancel`
+
+용도:
+
+- 결제 직후 또는 PDF 준비 완료 상태의 주문 취소
+- Sweetbook 취소 결과와 환불 정보를 우리 서비스 상태에 반영
+
+경로 파라미터:
+
+```ts
+type CancelSeasonBookOrderParams = {
+  projectId: EntityId;
+};
+```
+
+요청:
+
+```ts
+type CancelSeasonBookOrderRequest = {
+  cancelReason: string;
+};
+```
+
+응답:
+
+```ts
+type CancelSeasonBookOrderResponse = {
+  projectId: EntityId;
+  orderUid: string;
+  projectStatus: "DRAFT" | "ESTIMATED" | "ORDERED" | "FAILED";
+  orderStatus:
+    | "PAID"
+    | "CONFIRMED"
+    | "IN_PRODUCTION"
+    | "SHIPPED"
+    | "DELIVERED"
+    | "CANCELLED"
+    | "CANCELLED_REFUND"
+    | "ERROR"
+    | "UNKNOWN";
+  cancelReason?: string;
+  refundAmount?: number;
+  cancelledAt?: IsoDateTimeString;
+};
+```
+
+참고:
+
+- Sweetbook 공식 문서상 파트너 취소 가능 상태는 `PAID`, `PDF_READY`다
+- 현재 계약의 주문 상태 enum은 UI 단순화를 위해 일부 단계가 축약될 수 있으므로, 실제 상세 상태는 필요 시 `sweetbookStatusCode`와 `progress`를 함께 본다
+
+### `PATCH /season-books/:projectId/shipping`
+
+용도:
+
+- 발송 전 주문의 배송지 정보 수정
+
+경로 파라미터:
+
+```ts
+type UpdateSeasonBookShippingParams = {
+  projectId: EntityId;
+};
+```
+
+요청:
+
+```ts
+type UpdateSeasonBookShippingRequest = {
+  recipientName?: string;
+  recipientPhone?: string;
+  postalCode?: string;
+  address1?: string;
+  address2?: string;
+  shippingMemo?: string;
+};
+```
+
+응답:
+
+```ts
+type UpdateSeasonBookShippingResponse = {
+  projectId: EntityId;
+  orderUid: string;
+  projectStatus: "DRAFT" | "ESTIMATED" | "ORDERED" | "FAILED";
+  orderStatus:
+    | "PAID"
+    | "CONFIRMED"
+    | "IN_PRODUCTION"
+    | "SHIPPED"
+    | "DELIVERED"
+    | "CANCELLED"
+    | "CANCELLED_REFUND"
+    | "ERROR"
+    | "UNKNOWN";
+  shipping: {
+    recipientName: string;
+    recipientPhone: string;
+    postalCode: string;
+    address1: string;
+    address2?: string;
+    shippingMemo?: string;
+  };
+  updatedAt: IsoDateTimeString;
+};
+```
+
+참고:
+
+- Sweetbook 공식 문서상 배송지 변경 가능 상태는 `PAID`, `PDF_READY`, `CONFIRMED`다
+- 요청 body는 partial patch이며, 최소 한 필드는 들어와야 한다
 
 ### `GET /season-books/:projectId/status`
 
@@ -381,6 +496,9 @@ type GetSeasonBookStatusResponse = {
     | "IN_PRODUCTION"
     | "SHIPPED"
     | "DELIVERED"
+    | "CANCELLED"
+    | "CANCELLED_REFUND"
+    | "ERROR"
     | "UNKNOWN";
   source: "LOCAL" | "SWEETBOOK";
   sweetbookStatusCode?: number;
@@ -407,6 +525,47 @@ type GetSeasonBookStatusResponse = {
 - `source`는 현재 상태가 로컬 개발용 상태인지, Sweetbook 조회 기반 상태인지를 구분한다
 - `progress`는 주문 진행 화면의 세로 타임라인 UI를 바로 그릴 수 있게 백엔드가 정리해서 내려준다
 - Sweetbook Sandbox에서는 일반적으로 `PAID` 이후 단계가 실제로 진행되지 않으므로 뒤 단계는 `pending`으로 남을 수 있다
+
+### `POST /webhooks/sweetbook`
+
+용도:
+
+- Sweetbook 주문 상태 변경 이벤트 수신
+- polling 없이 우리 DB의 주문 상태를 비동기 동기화
+
+요청:
+
+```ts
+type SweetbookWebhookRequest = {
+  event_uid: string;
+  event_type:
+    | "order.created"
+    | "order.cancelled"
+    | "order.restored"
+    | "production.confirmed"
+    | "production.started"
+    | "production.completed"
+    | "shipping.departed"
+    | "shipping.delivered";
+  created_at: IsoDateTimeString;
+  data: Record<string, unknown>;
+  isTest?: boolean;
+};
+```
+
+응답:
+
+```ts
+type SweetbookWebhookAckResponse = {
+  received: true;
+};
+```
+
+참고:
+
+- Sweetbook 공식 문서 기준 수신 헤더는 `X-Webhook-Signature`, `X-Webhook-Timestamp`, `X-Webhook-Event`, `X-Webhook-Delivery`다
+- 서명 검증은 `sha256=` 접두사를 포함한 HMAC-SHA256 비교로 처리한다
+- 수신 서버는 2xx를 빠르게 반환하고, 무거운 작업은 비동기로 넘기는 것을 기본 원칙으로 한다
 
 ## 예약된 확장 엔드포인트
 

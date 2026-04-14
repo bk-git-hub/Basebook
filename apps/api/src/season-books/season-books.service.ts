@@ -210,7 +210,13 @@ export class SeasonBooksService {
         totalPrice: order.totalPrice,
         currency: order.currency,
         projectStatus: 'ORDERED',
-        orderStatus: order.orderStatus,
+        orderStatus: order.orderStatus as
+          | 'PAID'
+          | 'CONFIRMED'
+          | 'IN_PRODUCTION'
+          | 'SHIPPED'
+          | 'DELIVERED'
+          | 'UNKNOWN',
       },
     });
 

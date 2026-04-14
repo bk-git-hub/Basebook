@@ -169,3 +169,20 @@
   - backend endpoint implementation pending
 - Next Step:
   - implement `GET /season-books/:projectId/status` in `apps/api`
+
+### BE-MILESTONE-009
+
+- Date: `2026-04-14`
+- Time: `13:05`
+- Milestone: Order management and webhook contracts locked
+- Status: `ready_for_review`
+- Summary:
+  - shared contract now defines order cancel, shipping update, and Sweetbook webhook receive endpoints
+  - backend functional spec now treats order management and webhook sync as the next backend slice after status polling
+  - cancel and shipping contracts were fixed before implementation to avoid another plan-versus-code drift
+- Related Decision IDs:
+  - `API-019`
+- Blocking Items:
+  - backend implementation pending for the three new endpoints
+- Next Step:
+  - implement `POST /season-books/:projectId/cancel` as the next smallest backend slice
