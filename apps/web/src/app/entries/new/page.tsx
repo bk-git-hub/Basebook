@@ -14,6 +14,7 @@ export default function EntryCreatePage() {
       activeSection="entries"
       title="새 직관 기록"
       description="경기 후보 조회, 사진 업로드, 감상 작성까지 한 번에 이어서 저장합니다."
+      tone="home"
     >
       <EntryCreateForm />
     </AppShell>

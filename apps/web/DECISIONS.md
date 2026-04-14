@@ -804,3 +804,23 @@
 - Status: `approved`
 - Related Docs:
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+
+### WEB-037
+
+- Date: `2026-04-14`
+- Time: `19:05`
+- Agenda: `/entries/new`의 색감과 상단 셸을 홈 화면과 어느 수준까지 통일할지 결정
+- Participants: User, Codex
+- Options Considered:
+  - `/entries/new` 내부 카드와 버튼만 홈 톤으로 바꾸고 공통 `AppShell`은 그대로 둔다
+  - `AppShell`에 페이지별 톤 오버라이드를 추가하고, `/entries/new`에서만 홈과 같은 화이트/네이비/레드 포인트 팔레트를 사용한다
+- Decision: `AppShell`에 페이지별 톤 오버라이드를 추가하고, `/entries/new`는 이를 사용해 홈과 같은 화이트/네이비/레드 포인트 팔레트로 먼저 통일한다.
+- Rationale: 새 일지 페이지는 기능은 충분하지만 홈과 다른 stone 계열 톤 때문에 같은 제품 흐름으로 느껴지는 힘이 약하다. 그렇다고 공통 셸 전체를 한 번에 뒤집으면 다른 화면까지 동시에 흔들리므로, 우선 `/entries/new`만 홈 팔레트로 맞추는 얇은 경계를 두는 편이 가장 안전하다.
+- Impact:
+  - `/entries/new`의 상단 셸, 버튼, 폼 카드, 팀 선택 UI가 홈과 같은 브랜드 팔레트로 정리된다
+  - `AppShell`은 다른 화면을 깨지 않으면서 페이지별 톤 확장이 가능해진다
+  - `/season`, `/season-book/new` 등 나머지 stone 계열 화면은 후속 slice에서 같은 방식으로 순차 통일할 수 있다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`

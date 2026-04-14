@@ -22,8 +22,8 @@ export function TeamPicker({
 }: TeamPickerProps) {
   return (
     <fieldset className="space-y-3 sm:col-span-2">
-      <legend className="text-sm font-medium text-stone-700">{label}</legend>
-      {hint ? <p className="text-xs leading-5 text-stone-500">{hint}</p> : null}
+      <legend className="text-sm font-medium text-[#11284f]">{label}</legend>
+      {hint ? <p className="text-xs leading-5 text-[#5a6f91]">{hint}</p> : null}
 
       <div
         role="radiogroup"
@@ -42,8 +42,8 @@ export function TeamPicker({
               onClick={() => onChange(option.value)}
               className={`group flex min-h-[10.5rem] flex-col items-center justify-center rounded-[28px] border px-2 py-4 text-center transition ${
                 isSelected
-                  ? "border-stone-950 bg-stone-100 text-stone-950 shadow-[0_16px_32px_rgba(15,23,42,0.12)]"
-                  : "border-stone-200 bg-white text-stone-900 hover:border-stone-300 hover:bg-stone-50"
+                  ? "border-[#11284f] bg-[#11284f] text-white shadow-[0_18px_40px_rgba(17,40,79,0.18)]"
+                  : "border-[#e5ecf6] bg-white text-[#11284f] hover:border-[#cfdcf0] hover:bg-[#f8fbff]"
               }`}
             >
               <TeamBadge team={option.value} size={88} />
@@ -55,7 +55,7 @@ export function TeamPicker({
         })}
       </div>
 
-      {error ? <p className="text-sm text-rose-600">{error}</p> : null}
+      {error ? <p className="text-sm text-[#c42d3c]">{error}</p> : null}
     </fieldset>
   );
 }
