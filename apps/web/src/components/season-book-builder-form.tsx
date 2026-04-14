@@ -45,6 +45,20 @@ function formatPrice(value: number): string {
   return new Intl.NumberFormat("ko-KR").format(value);
 }
 
+function buildOrderHref(estimate: SeasonBookEstimateResponse): string {
+  const searchParams = new URLSearchParams({
+    pageCount: String(estimate.pageCount),
+    totalPrice: String(estimate.totalPrice),
+    currency: estimate.currency,
+  });
+
+  if (typeof estimate.creditSufficient === "boolean") {
+    searchParams.set("creditSufficient", String(estimate.creditSufficient));
+  }
+
+  return `/order/${encodeURIComponent(estimate.projectId)}?${searchParams.toString()}`;
+}
+
 export function SeasonBookBuilderForm({ entries }: SeasonBookBuilderFormProps) {
   const [selectedEntryIds, setSelectedEntryIds] = useState<string[]>([]);
   const [title, setTitle] = useState(getInitialTitle(entries));
@@ -306,7 +320,7 @@ export function SeasonBookBuilderForm({ entries }: SeasonBookBuilderFormProps) {
               </div>
             </dl>
             <Link
-              href={`/order/${estimateResult.projectId}`}
+              href={buildOrderHref(estimateResult)}
               className="inline-flex w-full items-center justify-center rounded-full bg-emerald-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-emerald-800"
             >
               주문 화면으로 이동

@@ -11,7 +11,15 @@ import type {
 import { ApiClientError } from "@/lib/api/http";
 import { createSeasonBookOrder } from "@/lib/api/season-books";
 
+export type OrderEstimateSummary = {
+  pageCount: number;
+  totalPrice: number;
+  currency: "KRW";
+  creditSufficient?: boolean;
+};
+
 type SeasonBookOrderFormProps = {
+  estimateSummary?: OrderEstimateSummary;
   projectId: string;
 };
 
@@ -80,7 +88,10 @@ function formatPrice(value: number): string {
   return new Intl.NumberFormat("ko-KR").format(value);
 }
 
-export function SeasonBookOrderForm({ projectId }: SeasonBookOrderFormProps) {
+export function SeasonBookOrderForm({
+  estimateSummary,
+  projectId,
+}: SeasonBookOrderFormProps) {
   const [values, setValues] = useState<OrderFormValues>(INITIAL_VALUES);
   const [fieldErrors, setFieldErrors] = useState<OrderFormErrors>({});
   const [orderError, setOrderError] = useState<string | null>(null);
@@ -251,6 +262,46 @@ export function SeasonBookOrderForm({ projectId }: SeasonBookOrderFormProps) {
             이전 단계에서 만든 시즌북 견적을 바탕으로 주문을 이어갑니다.
           </p>
         </div>
+
+        {estimateSummary ? (
+          <section className="space-y-4 rounded-[24px] border border-stone-200 bg-stone-50/80 px-4 py-4">
+            <div>
+              <p className="text-sm font-semibold text-stone-900">
+                주문 전 확인
+              </p>
+              <p className="mt-1 text-sm leading-6 text-stone-500">
+                배송 정보를 입력하기 전에 제작 분량과 예상 금액을 다시 확인하세요.
+              </p>
+            </div>
+            <dl className="grid gap-3">
+              <div className="flex items-center justify-between gap-4 rounded-2xl bg-white px-4 py-3 ring-1 ring-stone-200">
+                <dt className="text-sm text-stone-500">페이지 수</dt>
+                <dd className="font-semibold text-stone-950">
+                  {estimateSummary.pageCount}p
+                </dd>
+              </div>
+              <div className="flex items-center justify-between gap-4 rounded-2xl bg-white px-4 py-3 ring-1 ring-stone-200">
+                <dt className="text-sm text-stone-500">예상 금액</dt>
+                <dd className="font-semibold text-stone-950">
+                  {formatPrice(estimateSummary.totalPrice)}{" "}
+                  {estimateSummary.currency}
+                </dd>
+              </div>
+              {typeof estimateSummary.creditSufficient === "boolean" ? (
+                <div className="flex items-center justify-between gap-4 rounded-2xl bg-white px-4 py-3 ring-1 ring-stone-200">
+                  <dt className="text-sm text-stone-500">크레딧</dt>
+                  <dd className="font-semibold text-stone-950">
+                    {estimateSummary.creditSufficient ? "사용 가능" : "부족"}
+                  </dd>
+                </div>
+              ) : null}
+            </dl>
+          </section>
+        ) : (
+          <section className="rounded-[24px] border border-amber-200 bg-amber-50 px-4 py-4 text-sm leading-6 text-amber-900">
+            견적 정보를 다시 확인하려면 견적 화면에서 주문 화면으로 이동해 주세요.
+          </section>
+        )}
 
         {orderError ? (
           <p className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">

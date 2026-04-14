@@ -373,3 +373,24 @@
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
 - Related Milestones:
   - `docs/milestones/frontend.md`
+
+### WEB-016
+
+- Date: `2026-04-14`
+- Time: `10:36`
+- Agenda: `/order/[projectId]`에서 주문 직전 견적 정보를 어떻게 표시할지 결정
+- Participants: User, Codex
+- Options Considered:
+  - 백엔드에 시즌북 프로젝트 상세 조회 API를 요청하고 주문 화면에서 서버 조회로 `pageCount`, `totalPrice`를 표시
+  - `/season-book/new`에서 받은 견적 결과를 주문 화면으로 표시용 query string으로 전달
+- Decision: 현재는 `pageCount`, `totalPrice`, `currency`, `creditSufficient`를 query string으로 전달해 주문 화면에서 표시하고, 주문 요청 자체는 기존 `projectId` 기반으로 유지한다.
+- Rationale: 백엔드 계약을 추가하지 않고도 주문 직전 확인 UX를 바로 보강할 수 있다. 전달값은 표시용이며 주문 생성의 source of truth는 여전히 서버의 `projectId` 처리에 둔다. 이후 프로젝트 상세 조회 API가 생기면 주문 화면의 `estimateSummary` 입력 경계만 서버 조회로 교체할 수 있다.
+- Impact:
+  - `/season-book/new`에서 주문 화면으로 이동할 때 견적 요약 정보가 함께 전달된다
+  - `/order/[projectId]`에서 페이지 수, 예상 금액, 크레딧 상태를 주문 전 확인 영역으로 보여준다
+  - 직접 진입처럼 query string이 없는 경우에는 견적 화면에서 다시 이동하라는 안내를 보여준다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/CONTRACT_SPEC.md`
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
