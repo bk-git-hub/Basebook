@@ -22,15 +22,54 @@ export function TeamPicker({
   hint,
   disabledTeams = [],
 }: TeamPickerProps) {
+  const selectedOption =
+    TEAM_OPTIONS.find((option) => option.value === value) ?? TEAM_OPTIONS[0];
+
   return (
     <fieldset className="space-y-3 sm:col-span-2">
       <legend className="text-sm font-medium text-[#11284f]">{label}</legend>
       {hint ? <p className="text-xs leading-5 text-[#5a6f91]">{hint}</p> : null}
 
       <div
+        className="space-y-3 sm:hidden"
+      >
+        <div className="flex items-center gap-3 rounded-[24px] border border-[#e5ecf6] bg-[#fbfdff] px-4 py-3">
+          <TeamBadge team={value} size={72} />
+          <div className="min-w-0">
+            <p className="text-[0.68rem] font-semibold tracking-[0.16em] text-[#6a7d9f] uppercase">
+              selected team
+            </p>
+            <p className="mt-1 text-base font-semibold tracking-tight text-[#11284f]">
+              {selectedOption.label}
+            </p>
+          </div>
+        </div>
+
+        <select
+          value={value}
+          onChange={(event) => onChange(event.target.value as TeamCode)}
+          className="w-full rounded-2xl border border-[#d7e3f2] bg-white px-4 py-3 text-sm font-medium text-[#11284f] outline-none transition focus:border-[#11284f] focus:ring-4 focus:ring-[#dbe7f7]"
+        >
+          {TEAM_OPTIONS.map((option) => {
+            const isDisabled = disabledTeams.includes(option.value);
+
+            return (
+              <option
+                key={option.value}
+                value={option.value}
+                disabled={isDisabled}
+              >
+                {option.label}
+              </option>
+            );
+          })}
+        </select>
+      </div>
+
+      <div
         role="radiogroup"
         aria-label={label}
-        className="grid grid-cols-2 gap-3 sm:grid-cols-5"
+        className="hidden grid-cols-2 gap-3 sm:grid sm:grid-cols-5"
       >
         {TEAM_OPTIONS.map((option) => {
           const isSelected = option.value === value;
