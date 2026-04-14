@@ -764,3 +764,23 @@
 - Status: `approved`
 - Related Docs:
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+
+### WEB-035
+
+- Date: `2026-04-14`
+- Time: `18:49`
+- Agenda: 모바일 홈에서 첫 화면 안에 최근 일지 시작점까지 보이도록 상단 요약을 어떻게 압축할지 결정
+- Participants: User, Codex
+- Options Considered:
+  - 기존 데스크톱용 시즌 요약/승률 카드를 그대로 두고 모바일에서도 spacing만 줄인다
+  - 모바일 전용 요약 컴포넌트를 분리해 승률, 시즌 요약, CTA 밀도를 따로 최적화한다
+- Decision: 모바일 홈은 `직관 승률`과 `시즌 요약`을 각각 전용 컴팩트 컴포넌트로 분리하고, 헤더와 최근 일지 간격도 함께 줄여 첫 화면에서 최근 일지 시작이 보이도록 조정한다.
+- Rationale: 현재 홈은 데스크톱용 정보량을 그대로 세로로 쌓아 놓은 구조라 모바일에서 첫 뷰포트를 거의 다 소모한다. 이 경우 단순 여백 축소만으로는 해결이 어렵고, 모바일에서 필요한 정보 우선순위에 맞게 카드 구조 자체를 다시 짜는 편이 더 깔끔하다.
+- Impact:
+  - 모바일에서 `직관 승률`은 작은 도넛과 3칸 승무패 요약으로 압축된다
+  - 모바일 `시즌 요약`은 팀, 핵심 수치, 핵심 CTA 중심의 얇은 모듈로 바뀐다
+  - 최근 일지 섹션의 시작점이 더 빨리 나타나도록 상하 간격과 카드 밀도가 줄어든다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`

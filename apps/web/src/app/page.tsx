@@ -4,14 +4,14 @@ import Link from "next/link";
 
 import type { DiaryEntry, GameResult, TeamCode } from "@basebook/contracts";
 
+import { HomeSeasonOverview } from "@/components/home-season-overview";
+import { HomeStadiumSummary } from "@/components/home-stadium-summary";
 import { TeamBadge } from "@/components/team-badge";
 import { getEntries } from "@/lib/api/entries";
 import { ApiClientError } from "@/lib/api/http";
 import { getTeamLabel } from "@/lib/team-meta";
 
 const RECENT_ENTRY_LIMIT = 4;
-const DONUT_RADIUS = 52;
-const DONUT_CIRCUMFERENCE = 2 * Math.PI * DONUT_RADIUS;
 
 const RESULT_LABELS: Record<GameResult, string> = {
   WIN: "승",
@@ -172,176 +172,29 @@ function formatScore(entry: DiaryEntry) {
   return "점수 미기록";
 }
 
-function SummaryMetric({
-  label,
-  value,
-  helper,
-}: {
-  label: string;
-  value: string;
-  helper: string;
-}) {
-  return (
-    <article className="rounded-[24px] border border-[#e5ecf6] bg-[#fbfdff] px-5 py-4">
-      <p className="text-xs font-semibold tracking-[0.18em] text-[#6a7d9f] uppercase">
-        {label}
-      </p>
-      <p className="mt-3 text-2xl font-semibold tracking-tight text-[#11284f]">
-        {value}
-      </p>
-      <p className="mt-2 text-sm leading-6 text-[#6a7d9f]">{helper}</p>
-    </article>
-  );
-}
-
-function SeasonWinRateDonut({
-  wins,
-  draws,
-  losses,
-  trackedGames,
-  winRate,
-}: Pick<HomeSummary, "wins" | "draws" | "losses" | "trackedGames" | "winRate">) {
-  const segments = [
-    { label: "승", value: wins, color: "#11284f" },
-    { label: "무", value: draws, color: "#8ca0c2" },
-    { label: "패", value: losses, color: "#d53342" },
-  ];
-
-  let offset = 0;
-
-  return (
-    <div className="rounded-[32px] border border-[#e5ecf6] bg-white p-6 shadow-[0_18px_48px_rgba(17,40,79,0.06)]">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <p className="text-xs font-semibold tracking-[0.2em] text-[#c42d3c] uppercase">
-            stadium record
-          </p>
-          <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[#11284f]">
-            직관 승률
-          </h2>
-          <p className="mt-2 text-sm leading-6 text-[#5a6f91]">
-            현장 관람으로 남긴 경기만 모아 승무패 흐름을 계산했습니다.
-          </p>
-        </div>
-        <span className="rounded-full border border-[#e5ecf6] bg-[#f8fbff] px-3 py-1 text-sm font-semibold text-[#11284f]">
-          {trackedGames}경기
-        </span>
-      </div>
-
-      <div className="mt-8 grid items-center gap-8 md:grid-cols-[12rem_minmax(0,1fr)]">
-        <div className="mx-auto flex h-[13rem] w-[13rem] items-center justify-center">
-          <svg
-            viewBox="0 0 140 140"
-            className="h-full w-full"
-            aria-label={`직관 승률 ${winRate}%`}
-            role="img"
-          >
-            <circle
-              cx="70"
-              cy="70"
-              r={DONUT_RADIUS}
-              fill="none"
-              stroke="#e8eff8"
-              strokeWidth="16"
-            />
-            {trackedGames > 0
-              ? segments.map((segment) => {
-                  const length =
-                    (segment.value / trackedGames) * DONUT_CIRCUMFERENCE;
-                  const circle = (
-                    <circle
-                      key={segment.label}
-                      cx="70"
-                      cy="70"
-                      r={DONUT_RADIUS}
-                      fill="none"
-                      stroke={segment.color}
-                      strokeWidth="16"
-                      strokeLinecap="round"
-                      strokeDasharray={`${length} ${DONUT_CIRCUMFERENCE - length}`}
-                      strokeDashoffset={-offset}
-                      transform="rotate(-90 70 70)"
-                    />
-                  );
-
-                  offset += length;
-
-                  return circle;
-                })
-              : null}
-            <text
-              x="70"
-              y="64"
-              textAnchor="middle"
-              className="fill-[#6a7d9f] text-[10px] font-semibold tracking-[0.22em]"
-            >
-              WIN RATE
-            </text>
-            <text
-              x="70"
-              y="84"
-              textAnchor="middle"
-              className="fill-[#11284f] text-[26px] font-semibold"
-            >
-              {trackedGames > 0 ? `${winRate}%` : "-"}
-            </text>
-          </svg>
-        </div>
-
-        <div className="space-y-3">
-          {segments.map((segment) => (
-            <div
-              key={segment.label}
-              className="flex items-center justify-between rounded-[22px] border border-[#edf2f8] bg-[#fbfdff] px-4 py-3"
-            >
-              <div className="flex items-center gap-3">
-                <span
-                  className="h-3.5 w-3.5 rounded-full"
-                  style={{ backgroundColor: segment.color }}
-                />
-                <span className="text-sm font-medium text-[#4e6284]">
-                  {segment.label}
-                </span>
-              </div>
-              <span className="text-lg font-semibold tracking-tight text-[#11284f]">
-                {segment.value}
-              </span>
-            </div>
-          ))}
-          <p className="pt-2 text-sm leading-6 text-[#5a6f91]">
-            {trackedGames > 0
-              ? `${wins}승 ${draws}무 ${losses}패 기준으로 계산한 승률입니다.`
-              : "아직 직관으로 기록된 승무패가 없어 승률은 비어 있습니다."}
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 function HomeHeader() {
   return (
     <header className="border-b border-[#e6eef8]">
-      <div className="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-6 sm:px-10 lg:flex-row lg:items-center lg:justify-between">
+      <div className="mx-auto flex max-w-7xl flex-col gap-3 px-5 py-4 sm:px-10 sm:py-6 lg:flex-row lg:items-center lg:justify-between">
         <Link href="/" className="inline-flex items-center gap-3 self-start">
           <Image
             src="/basebook.png"
             alt="Basebook"
             width={112}
             height={112}
-            className="h-12 w-12 rounded-[16px] bg-white object-cover sm:h-14 sm:w-14"
+            className="h-10 w-10 rounded-[14px] bg-white object-cover sm:h-14 sm:w-14"
           />
           <div>
-            <p className="text-[0.68rem] font-semibold tracking-[0.28em] text-[#d53342] uppercase">
+            <p className="hidden text-[0.68rem] font-semibold tracking-[0.28em] text-[#d53342] uppercase sm:block">
               fan memory book
             </p>
-            <p className="text-lg font-semibold tracking-[0.18em] text-[#11284f] uppercase">
+            <p className="text-base font-semibold tracking-[0.16em] text-[#11284f] uppercase sm:text-lg sm:tracking-[0.18em]">
               Basebook
             </p>
           </div>
         </Link>
 
-        <nav className="flex flex-wrap items-center gap-4 text-sm font-semibold text-[#4d6284] sm:gap-6">
+        <nav className="flex flex-wrap items-center gap-3 text-sm font-semibold text-[#4d6284] sm:gap-6">
           {PRIMARY_NAVIGATION.map((item) => (
             <Link
               key={item.href}
@@ -472,80 +325,20 @@ export default async function HomePage() {
       <main className="min-h-screen bg-white text-[#11284f]">
         <HomeHeader />
 
-        <section className="mx-auto max-w-7xl px-6 py-10 sm:px-10 sm:py-14">
-          <div className="grid gap-6 lg:grid-cols-[minmax(0,1.18fr)_minmax(20rem,0.82fr)]">
-            <section className="order-2 rounded-[36px] border border-[#e5ecf6] bg-white p-8 shadow-[0_24px_60px_rgba(17,40,79,0.06)] sm:p-10 lg:order-none">
-              <span className="inline-flex items-center rounded-full border border-[#dce6f3] bg-[#fbfdff] px-4 py-1.5 text-xs font-semibold tracking-[0.18em] text-[#c42d3c] uppercase">
-                season home
-              </span>
-              <div className="mt-6 space-y-4">
-                <h1 className="text-4xl font-semibold tracking-tight text-[#11284f] sm:text-5xl">
-                  이번 시즌 기록 요약
-                </h1>
-                <p className="max-w-2xl text-base leading-8 text-[#4e6284] sm:text-lg">
-                  선택한 팀과 직관 승무패, 최근에 남긴 일지를 한 화면에서
-                  바로 보고 다음 작업으로 이어질 수 있게 정리했습니다.
-                </p>
-              </div>
-
-              <div className="mt-8 flex items-center gap-4 rounded-[30px] border border-[#e5ecf6] bg-[#fbfdff] p-5">
-                <TeamBadge team={summary.favoriteTeam} size={92} />
-                <div className="min-w-0">
-                  <p className="text-xs font-semibold tracking-[0.18em] text-[#6a7d9f] uppercase">
-                    favorite team
-                  </p>
-                  <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[#11284f] sm:text-3xl">
-                    {getTeamLabel(summary.favoriteTeam)}
-                  </h2>
-                  <p className="mt-2 text-sm leading-6 text-[#5a6f91]">
-                    {summary.latestSeasonYear} 시즌 기록 기준으로 가장 많이 남긴
-                    응원 팀입니다.
-                  </p>
-                </div>
-              </div>
-
-              <div className="mt-8 grid gap-4 sm:grid-cols-3">
-                <SummaryMetric
-                  label="시즌 기록"
-                  value={`${summary.seasonRecordCount}건`}
-                  helper={`${summary.latestSeasonYear} 시즌에 남긴 전체 기록`}
-                />
-                <SummaryMetric
-                  label="직관 경기"
-                  value={`${summary.stadiumEntries.length}경기`}
-                  helper="현장 관람으로 남긴 기록만 별도 집계"
-                />
-                <SummaryMetric
-                  label="최근 업데이트"
-                  value={formatCompactDate(latestEntry.date)}
-                  helper="가장 최근에 저장한 일지 날짜"
-                />
-              </div>
-
-              <div className="mt-8 flex flex-wrap gap-3">
-                <Link
-                  href="/entries/new"
-                  className="inline-flex items-center justify-center rounded-full bg-[#11284f] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#0b1d3b]"
-                >
-                  새 일지 남기기
-                </Link>
-                <Link
-                  href="/season-book/new"
-                  className="inline-flex items-center justify-center rounded-full border border-[#11284f] bg-white px-5 py-3 text-sm font-semibold text-[#11284f] transition hover:border-[#0b1d3b] hover:bg-[#f8fbff]"
-                >
-                  시즌북 제작
-                </Link>
-                <Link
-                  href="/about"
-                  className="inline-flex items-center justify-center rounded-full border border-[#d4ddeb] bg-white px-5 py-3 text-sm font-semibold text-[#11284f] transition hover:border-[#aebfd8]"
-                >
-                  서비스 알아보기
-                </Link>
-              </div>
-            </section>
+        <section className="mx-auto max-w-7xl px-5 py-5 sm:px-10 sm:py-14">
+          <div className="grid gap-4 md:gap-6 lg:grid-cols-[minmax(0,1.18fr)_minmax(20rem,0.82fr)]">
+            <div className="order-2 lg:order-none">
+              <HomeSeasonOverview
+                favoriteTeam={summary.favoriteTeam}
+                latestSeasonYear={summary.latestSeasonYear}
+                seasonRecordCount={summary.seasonRecordCount}
+                stadiumEntryCount={summary.stadiumEntries.length}
+                latestEntryDate={formatCompactDate(latestEntry.date)}
+              />
+            </div>
 
             <div className="order-1 lg:order-none">
-              <SeasonWinRateDonut
+              <HomeStadiumSummary
                 wins={summary.wins}
                 draws={summary.draws}
                 losses={summary.losses}
@@ -556,13 +349,13 @@ export default async function HomePage() {
           </div>
         </section>
 
-        <section className="mx-auto max-w-7xl px-6 pb-16 sm:px-10 sm:pb-20">
-          <div className="flex flex-col gap-3 border-b border-[#e6eef8] pb-5 sm:flex-row sm:items-end sm:justify-between">
+        <section className="mx-auto max-w-7xl px-5 pb-14 sm:px-10 sm:pb-20">
+          <div className="flex flex-col gap-2 border-b border-[#e6eef8] pb-4 sm:flex-row sm:items-end sm:justify-between sm:pb-5">
             <div>
               <p className="text-xs font-semibold tracking-[0.2em] text-[#c42d3c] uppercase">
                 recent diary
               </p>
-              <h2 className="mt-2 text-3xl font-semibold tracking-tight text-[#11284f]">
+              <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[#11284f] sm:text-3xl">
                 최근에 남긴 일지
               </h2>
               <p className="mt-2 text-sm leading-6 text-[#5a6f91] sm:text-base">
@@ -578,17 +371,17 @@ export default async function HomePage() {
             </Link>
           </div>
 
-          <div className="mt-6 grid gap-4 lg:grid-cols-2">
+          <div className="mt-4 grid gap-3 sm:mt-6 sm:gap-4 lg:grid-cols-2">
             {summary.recentEntries.map((entry) => (
               <Link
                 key={entry.id}
                 href={`/entries/${entry.id}`}
-                className="rounded-[30px] border border-[#e5ecf6] bg-white p-5 shadow-[0_18px_48px_rgba(17,40,79,0.05)] transition hover:-translate-y-0.5 hover:border-[#cfdcf0] hover:shadow-[0_24px_50px_rgba(17,40,79,0.08)]"
+                className="rounded-[24px] border border-[#e5ecf6] bg-white p-4 shadow-[0_16px_38px_rgba(17,40,79,0.05)] transition hover:-translate-y-0.5 hover:border-[#cfdcf0] hover:shadow-[0_24px_50px_rgba(17,40,79,0.08)] sm:rounded-[30px] sm:p-5"
               >
                 <article>
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex min-w-0 items-center gap-4">
-                      <TeamBadge team={entry.favoriteTeam} size={72} />
+                      <TeamBadge team={entry.favoriteTeam} size={60} />
                       <div className="min-w-0">
                         <div className="flex flex-wrap items-center gap-2">
                           <span
@@ -600,7 +393,7 @@ export default async function HomePage() {
                             {formatEntryDate(entry.date)}
                           </span>
                         </div>
-                        <h3 className="mt-3 text-xl font-semibold tracking-tight text-[#11284f]">
+                        <h3 className="mt-2 text-lg font-semibold tracking-tight text-[#11284f] sm:mt-3 sm:text-xl">
                           {getTeamLabel(entry.favoriteTeam)} vs{" "}
                           {getTeamLabel(entry.opponentTeam)}
                         </h3>
@@ -609,11 +402,11 @@ export default async function HomePage() {
                     <span className="text-lg text-[#91a5c5]">→</span>
                   </div>
 
-                  <p className="mt-5 text-sm leading-7 text-[#4e6284]">
+                  <p className="mt-4 text-sm leading-6 text-[#4e6284] sm:mt-5 sm:leading-7">
                     {entry.highlight}
                   </p>
 
-                  <div className="mt-5 flex flex-wrap items-center gap-3 text-sm text-[#5a6f91]">
+                  <div className="mt-4 flex flex-wrap items-center gap-2.5 text-sm text-[#5a6f91] sm:mt-5 sm:gap-3">
                     <span className="rounded-full border border-[#e6eef8] bg-[#fbfdff] px-3 py-1.5">
                       {formatScore(entry)}
                     </span>
