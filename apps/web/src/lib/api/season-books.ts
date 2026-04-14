@@ -5,6 +5,8 @@ import type {
   SeasonBookEstimateResponse,
   SeasonBookOrderRequest,
   SeasonBookOrderResponse,
+  UpdateSeasonBookShippingRequest,
+  UpdateSeasonBookShippingResponse,
 } from "@basebook/contracts";
 
 import { fetchJson } from "./http";
@@ -51,6 +53,24 @@ export async function cancelSeasonBookOrder(
         body: JSON.stringify({
           cancelReason: "USER_REQUESTED",
         }),
+      },
+    },
+  );
+}
+
+export async function updateSeasonBookShipping(
+  projectId: string,
+  payload: UpdateSeasonBookShippingRequest,
+): Promise<UpdateSeasonBookShippingResponse> {
+  return fetchJson<UpdateSeasonBookShippingResponse>(
+    `/season-books/${encodeURIComponent(projectId)}/shipping`,
+    {
+      init: {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
       },
     },
   );

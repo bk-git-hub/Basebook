@@ -10,11 +10,17 @@ import type {
   SeasonBookOrderStatus as SeasonBookOrderStatusType,
   SeasonBookProgressStepState,
   SeasonBookProjectStatus,
+  SeasonBookShippingInfo,
   SeasonBookStatusSource,
+  UpdateSeasonBookShippingRequest,
+  UpdateSeasonBookShippingResponse,
 } from "@basebook/contracts";
 
 import { ApiClientError } from "@/lib/api/http";
-import { cancelSeasonBookOrder } from "@/lib/api/season-books";
+import {
+  cancelSeasonBookOrder,
+  updateSeasonBookShipping,
+} from "@/lib/api/season-books";
 
 const PROJECT_STATUS_LABELS: Record<SeasonBookProjectStatus, string> = {
   DRAFT: "준비 중",
@@ -76,6 +82,18 @@ const STEP_STATE_STYLES: Record<
   },
 };
 
+type ShippingFormField =
+  | "recipientName"
+  | "recipientPhone"
+  | "postalCode"
+  | "address1"
+  | "address2"
+  | "shippingMemo";
+
+type ShippingFormValues = Record<ShippingFormField, string>;
+
+type ShippingFormErrors = Partial<Record<ShippingFormField, string>>;
+
 function formatDateTime(value?: string) {
   if (!value) {
     return "기록 없음";
@@ -107,10 +125,10 @@ function isCancelledOrderStatus(status: SeasonBookOrderStatusType) {
 }
 
 function canCancelOrder(
-  status: GetSeasonBookStatusResponse,
+  orderUid: string | undefined,
   currentOrderStatus: SeasonBookOrderStatusType,
 ) {
-  if (!status.orderUid) {
+  if (!orderUid) {
     return false;
   }
 
@@ -145,6 +163,119 @@ function getCancelBannerTitle(status: SeasonBookOrderStatusType) {
     : "주문 취소가 반영되었습니다";
 }
 
+function canEditShipping(
+  orderUid: string | undefined,
+  currentOrderStatus: SeasonBookOrderStatusType,
+) {
+  if (!orderUid) {
+    return false;
+  }
+
+  return ![
+    "UNPLACED",
+    "SHIPPED",
+    "DELIVERED",
+    "CANCELLED",
+    "CANCELLED_REFUND",
+    "ERROR",
+  ].includes(currentOrderStatus);
+}
+
+function getShippingAvailabilityText(status: SeasonBookOrderStatusType) {
+  switch (status) {
+    case "UNPLACED":
+      return "아직 주문이 접수되지 않아 배송지를 수정할 수 없습니다.";
+    case "SHIPPED":
+      return "배송이 시작된 주문은 이 화면에서 배송지를 변경할 수 없습니다.";
+    case "DELIVERED":
+      return "배송이 완료된 주문은 배송지 수정 대상이 아닙니다.";
+    case "ERROR":
+      return "오류 상태 주문은 상태를 다시 확인한 뒤 처리해 주세요.";
+    case "CANCELLED":
+    case "CANCELLED_REFUND":
+      return "취소 처리된 주문은 배송지를 변경할 수 없습니다.";
+    default:
+      return "현재 주문 상태에서는 배송지 수정이 제한됩니다.";
+  }
+}
+
+function createShippingFormValues(
+  shipping?: SeasonBookShippingInfo,
+): ShippingFormValues {
+  return {
+    recipientName: shipping?.recipientName ?? "",
+    recipientPhone: shipping?.recipientPhone ?? "",
+    postalCode: shipping?.postalCode ?? "",
+    address1: shipping?.address1 ?? "",
+    address2: shipping?.address2 ?? "",
+    shippingMemo: shipping?.shippingMemo ?? "",
+  };
+}
+
+function validateShippingValues(values: ShippingFormValues): ShippingFormErrors {
+  const errors: ShippingFormErrors = {};
+
+  if (!values.recipientName.trim()) {
+    errors.recipientName = "수령인 이름을 입력해 주세요.";
+  }
+
+  if (!values.recipientPhone.trim()) {
+    errors.recipientPhone = "수령인 전화번호를 입력해 주세요.";
+  }
+
+  if (!values.postalCode.trim()) {
+    errors.postalCode = "우편번호를 입력해 주세요.";
+  }
+
+  if (!values.address1.trim()) {
+    errors.address1 = "기본 주소를 입력해 주세요.";
+  }
+
+  return errors;
+}
+
+function buildShippingUpdatePayload(
+  baseShipping: SeasonBookShippingInfo | undefined,
+  values: ShippingFormValues,
+): UpdateSeasonBookShippingRequest {
+  const payload: UpdateSeasonBookShippingRequest = {};
+  const baseValues = createShippingFormValues(baseShipping);
+  const nextValues = {
+    recipientName: values.recipientName.trim(),
+    recipientPhone: values.recipientPhone.trim(),
+    postalCode: values.postalCode.trim(),
+    address1: values.address1.trim(),
+    address2: values.address2.trim(),
+    shippingMemo: values.shippingMemo.trim(),
+  };
+
+  if (nextValues.recipientName !== baseValues.recipientName) {
+    payload.recipientName = nextValues.recipientName;
+  }
+
+  if (nextValues.recipientPhone !== baseValues.recipientPhone) {
+    payload.recipientPhone = nextValues.recipientPhone;
+  }
+
+  if (nextValues.postalCode !== baseValues.postalCode) {
+    payload.postalCode = nextValues.postalCode;
+  }
+
+  if (nextValues.address1 !== baseValues.address1) {
+    payload.address1 = nextValues.address1;
+  }
+
+  if (nextValues.address2 !== baseValues.address2) {
+    payload.address2 = nextValues.address2;
+  }
+
+  if (nextValues.shippingMemo !== baseValues.shippingMemo) {
+    payload.shippingMemo = nextValues.shippingMemo;
+  }
+
+  return payload;
+}
+
 type SeasonBookOrderStatusProps = {
   status: GetSeasonBookStatusResponse;
 };
@@ -157,20 +288,88 @@ export function SeasonBookOrderStatus({
   const [cancelResult, setCancelResult] =
     useState<CancelSeasonBookOrderResponse | null>(null);
   const [isCancelling, setIsCancelling] = useState(false);
+  const [shippingResult, setShippingResult] =
+    useState<UpdateSeasonBookShippingResponse | null>(null);
+  const [shippingValues, setShippingValues] = useState<ShippingFormValues>(() =>
+    createShippingFormValues(status.shipping),
+  );
+  const [shippingErrors, setShippingErrors] = useState<ShippingFormErrors>({});
+  const [shippingError, setShippingError] = useState<string | null>(null);
+  const [shippingNotice, setShippingNotice] = useState<string | null>(null);
+  const [isEditingShipping, setIsEditingShipping] = useState(false);
+  const [isUpdatingShipping, setIsUpdatingShipping] = useState(false);
 
   const effectiveProjectStatus =
-    cancelResult?.projectStatus ?? status.projectStatus;
-  const effectiveOrderStatus = cancelResult?.orderStatus ?? status.orderStatus;
-  const effectiveOrderUid = cancelResult?.orderUid ?? status.orderUid;
-  const effectiveUpdatedAt = cancelResult?.cancelledAt ?? status.updatedAt;
+    cancelResult?.projectStatus ??
+    shippingResult?.projectStatus ??
+    status.projectStatus;
+  const effectiveOrderStatus =
+    cancelResult?.orderStatus ??
+    shippingResult?.orderStatus ??
+    status.orderStatus;
+  const effectiveOrderUid =
+    cancelResult?.orderUid ?? shippingResult?.orderUid ?? status.orderUid;
+  const effectiveUpdatedAt =
+    cancelResult?.cancelledAt ?? shippingResult?.updatedAt ?? status.updatedAt;
+  const effectiveShipping = shippingResult?.shipping ?? status.shipping;
   const showCancelledBanner =
     isCancelledOrderStatus(effectiveOrderStatus) && cancelResult;
   const showCancelledState = isCancelledOrderStatus(effectiveOrderStatus);
-  const showCancelAction = canCancelOrder(status, effectiveOrderStatus);
+  const showCancelAction = canCancelOrder(
+    effectiveOrderUid,
+    effectiveOrderStatus,
+  );
+  const showShippingAction = canEditShipping(
+    effectiveOrderUid,
+    effectiveOrderStatus,
+  );
+
+  function resetShippingMessages() {
+    setShippingError(null);
+    setShippingNotice(null);
+    setShippingErrors({});
+  }
+
+  function openShippingEditor() {
+    setShippingValues(createShippingFormValues(effectiveShipping));
+    resetShippingMessages();
+    setIsEditingShipping(true);
+  }
+
+  function closeShippingEditor() {
+    setShippingValues(createShippingFormValues(effectiveShipping));
+    setShippingErrors({});
+    setShippingError(null);
+    setIsEditingShipping(false);
+  }
+
+  function setShippingFieldValue<K extends ShippingFormField>(
+    field: K,
+    nextValue: ShippingFormValues[K],
+  ) {
+    setShippingValues((current) => ({
+      ...current,
+      [field]: nextValue,
+    }));
+    setShippingNotice(null);
+    setShippingError(null);
+    setShippingErrors((current) => {
+      if (!current[field]) {
+        return current;
+      }
+
+      const next = { ...current };
+      delete next[field];
+      return next;
+    });
+  }
 
   async function handleCancelOrder() {
     setCancelError(null);
     setCancelResult(null);
+    setShippingError(null);
+    setShippingNotice(null);
+    setIsEditingShipping(false);
     setIsCancelling(true);
 
     try {
@@ -189,6 +388,51 @@ export function SeasonBookOrderStatus({
       }
     } finally {
       setIsCancelling(false);
+    }
+  }
+
+  async function handleShippingSubmit(
+    event: React.FormEvent<HTMLFormElement>,
+  ) {
+    event.preventDefault();
+
+    const nextErrors = validateShippingValues(shippingValues);
+    setShippingErrors(nextErrors);
+    setShippingError(null);
+    setShippingNotice(null);
+
+    if (Object.keys(nextErrors).length > 0) {
+      return;
+    }
+
+    const payload = buildShippingUpdatePayload(effectiveShipping, shippingValues);
+
+    if (Object.keys(payload).length === 0) {
+      setShippingNotice("변경된 배송지 정보가 없습니다.");
+      return;
+    }
+
+    setIsUpdatingShipping(true);
+
+    try {
+      const result = await updateSeasonBookShipping(status.projectId, payload);
+      setShippingResult(result);
+      setShippingValues(createShippingFormValues(result.shipping));
+      setShippingNotice("배송지 정보를 업데이트했습니다.");
+      setIsEditingShipping(false);
+      startTransition(() => {
+        router.refresh();
+      });
+    } catch (error) {
+      if (error instanceof ApiClientError) {
+        setShippingError(error.message);
+      } else {
+        setShippingError(
+          "예상하지 못한 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.",
+        );
+      }
+    } finally {
+      setIsUpdatingShipping(false);
     }
   }
 
@@ -297,6 +541,221 @@ export function SeasonBookOrderStatus({
               </p>
             </div>
           </div>
+
+          <section className="rounded-[24px] border border-sky-200 bg-sky-50 px-4 py-4">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+              <div className="space-y-2">
+                <h3 className="text-sm font-semibold text-sky-950">
+                  배송지 정보
+                </h3>
+                <p className="text-sm leading-6 text-sky-900">
+                  현재 배송지 정보를 기준으로 필요한 항목만 바로 수정할 수
+                  있습니다.
+                </p>
+              </div>
+              {showShippingAction && !isEditingShipping ? (
+                <button
+                  type="button"
+                  onClick={openShippingEditor}
+                  className="inline-flex items-center justify-center rounded-full bg-white px-4 py-2.5 text-sm font-semibold text-sky-950 ring-1 ring-sky-200 transition hover:bg-sky-100"
+                >
+                  배송지 수정
+                </button>
+              ) : null}
+            </div>
+
+            {shippingNotice ? (
+              <p className="mt-4 rounded-2xl border border-emerald-200 bg-white px-4 py-3 text-sm leading-6 text-emerald-800">
+                {shippingNotice}
+              </p>
+            ) : null}
+
+            {shippingError ? (
+              <p className="mt-4 rounded-2xl border border-rose-200 bg-white px-4 py-3 text-sm leading-6 text-rose-700">
+                {shippingError}
+              </p>
+            ) : null}
+
+            {effectiveShipping ? (
+              <dl className="mt-4 grid gap-3 rounded-[24px] border border-white/80 bg-white/80 px-4 py-4 text-sm text-stone-700">
+                <div className="flex items-start justify-between gap-4">
+                  <dt>수령인</dt>
+                  <dd className="text-right font-semibold text-stone-900">
+                    {effectiveShipping.recipientName}
+                  </dd>
+                </div>
+                <div className="flex items-start justify-between gap-4">
+                  <dt>전화번호</dt>
+                  <dd className="text-right font-semibold text-stone-900">
+                    {effectiveShipping.recipientPhone}
+                  </dd>
+                </div>
+                <div className="flex items-start justify-between gap-4">
+                  <dt>우편번호</dt>
+                  <dd className="text-right font-semibold text-stone-900">
+                    {effectiveShipping.postalCode}
+                  </dd>
+                </div>
+                <div className="flex items-start justify-between gap-4">
+                  <dt>주소</dt>
+                  <dd className="max-w-[70%] text-right font-semibold text-stone-900">
+                    {effectiveShipping.address1}
+                    {effectiveShipping.address2
+                      ? ` ${effectiveShipping.address2}`
+                      : ""}
+                  </dd>
+                </div>
+                {effectiveShipping.shippingMemo ? (
+                  <div className="flex items-start justify-between gap-4">
+                    <dt>배송 메모</dt>
+                    <dd className="max-w-[70%] text-right font-semibold text-stone-900">
+                      {effectiveShipping.shippingMemo}
+                    </dd>
+                  </div>
+                ) : null}
+              </dl>
+            ) : (
+              <p className="mt-4 rounded-2xl border border-dashed border-sky-200 bg-white/80 px-4 py-4 text-sm leading-6 text-sky-900">
+                현재 배송지 스냅샷이 없어, 수정 시 전체 배송지를 다시 입력하는
+                방식으로 진행됩니다.
+              </p>
+            )}
+
+            {isEditingShipping ? (
+              <form className="mt-4 space-y-4" onSubmit={handleShippingSubmit}>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <label className="space-y-2">
+                    <span className="text-sm font-semibold text-stone-800">
+                      수령인 이름
+                    </span>
+                    <input
+                      type="text"
+                      value={shippingValues.recipientName}
+                      onChange={(event) =>
+                        setShippingFieldValue("recipientName", event.target.value)
+                      }
+                      className="w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-sm text-stone-950 outline-none transition focus:border-stone-400"
+                    />
+                    {shippingErrors.recipientName ? (
+                      <p className="text-sm text-rose-600">
+                        {shippingErrors.recipientName}
+                      </p>
+                    ) : null}
+                  </label>
+
+                  <label className="space-y-2">
+                    <span className="text-sm font-semibold text-stone-800">
+                      전화번호
+                    </span>
+                    <input
+                      type="tel"
+                      value={shippingValues.recipientPhone}
+                      onChange={(event) =>
+                        setShippingFieldValue("recipientPhone", event.target.value)
+                      }
+                      className="w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-sm text-stone-950 outline-none transition focus:border-stone-400"
+                    />
+                    {shippingErrors.recipientPhone ? (
+                      <p className="text-sm text-rose-600">
+                        {shippingErrors.recipientPhone}
+                      </p>
+                    ) : null}
+                  </label>
+
+                  <label className="space-y-2">
+                    <span className="text-sm font-semibold text-stone-800">
+                      우편번호
+                    </span>
+                    <input
+                      type="text"
+                      value={shippingValues.postalCode}
+                      onChange={(event) =>
+                        setShippingFieldValue("postalCode", event.target.value)
+                      }
+                      className="w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-sm text-stone-950 outline-none transition focus:border-stone-400"
+                    />
+                    {shippingErrors.postalCode ? (
+                      <p className="text-sm text-rose-600">
+                        {shippingErrors.postalCode}
+                      </p>
+                    ) : null}
+                  </label>
+
+                  <label className="space-y-2 sm:col-span-2">
+                    <span className="text-sm font-semibold text-stone-800">
+                      기본 주소
+                    </span>
+                    <input
+                      type="text"
+                      value={shippingValues.address1}
+                      onChange={(event) =>
+                        setShippingFieldValue("address1", event.target.value)
+                      }
+                      className="w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-sm text-stone-950 outline-none transition focus:border-stone-400"
+                    />
+                    {shippingErrors.address1 ? (
+                      <p className="text-sm text-rose-600">
+                        {shippingErrors.address1}
+                      </p>
+                    ) : null}
+                  </label>
+
+                  <label className="space-y-2 sm:col-span-2">
+                    <span className="text-sm font-semibold text-stone-800">
+                      상세 주소
+                    </span>
+                    <input
+                      type="text"
+                      value={shippingValues.address2}
+                      onChange={(event) =>
+                        setShippingFieldValue("address2", event.target.value)
+                      }
+                      className="w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-sm text-stone-950 outline-none transition focus:border-stone-400"
+                    />
+                  </label>
+
+                  <label className="space-y-2 sm:col-span-2">
+                    <span className="text-sm font-semibold text-stone-800">
+                      배송 메모
+                    </span>
+                    <textarea
+                      rows={3}
+                      value={shippingValues.shippingMemo}
+                      onChange={(event) =>
+                        setShippingFieldValue("shippingMemo", event.target.value)
+                      }
+                      className="w-full rounded-[20px] border border-stone-200 bg-white px-4 py-3 text-sm leading-6 text-stone-950 outline-none transition focus:border-stone-400"
+                    />
+                  </label>
+                </div>
+
+                <div className="flex flex-wrap gap-3">
+                  <button
+                    type="submit"
+                    disabled={isUpdatingShipping}
+                    className="inline-flex items-center justify-center rounded-full bg-stone-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-stone-800 disabled:cursor-not-allowed disabled:bg-stone-400"
+                  >
+                    {isUpdatingShipping ? "배송지 저장 중..." : "배송지 저장"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={closeShippingEditor}
+                    className="inline-flex items-center justify-center rounded-full border border-stone-200 bg-white px-5 py-3 text-sm font-semibold text-stone-700 transition hover:border-stone-300 hover:bg-stone-50"
+                  >
+                    수정 취소
+                  </button>
+                </div>
+              </form>
+            ) : showShippingAction ? (
+              <p className="mt-4 text-sm leading-6 text-sky-900">
+                배송 시작 전 상태에서는 배송지 정보를 다시 저장할 수 있습니다.
+              </p>
+            ) : (
+              <p className="mt-4 rounded-2xl border border-white/80 bg-white/80 px-4 py-3 text-sm leading-6 text-sky-950">
+                {getShippingAvailabilityText(effectiveOrderStatus)}
+              </p>
+            )}
+          </section>
 
           <section className="rounded-[24px] border border-rose-200 bg-rose-50 px-4 py-4">
             <div className="space-y-2">

@@ -460,3 +460,26 @@
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
 - Related Milestones:
   - `docs/milestones/frontend.md`
+
+### WEB-020
+
+- Date: `2026-04-14`
+- Time: `14:30`
+- Agenda: 배송지 변경 기능을 빈 재입력 폼으로 둘지, 상태 조회 응답 기반 prefill 수정 폼으로 둘지 결정
+- Participants: User, Codex
+- Options Considered:
+  - 배송지 변경 시 빈 폼을 열고 사용자가 전체 주소를 다시 입력한다
+  - `GET /season-books/:projectId/status`의 `shipping` snapshot을 기본값으로 사용해 상태 화면 안에서 펼침형 수정 폼을 연다
+- Decision: 주문 상태 화면에서 `status.shipping`을 우선 prefill source로 사용하고, 인라인 펼침형 수정 폼으로 `PATCH /season-books/:projectId/shipping`를 호출한다.
+- Rationale: 이미 주문된 건의 배송지 변경은 기존 정보를 바탕으로 일부만 고치는 경우가 대부분이라, 빈 폼 재입력보다 수정 UX가 훨씬 자연스럽다. 상태 화면 안에서 바로 처리하면 주문 취소와 같은 관리 영역으로도 읽힌다.
+- Impact:
+  - `/order/[projectId]/status`에서 현재 배송지 snapshot을 확인하고 바로 수정할 수 있다
+  - 저장 성공 시 응답의 merged shipping object로 화면을 즉시 갱신한다
+  - `shipping` snapshot이 없는 경우에도 전체 주소 재입력 fallback이 가능하다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/CONTRACT_SPEC.md`
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+- Related Milestones:
+  - `docs/milestones/frontend.md`
