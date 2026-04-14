@@ -1006,6 +1006,46 @@
 - Related Docs:
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
 
+### WEB-049
+
+- Date: `2026-04-14`
+- Time: `21:05`
+- Agenda: `/entries/[id]/edit` 수정 화면을 기존 stone 기반 구조로 유지할지, `/entries/new`와 같은 입력 규칙과 톤으로 맞출지 결정
+- Participants: User, Codex
+- Options Considered:
+  - 수정 화면은 기존 구조를 유지하고 필요한 검증만 부분 반영한다
+  - 수정 화면을 `/entries/new`와 같은 화이트/네이비/레드 포인트 톤과 입력 규칙으로 맞춘다
+- Decision: `/entries/[id]/edit` 수정 화면은 `/entries/new`와 같은 톤과 입력 규칙으로 맞춘다.
+- Rationale: 기록 작성과 수정은 같은 흐름 안에 있는 작업인데, 화면 톤과 입력 의미가 다르면 사용자는 같은 기록을 다시 다듬는 순간 제품이 바뀐 것처럼 느낄 수 있다. 새 작성 화면에서 이미 정리한 기준을 수정 화면에도 이어 붙이는 편이 UX 일관성과 유지보수 모두에 유리하다.
+- Impact:
+  - 수정 화면도 경기장 9개 드롭다운, 직관 시 경기장 필수, 관람 형태별 필드 노출 규칙을 동일하게 따른다
+  - 수정 화면의 색감과 메시지 톤이 새 작성 화면과 가까워진다
+  - 에러 상태와 페이지 메타데이터도 `기록 수정` 기준으로 정리된다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+
+### WEB-049
+
+- Date: `2026-04-14`
+- Time: `21:08`
+- Agenda: 홈의 `/season` 진입 링크를 어디서 강화할지와 엔트리 카드의 결과/사진 가독성을 어떤 수준까지 보강할지 결정
+- Participants: User, Codex
+- Options Considered:
+  - 홈 상단 요약 액션으로 `/season` 버튼을 이동시키고, 하단 링크는 제거한다
+  - 현재 하단 위치는 유지하되 `/season` 링크를 버튼처럼 보이게 강화하고, 홈/시즌 엔트리 카드의 승무패 색감과 사진 썸네일 가독성을 함께 보강한다
+- Decision: 홈의 `/season` 진입은 현재 하단 위치를 유지하되 버튼처럼 보이게 강화하고, 홈 및 시즌 대시보드 엔트리 카드에서는 승/무/패 색감을 더 선명하게 조정하며 사진이 있는 경우 대표 썸네일을 함께 노출한다.
+- Rationale: 사용자는 링크가 버튼처럼 보이지 않아 `/season` 진입 동선을 놓쳤고, 엔트리 카드에서는 경기 결과와 사진 유무가 더 즉각적으로 읽히길 원했다. CTA 위치를 다시 옮기기보다 현재 정보 구조를 유지한 채 시각적 affordance와 카드 정보 밀도를 강화하는 편이 더 얇고 안전한 개선이다.
+- Impact:
+  - 홈 최근 일지 섹션의 `/season` 진입이 버튼처럼 더 명확하게 보인다
+  - 홈과 시즌 대시보드 엔트리 카드의 승/무/패 구분이 초록/노랑/빨강 중심으로 더 선명해진다
+  - 사진이 첨부된 카드에서는 대표 썸네일이 함께 보여 기록 식별이 빨라진다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+
 ### WEB-044
 
 - Date: `2026-04-14`
