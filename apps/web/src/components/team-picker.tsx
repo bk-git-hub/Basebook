@@ -40,19 +40,14 @@ export function TeamPicker({
               role="radio"
               aria-checked={isSelected}
               onClick={() => onChange(option.value)}
-              className={`group rounded-[24px] border px-3 py-3 text-left transition ${
+              className={`group flex min-h-[10.5rem] flex-col items-center justify-center rounded-[28px] border px-3 py-4 text-center transition ${
                 isSelected
-                  ? "border-stone-950 bg-stone-950 text-white shadow-lg shadow-stone-950/15"
-                  : "border-stone-200 bg-stone-50 text-stone-900 hover:border-stone-300 hover:bg-white"
+                  ? "border-stone-950 bg-stone-100 text-stone-950 shadow-[0_16px_32px_rgba(15,23,42,0.12)]"
+                  : "border-stone-200 bg-white text-stone-900 hover:border-stone-300 hover:bg-stone-50"
               }`}
             >
-              <div className="flex justify-center">
-                <TeamBadge team={option.value} size={60} />
-              </div>
-
-              <p className="mt-3 text-center text-sm font-semibold">
-                {option.label}
-              </p>
+              <TeamBadge team={option.value} size={88} />
+              <p className="mt-3 text-sm font-semibold leading-5">{option.label}</p>
             </button>
           );
         })}

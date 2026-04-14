@@ -604,3 +604,23 @@
 - Status: `approved`
 - Related Docs:
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+
+### WEB-027
+
+- Date: `2026-04-14`
+- Time: `15:24`
+- Agenda: 준비된 팀 PNG 배지를 어떤 범위로 팀 선택 UI에 적용할지 결정
+- Participants: User, Codex
+- Options Considered:
+  - 기존 선택 카드 레이아웃은 유지하고, 배지 렌더러만 SVG에서 PNG로 교체한다
+  - 카드 구조와 보조 텍스트까지 함께 다시 설계한다
+- Decision: 이번 작업에서는 현재 팀 선택 카드 구조를 크게 흔들지 않고, `TeamBadge`를 PNG 기반으로 교체한다. 다만 기존 의사결정에 맞춰 상단 이니셜 칩과 하단 `OO 배지` 보조 문구는 제거하고 이미지 중심 카드로 정리한다.
+- Rationale: 이미 개별 PNG 자산 준비와 가장자리 보정이 끝난 상태라, 우선 실제 입력 UI에 안정적으로 붙이는 것이 가장 작은 기능 단위다. 카드까지 전면 재설계하면 시안 판단 포인트가 늘어나므로, 이번 slice에서는 제품 인식에 직접적인 배지 적용만 확실히 마무리하는 쪽이 맞다.
+- Impact:
+  - `/entries/new`와 `/entries/[id]/edit`의 팀 선택 UI가 준비된 PNG 배지를 사용한다
+  - SVG 전용 메타데이터와 카드 내부 장식이 줄어들어 구조가 단순해진다
+  - 이후 카드 배치나 선택 상태 스타일은 별도 UX 폴리싱 작업으로 이어갈 수 있다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
