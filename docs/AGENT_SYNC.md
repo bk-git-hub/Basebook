@@ -99,3 +99,15 @@
 - Required action: QA may treat SYNC-005 as resolved for the R2 build blocker.
 - User notified: yes
 - Status: resolved
+
+## SYNC-007
+- Date: 2026-04-14
+- Time: 11:46
+- Source role: Backend
+- Target role: Frontend QA
+- Type: resolved
+- Related area: `POST /season-books/order`
+- Summary: Backend implemented `POST /season-books/order` for local order completion and added opt-in Sweetbook sandbox order wiring behind `SWEETBOOK_ORDER_MODE=sandbox`.
+- Required action: QA can verify the frontend order screen against the backend endpoint without requiring real Sweetbook order placement by default.
+- User notified: yes
+- Status: resolved
