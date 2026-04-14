@@ -388,3 +388,29 @@
   - `docs/planning/CONTRACT_SPEC.md`
 - Related Milestones:
   - `docs/milestones/backend.md`
+
+### API-015
+
+- Date: `2026-04-14`
+- Time: `11:26`
+- Agenda: First `POST /season-books/order` implementation mode
+- Participants: User, Codex
+- Options Considered:
+  - Call the real Sweetbook order API immediately
+  - Add a local order completion endpoint first and connect real Sweetbook ordering later
+- Decision:
+  - Implement the first order endpoint as a local order completion path
+  - Only allow ordering for already estimated projects
+  - Return the existing order on duplicate submissions instead of creating another order
+- Rationale: Ordering is closer to fulfillment and credit usage than estimate, so the first backend slice should unblock the frontend flow without accidentally creating real external orders.
+- Impact:
+  - `POST /season-books/order` can complete the local MVP flow
+  - project records move from `ESTIMATED` to `ORDERED`
+  - real Sweetbook order API wiring remains a separate follow-up decision
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/BACKEND_FUNCTIONAL_SPEC.md`
+  - `docs/planning/CONTRACT_SPEC.md`
+- Related Milestones:
+  - `docs/milestones/backend.md`

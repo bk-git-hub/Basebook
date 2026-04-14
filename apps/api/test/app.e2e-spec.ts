@@ -10,8 +10,11 @@ describe('AppController (e2e)', () => {
   let app: INestApplication<App>;
   let prismaSeedService: PrismaSeedService;
   let baseUrl: string;
+  const originalUploadStorageDriver = process.env.UPLOAD_STORAGE_DRIVER;
 
   beforeAll(async () => {
+    process.env.UPLOAD_STORAGE_DRIVER = 'local';
+
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
@@ -35,13 +38,10 @@ describe('AppController (e2e)', () => {
   });
 
   it('/health (GET)', () => {
-    return request(baseUrl)
-      .get('/health')
-      .expect(200)
-      .expect({
-        ok: true,
-        service: 'basebook-api',
-      });
+    return request(baseUrl).get('/health').expect(200).expect({
+      ok: true,
+      service: 'basebook-api',
+    });
   });
 
   it('/games (GET) returns filtered game candidates', () => {
@@ -54,11 +54,9 @@ describe('AppController (e2e)', () => {
       .expect(200)
       .expect(({ body }) => {
         expect(body.games).toHaveLength(3);
-        expect(body.games.map((game: { status: string }) => game.status)).toEqual([
-          'FINAL',
-          'IN_PROGRESS',
-          'SCHEDULED',
-        ]);
+        expect(
+          body.games.map((game: { status: string }) => game.status),
+        ).toEqual(['FINAL', 'IN_PROGRESS', 'SCHEDULED']);
       });
   });
 
@@ -206,7 +204,95 @@ describe('AppController (e2e)', () => {
       .expect(404);
   });
 
+  it('/season-books/order (POST) creates a local order for an estimated project', async () => {
+    const estimateResponse = await request(baseUrl)
+      .post('/season-books/estimate')
+      .send({
+        seasonYear: 2026,
+        title: '2026 LG 직관 기록',
+        introText: '올해의 야구 기록을 한 권으로 남긴다.',
+        coverPhotoUrl: 'http://localhost:4000/uploads/local/cover-photo.png',
+        selectedEntryIds: ['entry-lg-2026-03-22', 'entry-lg-2026-04-02'],
+      })
+      .expect(201);
+
+    await request(baseUrl)
+      .post('/season-books/order')
+      .send({
+        projectId: estimateResponse.body.projectId,
+        recipientName: '홍길동',
+        recipientPhone: '010-1234-5678',
+        postalCode: '06236',
+        address1: '서울특별시 강남구 테헤란로 123',
+        address2: '4층',
+      })
+      .expect(201)
+      .expect(({ body }) => {
+        expect(body.projectId).toBe(estimateResponse.body.projectId);
+        expect(body.orderUid).toMatch(/^local-order-/);
+        expect(body.totalPrice).toBe(estimateResponse.body.totalPrice);
+        expect(body.currency).toBe('KRW');
+        expect(body.projectStatus).toBe('ORDERED');
+        expect(body.orderStatus).toBe('CONFIRMED');
+      });
+  });
+
+  it('/season-books/order (POST) returns the existing order for duplicate submissions', async () => {
+    const estimateResponse = await request(baseUrl)
+      .post('/season-books/estimate')
+      .send({
+        seasonYear: 2026,
+        title: '2026 LG 직관 기록',
+        coverPhotoUrl: 'http://localhost:4000/uploads/local/cover-photo.png',
+        selectedEntryIds: ['entry-lg-2026-03-22'],
+      })
+      .expect(201);
+
+    const orderInput = {
+      projectId: estimateResponse.body.projectId,
+      recipientName: '홍길동',
+      recipientPhone: '010-1234-5678',
+      postalCode: '06236',
+      address1: '서울특별시 강남구 테헤란로 123',
+    };
+
+    const firstOrderResponse = await request(baseUrl)
+      .post('/season-books/order')
+      .send(orderInput)
+      .expect(201);
+
+    await request(baseUrl)
+      .post('/season-books/order')
+      .send(orderInput)
+      .expect(201)
+      .expect(({ body }) => {
+        expect(body.orderUid).toBe(firstOrderResponse.body.orderUid);
+        expect(body.projectStatus).toBe('ORDERED');
+        expect(body.orderStatus).toBe('CONFIRMED');
+      });
+  });
+
+  it('/season-books/order (POST) rejects missing projects', () => {
+    return request(baseUrl)
+      .post('/season-books/order')
+      .send({
+        projectId: 'missing-project-id',
+        recipientName: '홍길동',
+        recipientPhone: '010-1234-5678',
+        postalCode: '06236',
+        address1: '서울특별시 강남구 테헤란로 123',
+      })
+      .expect(404);
+  });
+
   afterAll(async () => {
     await app.close();
+
+    if (originalUploadStorageDriver === undefined) {
+      delete process.env.UPLOAD_STORAGE_DRIVER;
+      return;
+    }
+
+    process.env.UPLOAD_STORAGE_DRIVER = originalUploadStorageDriver;
   });
 });

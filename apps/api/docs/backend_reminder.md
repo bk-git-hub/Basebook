@@ -12,7 +12,7 @@ This file is a quick restart note for the next backend work session.
 - `docs/planning/CONTRACT_SPEC.md`
 - `docs/planning/BACKEND_FUNCTIONAL_SPEC.md`
 - `apps/api/DECISIONS.md`
-- `apps/api/docs/backend_reminde.md`
+- `apps/api/docs/backend_reminder.md`
 
 ## Role And Scope
 
@@ -33,6 +33,7 @@ This file is a quick restart note for the next backend work session.
 - `POST /uploads/image` supports local file storage by default.
 - Optional Cloudflare R2 storage is prepared for public image hosting.
 - `POST /season-books/estimate` is implemented with local fallback and Sweetbook-backed `auto` mode.
+- `POST /season-books/order` is implemented as a local order completion path for already estimated projects.
 - Sweetbook sandbox readiness check script exists.
 
 ## Important Decisions
@@ -42,6 +43,7 @@ This file is a quick restart note for the next backend work session.
 - `API-012`: Add Sweetbook client boundary and verify sandbox before full ordering.
 - `API-013`: Use Sweetbook-backed estimate in `auto` mode when Sandbox API key and public image URLs are usable.
 - `API-014`: Keep local upload default; add optional Cloudflare R2 image storage without adding a new SDK dependency in that slice.
+- `API-015`: Implement the first order endpoint locally and keep real Sweetbook order placement as a follow-up decision.
 
 ## Environment Notes
 
@@ -72,8 +74,7 @@ Last known result: all three passed on 2026-04-12 after the R2 storage slice.
 
 ## Known Open Backend Follow-Ups
 
-- `SYNC-004` in `docs/AGENT_SYNC.md`: frontend order form is calling `POST /season-books/order`, but backend currently exposes only `POST /season-books/estimate`.
-- Decide with the user before implementing order creation, because it may involve real Sweetbook order semantics, payment/credit behavior, and whether to keep local fallback.
+- Real Sweetbook order placement is still a follow-up after confirming the external order API behavior and credit/fulfillment risk.
 - After the user finishes Cloudflare setup, run `npm run r2:check` from `apps/api` to verify a real public image upload.
 - If R2 check passes, test the frontend upload-to-estimate path again so Sweetbook can receive a public `coverPhotoUrl`.
 
@@ -81,5 +82,5 @@ Last known result: all three passed on 2026-04-12 after the R2 storage slice.
 
 1. Read `docs/AGENT_SYNC.md` and this file.
 2. Run `git status --short --branch`.
-3. Ask the user whether to prioritize Cloudflare R2 verification or `POST /season-books/order`.
-4. If implementing order creation, first report the smallest backend-only slice and get approval before writing code.
+3. Ask the user whether to prioritize frontend order-flow validation or real Sweetbook order API wiring.
+4. If wiring real Sweetbook order placement, first report the risk and smallest safe slice before writing code.

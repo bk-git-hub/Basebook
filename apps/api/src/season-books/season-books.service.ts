@@ -7,12 +7,15 @@ import {
 import type {
   CurrencyCode,
   SeasonBookEstimateResponse,
+  SeasonBookOrderResponse,
+  SeasonBookOrderStatus,
   SeasonBookProjectStatus,
 } from '@basebook/contracts';
 import { randomUUID } from 'node:crypto';
 import { DEMO_OWNER_ID } from '../entries/demo-owner';
 import { PrismaService } from '../prisma/prisma.service';
 import type { EstimateSeasonBookDto } from './dto/estimate-season-book.dto';
+import type { OrderSeasonBookDto } from './dto/order-season-book.dto';
 import {
   SEASON_BOOK_ESTIMATOR,
   type SeasonBookEstimatorPort,
@@ -93,6 +96,52 @@ export class SeasonBooksService {
     };
   }
 
+  async orderSeasonBook(
+    body: OrderSeasonBookDto,
+  ): Promise<SeasonBookOrderResponse> {
+    const project = await this.prisma.seasonBookProject.findFirst({
+      where: {
+        id: body.projectId,
+        ownerId: DEMO_OWNER_ID,
+      },
+    });
+
+    if (!project) {
+      throw new NotFoundException(
+        `Season book project not found: ${body.projectId}`,
+      );
+    }
+
+    if (project.orderUid) {
+      return this.toOrderResponse(project);
+    }
+
+    if (project.projectStatus !== 'ESTIMATED' || !project.bookUid) {
+      throw new BadRequestException(
+        'Season book project must be estimated before ordering.',
+      );
+    }
+
+    if (project.totalPrice === null || !project.currency) {
+      throw new BadRequestException(
+        'Season book project is missing estimate pricing.',
+      );
+    }
+
+    const orderedProject = await this.prisma.seasonBookProject.update({
+      where: {
+        id: project.id,
+      },
+      data: {
+        orderUid: `local-order-${randomUUID()}`,
+        projectStatus: 'ORDERED',
+        orderStatus: 'CONFIRMED',
+      },
+    });
+
+    return this.toOrderResponse(orderedProject);
+  }
+
   private ensureUniqueEntryIds(entryIds: string[]) {
     const uniqueEntryIds = [...new Set(entryIds)];
 
@@ -101,5 +150,29 @@ export class SeasonBooksService {
     }
 
     return uniqueEntryIds;
+  }
+
+  private toOrderResponse(project: {
+    id: string;
+    orderUid: string | null;
+    totalPrice: number | null;
+    currency: string | null;
+    projectStatus: string;
+    orderStatus: string;
+  }): SeasonBookOrderResponse {
+    if (!project.orderUid || project.totalPrice === null || !project.currency) {
+      throw new BadRequestException(
+        'Season book project is not ready for order response.',
+      );
+    }
+
+    return {
+      projectId: project.id,
+      orderUid: project.orderUid,
+      totalPrice: project.totalPrice,
+      currency: project.currency as CurrencyCode,
+      projectStatus: project.projectStatus as SeasonBookProjectStatus,
+      orderStatus: project.orderStatus as SeasonBookOrderStatus,
+    };
   }
 }
