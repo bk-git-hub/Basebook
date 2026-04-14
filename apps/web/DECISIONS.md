@@ -704,3 +704,23 @@
 - Status: `approved`
 - Related Docs:
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+
+### WEB-032
+
+- Date: `2026-04-14`
+- Time: `16:12`
+- Agenda: 랜딩 히어로 리디자인 후 배경 톤과 로고 주변 처리 방식을 어떻게 고정할지 결정
+- Participants: User, Codex
+- Options Considered:
+  - 컬러 브랜드 무드를 유지하기 위해 랜딩 전체에 그라데이션과 컬러 글로우를 남긴다
+  - 랜딩 전체는 흰 배경과 남색 텍스트 중심으로 정리하고, 로고 뒤 배경은 반드시 흰색으로 유지한다
+- Decision: 랜딩페이지는 흰색 배경과 남색 중심 타이포를 기준으로 다시 정리하고, 페이지 배경 그라데이션은 사용하지 않는다. 로고가 놓이는 영역 역시 남색 판이나 어두운 배경 없이 흰색 위에 직접 놓이도록 고정한다.
+- Rationale: 사용자는 현재 랜딩에서 브랜드 컬러의 활기보다도 전체 인상의 정돈감과 제품스러움을 더 중요하게 봤다. 특히 로고 뒤의 남색 판은 이미지 자체보다 UI 장식이 더 강하게 읽혀 브랜드 인식을 오히려 해치므로, 흰 배경 위의 선명한 로고와 남색 타이포 조합으로 기준을 다시 잠그는 편이 맞다.
+- Impact:
+  - 랜딩페이지 전체 배경이 평면적인 흰색 기준으로 정리된다
+  - 로고 뒤 영역은 흰색으로 유지돼 불필요한 무드 판넬이 제거된다
+  - 컬러 포인트는 CTA나 작은 강조 요소에만 제한적으로 사용된다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`

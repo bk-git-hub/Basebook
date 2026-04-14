@@ -66,14 +66,8 @@ const directRoutes = [
 
 export default function Home() {
   return (
-    <main className="min-h-screen overflow-hidden bg-[linear-gradient(180deg,#fff8ef_0%,#fffdf8_36%,#f7f9ff_100%)] text-slate-950">
-      <div className="relative isolate">
-        <div className="absolute inset-0 -z-10 overflow-hidden">
-          <div className="absolute left-[-7rem] top-[-8rem] h-[22rem] w-[22rem] rounded-full bg-[rgba(255,91,97,0.18)] blur-3xl" />
-          <div className="absolute right-[-5rem] top-[6rem] h-[24rem] w-[24rem] rounded-full bg-[rgba(33,77,147,0.16)] blur-3xl" />
-          <div className="absolute bottom-[10rem] left-[15%] h-[14rem] w-[14rem] rounded-full bg-[rgba(255,213,168,0.28)] blur-3xl" />
-        </div>
-
+    <main className="min-h-screen bg-white text-[#11284f]">
+      <div>
         <header className="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-6 sm:px-10 lg:flex-row lg:items-center lg:justify-between">
           <Link href="/" className="inline-flex items-center gap-3 self-start">
             <Image
@@ -81,24 +75,24 @@ export default function Home() {
               alt="Basebook"
               width={112}
               height={112}
-              className="h-12 w-12 rounded-[16px] object-cover shadow-[0_18px_40px_rgba(15,23,42,0.16)] sm:h-14 sm:w-14"
+              className="h-12 w-12 rounded-[16px] bg-white object-cover sm:h-14 sm:w-14"
             />
             <div>
               <p className="text-[0.68rem] font-semibold tracking-[0.28em] text-[#d53342] uppercase">
                 fan memory book
               </p>
-              <p className="text-lg font-semibold tracking-[0.18em] text-slate-950 uppercase">
+              <p className="text-lg font-semibold tracking-[0.18em] text-[#11284f] uppercase">
                 Basebook
               </p>
             </div>
           </Link>
 
-          <nav className="flex flex-wrap items-center gap-4 text-sm font-semibold text-slate-700 sm:gap-6">
+          <nav className="flex flex-wrap items-center gap-4 text-sm font-semibold text-[#33486c] sm:gap-6">
             {primaryNavigation.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="transition hover:text-[#163f86]"
+                className="transition hover:text-[#11284f]"
               >
                 {item.label}
               </Link>
@@ -110,15 +104,15 @@ export default function Home() {
           <div className="mx-auto grid min-h-[calc(100svh-7rem)] max-w-7xl items-center gap-12 lg:grid-cols-[minmax(0,0.88fr)_minmax(24rem,1.12fr)]">
             <div className="space-y-8">
               <div className="space-y-5">
-                <span className="inline-flex items-center rounded-full border border-[#ffb4bb] bg-white/70 px-4 py-1.5 text-xs font-semibold tracking-[0.18em] text-[#c42d3c] uppercase shadow-sm">
+                <span className="inline-flex items-center rounded-full border border-[#d7e3f2] bg-white px-4 py-1.5 text-xs font-semibold tracking-[0.18em] text-[#c42d3c] uppercase">
                   season memory workflow
                 </span>
-                <h1 className="max-w-2xl text-4xl font-semibold leading-[1.05] tracking-tight text-balance text-slate-950 sm:text-6xl">
+                <h1 className="max-w-2xl text-4xl font-semibold leading-[1.05] tracking-tight text-balance text-[#11284f] sm:text-6xl">
                   직관의 순간을 모아,
                   <br />
                   시즌이 끝나기 전에 책으로 묶습니다.
                 </h1>
-                <p className="max-w-xl text-base leading-8 text-slate-700 sm:text-lg">
+                <p className="max-w-xl text-base leading-8 text-[#4e6284] sm:text-lg">
                   Basebook은 경기 기록, 사진, 감상을 흩어 두지 않고 시즌북 제작
                   흐름까지 한 번에 잇는 야구 팬 저널 서비스입니다.
                 </p>
@@ -127,13 +121,13 @@ export default function Home() {
               <div className="flex flex-wrap items-center gap-3">
                 <Link
                   href="/entries/new"
-                  className="inline-flex items-center justify-center rounded-full bg-[#d92f45] px-6 py-3 text-sm font-semibold text-white shadow-[0_18px_40px_rgba(217,47,69,0.28)] transition hover:-translate-y-0.5 hover:bg-[#c2273c]"
+                  className="inline-flex items-center justify-center rounded-full bg-[#11284f] px-6 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-[#0b1d3b]"
                 >
                   새 기록 시작하기
                 </Link>
                 <Link
                   href="#journey"
-                  className="inline-flex items-center justify-center rounded-full border border-[#b7c7e6] bg-white/75 px-5 py-3 text-sm font-semibold text-[#173d7a] transition hover:-translate-y-0.5 hover:border-[#93abd6] hover:bg-white"
+                  className="inline-flex items-center justify-center rounded-full border border-[#d0dced] bg-white px-5 py-3 text-sm font-semibold text-[#11284f] transition hover:-translate-y-0.5 hover:border-[#aabbd6]"
                 >
                   흐름 먼저 보기
                 </Link>
@@ -143,10 +137,10 @@ export default function Home() {
                 {supportHighlights.map((item) => (
                   <div
                     key={item.label}
-                    className="border-l-2 border-[rgba(23,61,122,0.16)] pl-4"
+                    className="border-l-2 border-[#d7e3f2] pl-4"
                   >
-                    <p className="text-sm font-semibold text-slate-950">{item.label}</p>
-                    <p className="mt-2 text-sm leading-6 text-slate-600">
+                    <p className="text-sm font-semibold text-[#11284f]">{item.label}</p>
+                    <p className="mt-2 text-sm leading-6 text-[#5a6f91]">
                       {item.description}
                     </p>
                   </div>
@@ -155,22 +149,16 @@ export default function Home() {
             </div>
 
             <div className="relative flex items-center justify-center lg:justify-end">
-              <div className="group relative w-full max-w-[36rem]">
-                <div className="absolute inset-x-12 top-10 h-[68%] rounded-full bg-[rgba(33,77,147,0.22)] blur-3xl" />
-                <div className="absolute bottom-2 left-12 right-12 h-28 rounded-full bg-[rgba(255,91,97,0.24)] blur-3xl" />
-                <div className="relative rounded-[44px] border border-white/70 bg-[linear-gradient(135deg,rgba(255,255,255,0.92),rgba(255,245,233,0.82)_42%,rgba(237,243,255,0.9))] p-4 shadow-[0_35px_90px_rgba(15,23,42,0.16)] backdrop-blur">
-                  <div className="rounded-[34px] bg-[linear-gradient(135deg,#132d5c,#1c457c_48%,#d53043)] p-[1px]">
-                    <div className="rounded-[33px] bg-[#071321] p-3">
-                      <Image
-                        src="/basebook.png"
-                        alt="Basebook brand logo"
-                        width={768}
-                        height={768}
-                        priority
-                        className="h-auto w-full rounded-[28px] object-cover transition duration-500 group-hover:scale-[1.02]"
-                      />
-                    </div>
-                  </div>
+              <div className="w-full max-w-[37rem] rounded-[36px] border border-[#d7e3f2] bg-white p-5 shadow-[0_24px_60px_rgba(17,40,79,0.08)]">
+                <div className="rounded-[28px] border border-[#e6eef8] bg-white p-4">
+                  <Image
+                    src="/basebook.png"
+                    alt="Basebook brand logo"
+                    width={768}
+                    height={768}
+                    priority
+                    className="h-auto w-full rounded-[24px] bg-white object-contain"
+                  />
                 </div>
               </div>
             </div>
@@ -186,22 +174,22 @@ export default function Home() {
               <p className="text-xs font-semibold tracking-[0.22em] text-[#c42d3c] uppercase">
                 one flow
               </p>
-              <h2 className="max-w-xl text-3xl font-semibold leading-tight tracking-tight text-slate-950 sm:text-4xl">
+              <h2 className="max-w-xl text-3xl font-semibold leading-tight tracking-tight text-[#11284f] sm:text-4xl">
                 기록, 사진, 주문이 따로 놀지 않게 하나의 흐름으로 정리했습니다.
               </h2>
-              <p className="max-w-lg text-sm leading-7 text-slate-600 sm:text-base">
+              <p className="max-w-lg text-sm leading-7 text-[#5a6f91] sm:text-base">
                 기록 작성 화면에서 시작한 순간이 시즌 대시보드와 시즌북 제작,
                 주문 상태 조회까지 자연스럽게 이어지도록 구성했습니다.
               </p>
             </div>
 
-            <div className="overflow-hidden rounded-[34px] border border-white/80 bg-white/80 shadow-[0_24px_70px_rgba(15,23,42,0.1)] backdrop-blur">
+            <div className="overflow-hidden rounded-[34px] border border-[#d7e3f2] bg-white shadow-[0_18px_48px_rgba(17,40,79,0.06)]">
               {workflowSteps.map((item, index) => (
                 <div
                   key={item.step}
                   className={`grid gap-4 px-6 py-6 sm:grid-cols-[4.5rem_1fr] sm:px-7 ${
                     index < workflowSteps.length - 1
-                      ? "border-b border-slate-200/80"
+                      ? "border-b border-[#e4ebf4]"
                       : ""
                   }`}
                 >
@@ -209,10 +197,10 @@ export default function Home() {
                     {item.step}
                   </p>
                   <div>
-                    <h3 className="text-lg font-semibold text-slate-950">
+                    <h3 className="text-lg font-semibold text-[#11284f]">
                       {item.title}
                     </h3>
-                    <p className="mt-2 text-sm leading-6 text-slate-600">
+                    <p className="mt-2 text-sm leading-6 text-[#5a6f91]">
                       {item.description}
                     </p>
                   </div>
@@ -223,44 +211,44 @@ export default function Home() {
         </section>
 
         <section className="mx-auto max-w-7xl px-6 pb-16 pt-8 sm:px-10">
-          <div className="overflow-hidden rounded-[38px] bg-[linear-gradient(135deg,#10224b,#173d7a_45%,#d53342)] text-white shadow-[0_34px_90px_rgba(15,23,42,0.2)]">
+          <div className="overflow-hidden rounded-[38px] border border-[#d7e3f2] bg-white shadow-[0_18px_48px_rgba(17,40,79,0.06)]">
             <div className="grid gap-8 px-6 py-8 sm:px-8 sm:py-10 lg:grid-cols-[minmax(0,0.78fr)_minmax(0,1.22fr)] lg:items-end">
               <div className="space-y-4">
-                <p className="text-xs font-semibold tracking-[0.22em] text-white/70 uppercase">
+                <p className="text-xs font-semibold tracking-[0.22em] text-[#c42d3c] uppercase">
                   next action
                 </p>
-                <h2 className="max-w-md text-3xl font-semibold tracking-tight text-white">
+                <h2 className="max-w-md text-3xl font-semibold tracking-tight text-[#11284f]">
                   오늘의 기록부터 남기고, 시즌북 제작까지 바로 이어가세요.
                 </h2>
-                <p className="max-w-lg text-sm leading-7 text-white/80 sm:text-base">
+                <p className="max-w-lg text-sm leading-7 text-[#5a6f91] sm:text-base">
                   랜딩에서는 서비스 흐름만 빠르게 이해하고, 실제 작업은 필요한
                   화면으로 곧장 들어갈 수 있게 정리했습니다.
                 </p>
               </div>
 
-              <div className="overflow-hidden rounded-[30px] border border-[rgba(255,255,255,0.12)] bg-white/10 backdrop-blur">
+              <div className="overflow-hidden rounded-[30px] border border-[#d7e3f2] bg-white">
                 {directRoutes.map((route, index) => (
                   <Link
                     key={route.href}
                     href={route.href}
-                    className={`group flex items-start justify-between gap-4 px-5 py-5 transition hover:bg-white/10 sm:px-6 ${
+                    className={`group flex items-start justify-between gap-4 px-5 py-5 transition hover:bg-[#f7faff] sm:px-6 ${
                       index < directRoutes.length - 1
-                        ? "border-b border-[rgba(255,255,255,0.12)]"
+                        ? "border-b border-[#e4ebf4]"
                         : ""
                     }`}
                   >
                     <div>
-                      <p className="text-[0.72rem] font-semibold tracking-[0.22em] text-white/60 uppercase">
+                      <p className="text-[0.72rem] font-semibold tracking-[0.22em] text-[#c42d3c] uppercase">
                         {route.eyebrow}
                       </p>
-                      <h3 className="mt-2 text-lg font-semibold text-white">
+                      <h3 className="mt-2 text-lg font-semibold text-[#11284f]">
                         {route.title}
                       </h3>
-                      <p className="mt-2 text-sm leading-6 text-white/75">
+                      <p className="mt-2 text-sm leading-6 text-[#5a6f91]">
                         {route.description}
                       </p>
                     </div>
-                    <span className="mt-1 text-xl text-white/70 transition group-hover:translate-x-1 group-hover:text-white">
+                    <span className="mt-1 text-xl text-[#8ca0c2] transition group-hover:translate-x-1 group-hover:text-[#11284f]">
                       →
                     </span>
                   </Link>
