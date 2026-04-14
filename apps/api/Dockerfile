@@ -3,15 +3,13 @@ FROM node:22-bookworm AS builder
 WORKDIR /app
 
 COPY package.json package-lock.json ./
-COPY apps/api/package.json apps/api/package.json
 COPY apps/web/package.json apps/web/package.json
 COPY packages/contracts/package.json packages/contracts/package.json
 COPY tests/web/package.json tests/web/package.json
-
-RUN npm ci
-
 COPY apps/api ./apps/api
 COPY packages/contracts ./packages/contracts
+
+RUN npm ci
 
 RUN npm run db:generate -w apps/api
 RUN npm run build -w apps/api
