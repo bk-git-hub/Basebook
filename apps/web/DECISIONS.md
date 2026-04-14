@@ -844,3 +844,23 @@
 - Status: `approved`
 - Related Docs:
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+
+### WEB-039
+
+- Date: `2026-04-14`
+- Time: `19:26`
+- Agenda: `/season-book/new` 상단 구조를 큰 히어로로 유지할지, 홈 톤의 얇은 안내 블록으로 바꿀지 결정
+- Participants: User, Codex
+- Options Considered:
+  - 기존 검정 히어로를 유지하고 아래 빌더 폼만 순차적으로 다듬는다
+  - 검정 히어로를 제거하고 `AppShell`을 홈 톤으로 전환한 뒤, 페이지 상단은 가벼운 흐름 안내 블록으로 바꾼다
+- Decision: `/season-book/new`는 검정 히어로를 제거하고 `AppShell`의 홈 톤을 사용하며, 상단은 `기록 선택 -> 제목/커버 -> 견적 확인`의 3단계 안내 블록으로 재구성한다.
+- Rationale: 시즌북 만들기 화면은 이미 기능이 연결된 작업 화면인데, 기존 구조는 공통 셸 아래에 다시 큰 히어로가 겹쳐 첫 화면이 무겁게 읽혔다. 홈에서 시즌북 제작으로 넘어오는 흐름을 제품답게 잇기 위해서는 강한 배너보다 얇은 작업 안내가 더 적합하다.
+- Impact:
+  - `/season-book/new`의 첫 화면이 더 가볍고 빠르게 읽힌다
+  - 홈과 시즌북 만들기 화면 사이의 톤 차이가 줄어든다
+  - 이후 선택 리스트와 견적 폼 자체도 같은 팔레트로 확장 정리할 기반이 생긴다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
