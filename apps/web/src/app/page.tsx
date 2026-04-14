@@ -1,263 +1,638 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 
-const primaryNavigation = [
-  { href: "/season", label: "대시보드" },
+import type { DiaryEntry, GameResult, TeamCode } from "@basebook/contracts";
+
+import { TeamBadge } from "@/components/team-badge";
+import { getEntries } from "@/lib/api/entries";
+import { ApiClientError } from "@/lib/api/http";
+import { getTeamLabel } from "@/lib/team-meta";
+
+const RECENT_ENTRY_LIMIT = 4;
+const DONUT_RADIUS = 52;
+const DONUT_CIRCUMFERENCE = 2 * Math.PI * DONUT_RADIUS;
+
+const RESULT_LABELS: Record<GameResult, string> = {
+  WIN: "승",
+  LOSE: "패",
+  DRAW: "무",
+  UNKNOWN: "미정",
+};
+
+const RESULT_TONE: Record<GameResult, string> = {
+  WIN: "bg-[#eef3ff] text-[#11284f]",
+  LOSE: "bg-[#fff0f2] text-[#c42d3c]",
+  DRAW: "bg-[#f7faff] text-[#4f6488]",
+  UNKNOWN: "bg-[#f6f8fb] text-[#6a7d9f]",
+};
+
+const PRIMARY_NAVIGATION = [
   { href: "/entries/new", label: "새 기록" },
   { href: "/season-book/new", label: "시즌북 제작" },
+  { href: "/about", label: "서비스 알아보기" },
 ];
 
-const supportHighlights = [
-  {
-    label: "기록",
-    description: "경기 메모와 감정을 한 흐름에 담아 둡니다.",
-  },
-  {
-    label: "사진",
-    description: "직관 사진을 골라 시즌의 장면으로 쌓습니다.",
-  },
-  {
-    label: "주문",
-    description: "선택한 기록을 견적과 배송 단계까지 잇습니다.",
-  },
-];
+export const dynamic = "force-dynamic";
 
-const workflowSteps = [
-  {
-    step: "01",
-    title: "경기 하나를 골라 바로 남깁니다",
-    description:
-      "후보 경기, 사진, 감상 메모를 끊기지 않는 한 화면에서 정리합니다.",
-  },
-  {
-    step: "02",
-    title: "시즌에 넣고 싶은 장면만 고릅니다",
-    description:
-      "쌓아 둔 기록 중 다시 보고 싶은 경기만 추려 시즌북 흐름으로 넘깁니다.",
-  },
-  {
-    step: "03",
-    title: "견적 확인 후 주문까지 이어갑니다",
-    description:
-      "제작 페이지 수와 금액을 보고, 같은 흐름에서 배송 정보까지 마칩니다.",
-  },
-];
+export const metadata: Metadata = {
+  title: "홈 | Basebook",
+  description: "이번 시즌 기록 요약과 최근 일지를 바로 확인하는 Basebook 홈",
+};
 
-const directRoutes = [
-  {
-    href: "/entries/new",
-    eyebrow: "Start",
-    title: "새 직관 기록부터 시작하기",
-    description: "기억이 가장 생생할 때 사진과 감상을 바로 남깁니다.",
-  },
-  {
-    href: "/season",
-    eyebrow: "Review",
-    title: "시즌 기록 모아보기",
-    description: "승패 흐름과 최근 직관 기록을 한 화면에서 점검합니다.",
-  },
-  {
-    href: "/season-book/new",
-    eyebrow: "Make",
-    title: "시즌북 견적 만들기",
-    description: "담고 싶은 기록을 고르고 책 제작 흐름으로 넘어갑니다.",
-  },
-];
+type HomeSummary = {
+  favoriteTeam: TeamCode;
+  latestSeasonYear: number;
+  seasonEntries: DiaryEntry[];
+  recentEntries: DiaryEntry[];
+  stadiumEntries: DiaryEntry[];
+  wins: number;
+  draws: number;
+  losses: number;
+  trackedGames: number;
+  seasonRecordCount: number;
+  winRate: number;
+};
 
-export default function Home() {
+function sortEntries(entries: DiaryEntry[]) {
+  return [...entries].sort((left, right) => {
+    const dateCompare = right.date.localeCompare(left.date);
+
+    if (dateCompare !== 0) {
+      return dateCompare;
+    }
+
+    return right.createdAt.localeCompare(left.createdAt);
+  });
+}
+
+function inferFavoriteTeam(entries: DiaryEntry[]): TeamCode {
+  const counters = new Map<
+    TeamCode,
+    {
+      count: number;
+      lastSeen: string;
+    }
+  >();
+
+  for (const entry of entries) {
+    const current = counters.get(entry.favoriteTeam);
+
+    if (!current) {
+      counters.set(entry.favoriteTeam, {
+        count: 1,
+        lastSeen: `${entry.date}-${entry.createdAt}`,
+      });
+      continue;
+    }
+
+    counters.set(entry.favoriteTeam, {
+      count: current.count + 1,
+      lastSeen:
+        `${entry.date}-${entry.createdAt}` > current.lastSeen
+          ? `${entry.date}-${entry.createdAt}`
+          : current.lastSeen,
+    });
+  }
+
+  const [favoriteTeam] =
+    [...counters.entries()].sort((left, right) => {
+      if (right[1].count !== left[1].count) {
+        return right[1].count - left[1].count;
+      }
+
+      return right[1].lastSeen.localeCompare(left[1].lastSeen);
+    })[0] ?? [];
+
+  return favoriteTeam ?? entries[0].favoriteTeam;
+}
+
+function buildHomeSummary(entries: DiaryEntry[]): HomeSummary | null {
+  const sortedEntries = sortEntries(entries);
+  const latestEntry = sortedEntries[0];
+
+  if (!latestEntry) {
+    return null;
+  }
+
+  const latestSeasonYear = latestEntry.seasonYear;
+  const seasonEntries = sortedEntries.filter(
+    (entry) => entry.seasonYear === latestSeasonYear,
+  );
+  const recentEntries = sortedEntries.slice(0, RECENT_ENTRY_LIMIT);
+  const stadiumEntries = seasonEntries.filter(
+    (entry) => entry.watchType === "STADIUM",
+  );
+  const wins = stadiumEntries.filter((entry) => entry.result === "WIN").length;
+  const draws = stadiumEntries.filter((entry) => entry.result === "DRAW").length;
+  const losses = stadiumEntries.filter((entry) => entry.result === "LOSE").length;
+  const trackedGames = wins + draws + losses;
+  const winRate = trackedGames
+    ? Math.round((wins / trackedGames) * 100)
+    : 0;
+
+  return {
+    favoriteTeam: inferFavoriteTeam(seasonEntries),
+    latestSeasonYear,
+    seasonEntries,
+    recentEntries,
+    stadiumEntries,
+    wins,
+    draws,
+    losses,
+    trackedGames,
+    seasonRecordCount: seasonEntries.length,
+    winRate,
+  };
+}
+
+function formatEntryDate(date: string) {
+  return new Intl.DateTimeFormat("ko-KR", {
+    month: "long",
+    day: "numeric",
+    weekday: "short",
+  }).format(new Date(date));
+}
+
+function formatCompactDate(date: string) {
+  return new Intl.DateTimeFormat("ko-KR", {
+    month: "numeric",
+    day: "numeric",
+  }).format(new Date(date));
+}
+
+function formatScore(entry: DiaryEntry) {
+  if (
+    typeof entry.scoreFor === "number" &&
+    typeof entry.scoreAgainst === "number"
+  ) {
+    return `${entry.scoreFor} : ${entry.scoreAgainst}`;
+  }
+
+  return "점수 미기록";
+}
+
+function SummaryMetric({
+  label,
+  value,
+  helper,
+}: {
+  label: string;
+  value: string;
+  helper: string;
+}) {
+  return (
+    <article className="rounded-[24px] border border-[#e5ecf6] bg-[#fbfdff] px-5 py-4">
+      <p className="text-xs font-semibold tracking-[0.18em] text-[#6a7d9f] uppercase">
+        {label}
+      </p>
+      <p className="mt-3 text-2xl font-semibold tracking-tight text-[#11284f]">
+        {value}
+      </p>
+      <p className="mt-2 text-sm leading-6 text-[#6a7d9f]">{helper}</p>
+    </article>
+  );
+}
+
+function SeasonWinRateDonut({
+  wins,
+  draws,
+  losses,
+  trackedGames,
+  winRate,
+}: Pick<HomeSummary, "wins" | "draws" | "losses" | "trackedGames" | "winRate">) {
+  const segments = [
+    { label: "승", value: wins, color: "#11284f" },
+    { label: "무", value: draws, color: "#8ca0c2" },
+    { label: "패", value: losses, color: "#d53342" },
+  ];
+
+  let offset = 0;
+
+  return (
+    <div className="rounded-[32px] border border-[#e5ecf6] bg-white p-6 shadow-[0_18px_48px_rgba(17,40,79,0.06)]">
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <p className="text-xs font-semibold tracking-[0.2em] text-[#c42d3c] uppercase">
+            stadium record
+          </p>
+          <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[#11284f]">
+            직관 승률
+          </h2>
+          <p className="mt-2 text-sm leading-6 text-[#5a6f91]">
+            현장 관람으로 남긴 경기만 모아 승무패 흐름을 계산했습니다.
+          </p>
+        </div>
+        <span className="rounded-full border border-[#e5ecf6] bg-[#f8fbff] px-3 py-1 text-sm font-semibold text-[#11284f]">
+          {trackedGames}경기
+        </span>
+      </div>
+
+      <div className="mt-8 grid items-center gap-8 md:grid-cols-[12rem_minmax(0,1fr)]">
+        <div className="mx-auto flex h-[13rem] w-[13rem] items-center justify-center">
+          <svg
+            viewBox="0 0 140 140"
+            className="h-full w-full"
+            aria-label={`직관 승률 ${winRate}%`}
+            role="img"
+          >
+            <circle
+              cx="70"
+              cy="70"
+              r={DONUT_RADIUS}
+              fill="none"
+              stroke="#e8eff8"
+              strokeWidth="16"
+            />
+            {trackedGames > 0
+              ? segments.map((segment) => {
+                  const length =
+                    (segment.value / trackedGames) * DONUT_CIRCUMFERENCE;
+                  const circle = (
+                    <circle
+                      key={segment.label}
+                      cx="70"
+                      cy="70"
+                      r={DONUT_RADIUS}
+                      fill="none"
+                      stroke={segment.color}
+                      strokeWidth="16"
+                      strokeLinecap="round"
+                      strokeDasharray={`${length} ${DONUT_CIRCUMFERENCE - length}`}
+                      strokeDashoffset={-offset}
+                      transform="rotate(-90 70 70)"
+                    />
+                  );
+
+                  offset += length;
+
+                  return circle;
+                })
+              : null}
+            <text
+              x="70"
+              y="64"
+              textAnchor="middle"
+              className="fill-[#6a7d9f] text-[10px] font-semibold tracking-[0.22em]"
+            >
+              WIN RATE
+            </text>
+            <text
+              x="70"
+              y="84"
+              textAnchor="middle"
+              className="fill-[#11284f] text-[26px] font-semibold"
+            >
+              {trackedGames > 0 ? `${winRate}%` : "-"}
+            </text>
+          </svg>
+        </div>
+
+        <div className="space-y-3">
+          {segments.map((segment) => (
+            <div
+              key={segment.label}
+              className="flex items-center justify-between rounded-[22px] border border-[#edf2f8] bg-[#fbfdff] px-4 py-3"
+            >
+              <div className="flex items-center gap-3">
+                <span
+                  className="h-3.5 w-3.5 rounded-full"
+                  style={{ backgroundColor: segment.color }}
+                />
+                <span className="text-sm font-medium text-[#4e6284]">
+                  {segment.label}
+                </span>
+              </div>
+              <span className="text-lg font-semibold tracking-tight text-[#11284f]">
+                {segment.value}
+              </span>
+            </div>
+          ))}
+          <p className="pt-2 text-sm leading-6 text-[#5a6f91]">
+            {trackedGames > 0
+              ? `${wins}승 ${draws}무 ${losses}패 기준으로 계산한 승률입니다.`
+              : "아직 직관으로 기록된 승무패가 없어 승률은 비어 있습니다."}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function HomeHeader() {
+  return (
+    <header className="border-b border-[#e6eef8]">
+      <div className="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-6 sm:px-10 lg:flex-row lg:items-center lg:justify-between">
+        <Link href="/" className="inline-flex items-center gap-3 self-start">
+          <Image
+            src="/basebook.png"
+            alt="Basebook"
+            width={112}
+            height={112}
+            className="h-12 w-12 rounded-[16px] bg-white object-cover sm:h-14 sm:w-14"
+          />
+          <div>
+            <p className="text-[0.68rem] font-semibold tracking-[0.28em] text-[#d53342] uppercase">
+              fan memory book
+            </p>
+            <p className="text-lg font-semibold tracking-[0.18em] text-[#11284f] uppercase">
+              Basebook
+            </p>
+          </div>
+        </Link>
+
+        <nav className="flex flex-wrap items-center gap-4 text-sm font-semibold text-[#4d6284] sm:gap-6">
+          {PRIMARY_NAVIGATION.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="transition hover:text-[#11284f]"
+            >
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+      </div>
+    </header>
+  );
+}
+
+function EmptyHomeState() {
   return (
     <main className="min-h-screen bg-white text-[#11284f]">
-      <div>
-        <header className="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-6 sm:px-10 lg:flex-row lg:items-center lg:justify-between">
-          <Link href="/" className="inline-flex items-center gap-3 self-start">
-            <Image
-              src="/basebook.png"
-              alt="Basebook"
-              width={112}
-              height={112}
-              className="h-12 w-12 rounded-[16px] bg-white object-cover sm:h-14 sm:w-14"
-            />
-            <div>
-              <p className="text-[0.68rem] font-semibold tracking-[0.28em] text-[#d53342] uppercase">
-                fan memory book
+      <HomeHeader />
+      <section className="mx-auto max-w-5xl px-6 py-16 sm:px-10 sm:py-24">
+        <div className="rounded-[40px] border border-[#e5ecf6] bg-white p-8 shadow-[0_24px_60px_rgba(17,40,79,0.06)] sm:p-12">
+          <div className="grid gap-8 lg:grid-cols-[minmax(0,1.15fr)_18rem] lg:items-center">
+            <div className="space-y-5">
+              <span className="inline-flex items-center rounded-full border border-[#dce6f3] bg-[#fbfdff] px-4 py-1.5 text-xs font-semibold tracking-[0.18em] text-[#c42d3c] uppercase">
+                home ready
+              </span>
+              <h1 className="text-4xl font-semibold tracking-tight text-[#11284f] sm:text-5xl">
+                첫 직관 기록을 남기면,
+                <br />
+                이 홈이 시즌 요약으로 채워집니다.
+              </h1>
+              <p className="max-w-2xl text-base leading-8 text-[#4e6284] sm:text-lg">
+                응원 팀, 직관 승무패, 최근 일지를 한 화면에서 보려면 먼저 첫
+                경기를 기록해 주세요. 서비스 구조는 `서비스 알아보기`에서 먼저
+                확인할 수 있습니다.
               </p>
-              <p className="text-lg font-semibold tracking-[0.18em] text-[#11284f] uppercase">
-                Basebook
-              </p>
-            </div>
-          </Link>
-
-          <nav className="flex flex-wrap items-center gap-4 text-sm font-semibold text-[#33486c] sm:gap-6">
-            {primaryNavigation.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="transition hover:text-[#11284f]"
-              >
-                {item.label}
-              </Link>
-            ))}
-          </nav>
-        </header>
-
-        <section className="px-6 pb-12 pt-4 sm:px-10 sm:pb-16">
-          <div className="mx-auto grid min-h-[calc(100svh-7rem)] max-w-7xl items-center gap-12 lg:grid-cols-[minmax(0,0.88fr)_minmax(24rem,1.12fr)]">
-            <div className="space-y-8">
-              <div className="space-y-5">
-                <span className="inline-flex items-center rounded-full border border-[#d7e3f2] bg-white px-4 py-1.5 text-xs font-semibold tracking-[0.18em] text-[#c42d3c] uppercase">
-                  season memory workflow
-                </span>
-                <h1 className="max-w-2xl text-4xl font-semibold leading-[1.05] tracking-tight text-balance text-[#11284f] sm:text-6xl">
-                  직관의 순간을 모아,
-                  <br />
-                  시즌이 끝나기 전에 책으로 묶습니다.
-                </h1>
-                <p className="max-w-xl text-base leading-8 text-[#4e6284] sm:text-lg">
-                  Basebook은 경기 기록, 사진, 감상을 흩어 두지 않고 시즌북 제작
-                  흐름까지 한 번에 잇는 야구 팬 저널 서비스입니다.
-                </p>
-              </div>
-
-              <div className="flex flex-wrap items-center gap-3">
+              <div className="flex flex-wrap gap-3 pt-2">
                 <Link
                   href="/entries/new"
-                  className="inline-flex items-center justify-center rounded-full bg-[#11284f] px-6 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-[#0b1d3b]"
+                  className="inline-flex items-center justify-center rounded-full bg-[#11284f] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#0b1d3b]"
                 >
-                  새 기록 시작하기
+                  새 일지 남기기
                 </Link>
                 <Link
-                  href="#journey"
-                  className="inline-flex items-center justify-center rounded-full border border-[#d0dced] bg-white px-5 py-3 text-sm font-semibold text-[#11284f] transition hover:-translate-y-0.5 hover:border-[#aabbd6]"
+                  href="/about"
+                  className="inline-flex items-center justify-center rounded-full border border-[#d4ddeb] bg-white px-5 py-3 text-sm font-semibold text-[#11284f] transition hover:border-[#aebfd8]"
                 >
-                  흐름 먼저 보기
+                  서비스 알아보기
                 </Link>
               </div>
-
-              <div className="grid gap-4 pt-4 sm:grid-cols-3">
-                {supportHighlights.map((item) => (
-                  <div
-                    key={item.label}
-                    className="border-l-2 border-[#d7e3f2] pl-4"
-                  >
-                    <p className="text-sm font-semibold text-[#11284f]">{item.label}</p>
-                    <p className="mt-2 text-sm leading-6 text-[#5a6f91]">
-                      {item.description}
-                    </p>
-                  </div>
-                ))}
-              </div>
             </div>
 
-            <div className="relative flex items-center justify-center lg:justify-end">
-              <div className="w-full max-w-[37rem] rounded-[36px] border border-[#d7e3f2] bg-white p-5 shadow-[0_24px_60px_rgba(17,40,79,0.08)]">
-                <div className="rounded-[28px] border border-[#e6eef8] bg-white p-4">
-                  <Image
-                    src="/basebook.png"
-                    alt="Basebook brand logo"
-                    width={768}
-                    height={768}
-                    priority
-                    className="h-auto w-full rounded-[24px] bg-white object-contain"
-                  />
-                </div>
+            <div className="rounded-[32px] border border-[#e5ecf6] bg-[#fbfdff] p-5">
+              <div className="rounded-[24px] border border-[#edf2f8] bg-white p-4">
+                <Image
+                  src="/basebook.png"
+                  alt="Basebook"
+                  width={440}
+                  height={440}
+                  className="h-auto w-full rounded-[20px] bg-white object-contain"
+                />
               </div>
             </div>
           </div>
-        </section>
-
-        <section
-          id="journey"
-          className="mx-auto max-w-7xl px-6 pb-8 sm:px-10 lg:pb-12"
-        >
-          <div className="grid gap-10 lg:grid-cols-[minmax(0,0.78fr)_minmax(0,1.22fr)]">
-            <div className="space-y-5">
-              <p className="text-xs font-semibold tracking-[0.22em] text-[#c42d3c] uppercase">
-                one flow
-              </p>
-              <h2 className="max-w-xl text-3xl font-semibold leading-tight tracking-tight text-[#11284f] sm:text-4xl">
-                기록, 사진, 주문이 따로 놀지 않게 하나의 흐름으로 정리했습니다.
-              </h2>
-              <p className="max-w-lg text-sm leading-7 text-[#5a6f91] sm:text-base">
-                기록 작성 화면에서 시작한 순간이 시즌 대시보드와 시즌북 제작,
-                주문 상태 조회까지 자연스럽게 이어지도록 구성했습니다.
-              </p>
-            </div>
-
-            <div className="overflow-hidden rounded-[34px] border border-[#d7e3f2] bg-white shadow-[0_18px_48px_rgba(17,40,79,0.06)]">
-              {workflowSteps.map((item, index) => (
-                <div
-                  key={item.step}
-                  className={`grid gap-4 px-6 py-6 sm:grid-cols-[4.5rem_1fr] sm:px-7 ${
-                    index < workflowSteps.length - 1
-                      ? "border-b border-[#e4ebf4]"
-                      : ""
-                  }`}
-                >
-                  <p className="font-mono text-sm font-semibold text-[#173d7a]">
-                    {item.step}
-                  </p>
-                  <div>
-                    <h3 className="text-lg font-semibold text-[#11284f]">
-                      {item.title}
-                    </h3>
-                    <p className="mt-2 text-sm leading-6 text-[#5a6f91]">
-                      {item.description}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="mx-auto max-w-7xl px-6 pb-16 pt-8 sm:px-10">
-          <div className="overflow-hidden rounded-[38px] border border-[#d7e3f2] bg-white shadow-[0_18px_48px_rgba(17,40,79,0.06)]">
-            <div className="grid gap-8 px-6 py-8 sm:px-8 sm:py-10 lg:grid-cols-[minmax(0,0.78fr)_minmax(0,1.22fr)] lg:items-end">
-              <div className="space-y-4">
-                <p className="text-xs font-semibold tracking-[0.22em] text-[#c42d3c] uppercase">
-                  next action
-                </p>
-                <h2 className="max-w-md text-3xl font-semibold tracking-tight text-[#11284f]">
-                  오늘의 기록부터 남기고, 시즌북 제작까지 바로 이어가세요.
-                </h2>
-                <p className="max-w-lg text-sm leading-7 text-[#5a6f91] sm:text-base">
-                  랜딩에서는 서비스 흐름만 빠르게 이해하고, 실제 작업은 필요한
-                  화면으로 곧장 들어갈 수 있게 정리했습니다.
-                </p>
-              </div>
-
-              <div className="overflow-hidden rounded-[30px] border border-[#d7e3f2] bg-white">
-                {directRoutes.map((route, index) => (
-                  <Link
-                    key={route.href}
-                    href={route.href}
-                    className={`group flex items-start justify-between gap-4 px-5 py-5 transition hover:bg-[#f7faff] sm:px-6 ${
-                      index < directRoutes.length - 1
-                        ? "border-b border-[#e4ebf4]"
-                        : ""
-                    }`}
-                  >
-                    <div>
-                      <p className="text-[0.72rem] font-semibold tracking-[0.22em] text-[#c42d3c] uppercase">
-                        {route.eyebrow}
-                      </p>
-                      <h3 className="mt-2 text-lg font-semibold text-[#11284f]">
-                        {route.title}
-                      </h3>
-                      <p className="mt-2 text-sm leading-6 text-[#5a6f91]">
-                        {route.description}
-                      </p>
-                    </div>
-                    <span className="mt-1 text-xl text-[#8ca0c2] transition group-hover:translate-x-1 group-hover:text-[#11284f]">
-                      →
-                    </span>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-      </div>
+        </div>
+      </section>
     </main>
   );
+}
+
+function ErrorHomeState({ error }: { error: ApiClientError }) {
+  return (
+    <main className="min-h-screen bg-white text-[#11284f]">
+      <HomeHeader />
+      <section className="mx-auto max-w-5xl px-6 py-16 sm:px-10 sm:py-24">
+        <div className="rounded-[36px] border border-[#f1d6da] bg-[#fff7f8] p-8 shadow-[0_20px_60px_rgba(17,40,79,0.05)] sm:p-10">
+          <span className="inline-flex rounded-full border border-[#f3c9cf] bg-white px-4 py-1.5 text-xs font-semibold tracking-[0.18em] text-[#c42d3c] uppercase">
+            home unavailable
+          </span>
+          <h1 className="mt-5 text-3xl font-semibold tracking-tight text-[#11284f] sm:text-4xl">
+            시즌 홈을 아직 불러오지 못했습니다.
+          </h1>
+          <p className="mt-4 max-w-2xl text-base leading-8 text-[#5a6f91]">
+            {error.message}
+          </p>
+          <div className="mt-6 flex flex-wrap gap-3 text-sm text-[#5a6f91]">
+            <span className="rounded-full border border-[#f3d4d8] bg-white px-3 py-1.5">
+              HTTP {error.status}
+            </span>
+            {error.requestId ? (
+              <span className="rounded-full border border-[#f3d4d8] bg-white px-3 py-1.5">
+                requestId {error.requestId}
+              </span>
+            ) : null}
+          </div>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Link
+              href="/entries/new"
+              className="inline-flex items-center justify-center rounded-full bg-[#11284f] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#0b1d3b]"
+            >
+              새 일지 남기기
+            </Link>
+            <Link
+              href="/about"
+              className="inline-flex items-center justify-center rounded-full border border-[#d4ddeb] bg-white px-5 py-3 text-sm font-semibold text-[#11284f] transition hover:border-[#aebfd8]"
+            >
+              서비스 알아보기
+            </Link>
+          </div>
+        </div>
+      </section>
+    </main>
+  );
+}
+
+export default async function HomePage() {
+  try {
+    const dashboard = await getEntries();
+    const summary = buildHomeSummary(dashboard.entries);
+
+    if (!summary) {
+      return <EmptyHomeState />;
+    }
+
+    const latestEntry = summary.recentEntries[0];
+
+    return (
+      <main className="min-h-screen bg-white text-[#11284f]">
+        <HomeHeader />
+
+        <section className="mx-auto max-w-7xl px-6 py-10 sm:px-10 sm:py-14">
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,1.18fr)_minmax(20rem,0.82fr)]">
+            <section className="rounded-[36px] border border-[#e5ecf6] bg-white p-8 shadow-[0_24px_60px_rgba(17,40,79,0.06)] sm:p-10">
+              <span className="inline-flex items-center rounded-full border border-[#dce6f3] bg-[#fbfdff] px-4 py-1.5 text-xs font-semibold tracking-[0.18em] text-[#c42d3c] uppercase">
+                season home
+              </span>
+              <div className="mt-6 space-y-4">
+                <h1 className="text-4xl font-semibold tracking-tight text-[#11284f] sm:text-5xl">
+                  이번 시즌 기록 요약
+                </h1>
+                <p className="max-w-2xl text-base leading-8 text-[#4e6284] sm:text-lg">
+                  선택한 팀과 직관 승무패, 최근에 남긴 일지를 한 화면에서
+                  바로 보고 다음 작업으로 이어질 수 있게 정리했습니다.
+                </p>
+              </div>
+
+              <div className="mt-8 flex items-center gap-4 rounded-[30px] border border-[#e5ecf6] bg-[#fbfdff] p-5">
+                <TeamBadge team={summary.favoriteTeam} size={92} />
+                <div className="min-w-0">
+                  <p className="text-xs font-semibold tracking-[0.18em] text-[#6a7d9f] uppercase">
+                    favorite team
+                  </p>
+                  <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[#11284f] sm:text-3xl">
+                    {getTeamLabel(summary.favoriteTeam)}
+                  </h2>
+                  <p className="mt-2 text-sm leading-6 text-[#5a6f91]">
+                    {summary.latestSeasonYear} 시즌 기록 기준으로 가장 많이 남긴
+                    응원 팀입니다.
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-8 grid gap-4 sm:grid-cols-3">
+                <SummaryMetric
+                  label="시즌 기록"
+                  value={`${summary.seasonRecordCount}건`}
+                  helper={`${summary.latestSeasonYear} 시즌에 남긴 전체 기록`}
+                />
+                <SummaryMetric
+                  label="직관 경기"
+                  value={`${summary.stadiumEntries.length}경기`}
+                  helper="현장 관람으로 남긴 기록만 별도 집계"
+                />
+                <SummaryMetric
+                  label="최근 업데이트"
+                  value={formatCompactDate(latestEntry.date)}
+                  helper="가장 최근에 저장한 일지 날짜"
+                />
+              </div>
+
+              <div className="mt-8 flex flex-wrap gap-3">
+                <Link
+                  href="/entries/new"
+                  className="inline-flex items-center justify-center rounded-full bg-[#11284f] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#0b1d3b]"
+                >
+                  새 일지 남기기
+                </Link>
+                <Link
+                  href="/season-book/new"
+                  className="inline-flex items-center justify-center rounded-full border border-[#11284f] bg-white px-5 py-3 text-sm font-semibold text-[#11284f] transition hover:border-[#0b1d3b] hover:bg-[#f8fbff]"
+                >
+                  시즌북 제작
+                </Link>
+                <Link
+                  href="/about"
+                  className="inline-flex items-center justify-center rounded-full border border-[#d4ddeb] bg-white px-5 py-3 text-sm font-semibold text-[#11284f] transition hover:border-[#aebfd8]"
+                >
+                  서비스 알아보기
+                </Link>
+              </div>
+            </section>
+
+            <SeasonWinRateDonut
+              wins={summary.wins}
+              draws={summary.draws}
+              losses={summary.losses}
+              trackedGames={summary.trackedGames}
+              winRate={summary.winRate}
+            />
+          </div>
+        </section>
+
+        <section className="mx-auto max-w-7xl px-6 pb-16 sm:px-10 sm:pb-20">
+          <div className="flex flex-col gap-3 border-b border-[#e6eef8] pb-5 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-xs font-semibold tracking-[0.2em] text-[#c42d3c] uppercase">
+                recent diary
+              </p>
+              <h2 className="mt-2 text-3xl font-semibold tracking-tight text-[#11284f]">
+                최근에 남긴 일지
+              </h2>
+              <p className="mt-2 text-sm leading-6 text-[#5a6f91] sm:text-base">
+                최신 순으로 {summary.recentEntries.length}건을 바로 확인할 수
+                있습니다.
+              </p>
+            </div>
+            <Link
+              href="/season"
+              className="text-sm font-semibold text-[#11284f] transition hover:text-[#0b1d3b]"
+            >
+              전체 시즌 화면 보기
+            </Link>
+          </div>
+
+          <div className="mt-6 grid gap-4 lg:grid-cols-2">
+            {summary.recentEntries.map((entry) => (
+              <Link
+                key={entry.id}
+                href={`/entries/${entry.id}`}
+                className="rounded-[30px] border border-[#e5ecf6] bg-white p-5 shadow-[0_18px_48px_rgba(17,40,79,0.05)] transition hover:-translate-y-0.5 hover:border-[#cfdcf0] hover:shadow-[0_24px_50px_rgba(17,40,79,0.08)]"
+              >
+                <article>
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex min-w-0 items-center gap-4">
+                      <TeamBadge team={entry.favoriteTeam} size={72} />
+                      <div className="min-w-0">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span
+                            className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${RESULT_TONE[entry.result]}`}
+                          >
+                            {RESULT_LABELS[entry.result]}
+                          </span>
+                          <span className="text-sm font-medium text-[#6a7d9f]">
+                            {formatEntryDate(entry.date)}
+                          </span>
+                        </div>
+                        <h3 className="mt-3 text-xl font-semibold tracking-tight text-[#11284f]">
+                          {getTeamLabel(entry.favoriteTeam)} vs{" "}
+                          {getTeamLabel(entry.opponentTeam)}
+                        </h3>
+                      </div>
+                    </div>
+                    <span className="text-lg text-[#91a5c5]">→</span>
+                  </div>
+
+                  <p className="mt-5 text-sm leading-7 text-[#4e6284]">
+                    {entry.highlight}
+                  </p>
+
+                  <div className="mt-5 flex flex-wrap items-center gap-3 text-sm text-[#5a6f91]">
+                    <span className="rounded-full border border-[#e6eef8] bg-[#fbfdff] px-3 py-1.5">
+                      {formatScore(entry)}
+                    </span>
+                    {entry.stadium ? (
+                      <span className="rounded-full border border-[#e6eef8] bg-[#fbfdff] px-3 py-1.5">
+                        {entry.stadium}
+                      </span>
+                    ) : null}
+                  </div>
+                </article>
+              </Link>
+            ))}
+          </div>
+        </section>
+      </main>
+    );
+  } catch (error) {
+    if (error instanceof ApiClientError) {
+      return <ErrorHomeState error={error} />;
+    }
+
+    throw error;
+  }
 }

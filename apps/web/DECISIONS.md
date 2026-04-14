@@ -724,3 +724,23 @@
 - Status: `approved`
 - Related Docs:
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+
+### WEB-033
+
+- Date: `2026-04-14`
+- Time: `16:05`
+- Agenda: `/`와 `/about`의 역할을 어떻게 나눌지 결정
+- Participants: User, Codex
+- Options Considered:
+  - `/`에 서비스 소개형 랜딩을 유지하고 제품 홈은 별도 라우트로 둔다
+  - `/`를 사용자 관점의 시즌 홈으로 바꾸고, 기존 소개형 랜딩은 `/about`으로 분리한다
+- Decision: `/`는 선택한 팀, 직관 승무패, 직관 승률, 최근 일지를 바로 보여주는 사용자 홈으로 바꾸고, 서비스 소개형 랜딩은 `/about`으로 분리한다.
+- Rationale: 사용자는 홈페이지를 제품 첫 화면이자 실제 사용 흐름의 시작점으로 보길 원했다. 이미 기록/시즌북 기능이 구현된 상태에서 소개형 랜딩을 홈에 두는 것보다, 현재 시즌 요약과 다음 액션을 바로 보여 주는 편이 제품 가치가 더 분명하게 전달된다.
+- Impact:
+  - `/`는 `GET /entries` 결과를 바탕으로 최신 시즌 기준 요약과 최근 일지를 노출한다
+  - 직관 승률은 `watchType === "STADIUM"` 기록만 따로 집계해 도넛 UI로 표시한다
+  - 서비스 소개 카피와 제품 흐름 설명은 `/about`에서 계속 제공한다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
