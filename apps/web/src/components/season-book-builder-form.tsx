@@ -267,28 +267,34 @@ export function SeasonBookBuilderForm({ entries }: SeasonBookBuilderFormProps) {
         onChangeSelectedEntryIds={handleChangeSelectedEntryIds}
       />
 
-      <aside className="h-fit space-y-6 rounded-[28px] border border-stone-200 bg-white p-6 shadow-sm lg:sticky lg:top-6">
+      <aside className="h-fit space-y-6 rounded-[30px] border border-[#e5ecf6] bg-white p-6 shadow-[0_18px_48px_rgba(17,40,79,0.05)] lg:sticky lg:top-6">
         <div>
-          <p className="text-sm font-medium text-stone-500">선택 요약</p>
-          <h2 className="mt-2 text-3xl font-semibold tracking-tight text-stone-950">
+          <p className="text-xs font-semibold tracking-[0.2em] text-[#c42d3c] uppercase">
+            selection summary
+          </p>
+          <h2 className="mt-2 text-3xl font-semibold tracking-tight text-[#11284f]">
             {selectedEntryIds.length}개 기록
           </h2>
+          <p className="mt-2 text-sm leading-6 text-[#5a6f91]">
+            선택 수, 시즌, 사진 수를 기준으로 지금 구성한 시즌북 범위를 바로
+            확인할 수 있습니다.
+          </p>
         </div>
 
         <div className="grid gap-3">
-          <div className="rounded-2xl bg-stone-50 px-4 py-3 ring-1 ring-stone-200">
-            <p className="text-xs font-semibold tracking-[0.16em] text-stone-400 uppercase">
+          <div className="rounded-2xl bg-[#fbfdff] px-4 py-3 ring-1 ring-[#e5ecf6]">
+            <p className="text-xs font-semibold tracking-[0.16em] text-[#c42d3c] uppercase">
               Season
             </p>
-            <p className="mt-1 text-sm font-semibold text-stone-900">
+            <p className="mt-1 text-sm font-semibold text-[#11284f]">
               {selectedSeasonYear ? `${selectedSeasonYear} 시즌` : "미선택"}
             </p>
           </div>
-          <div className="rounded-2xl bg-stone-50 px-4 py-3 ring-1 ring-stone-200">
-            <p className="text-xs font-semibold tracking-[0.16em] text-stone-400 uppercase">
+          <div className="rounded-2xl bg-[#fbfdff] px-4 py-3 ring-1 ring-[#e5ecf6]">
+            <p className="text-xs font-semibold tracking-[0.16em] text-[#c42d3c] uppercase">
               Photos
             </p>
-            <p className="mt-1 text-sm font-semibold text-stone-900">
+            <p className="mt-1 text-sm font-semibold text-[#11284f]">
               첨부 사진 {selectedPhotoCount}장
             </p>
           </div>
@@ -300,9 +306,9 @@ export function SeasonBookBuilderForm({ entries }: SeasonBookBuilderFormProps) {
           </p>
         ) : null}
 
-        <div className="space-y-4 rounded-[24px] border border-stone-200 bg-stone-50/70 px-4 py-4">
+        <div className="space-y-4 rounded-[24px] border border-[#e5ecf6] bg-[#fbfdff] px-4 py-4">
           <label className="block space-y-2">
-            <span className="text-sm font-semibold text-stone-800">
+            <span className="text-sm font-semibold text-[#11284f]">
               시즌북 제목
             </span>
             <input
@@ -316,7 +322,7 @@ export function SeasonBookBuilderForm({ entries }: SeasonBookBuilderFormProps) {
                   return next;
                 });
               }}
-              className="w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-sm text-stone-950 outline-none transition focus:border-stone-400"
+              className="w-full rounded-2xl border border-[#d7e2f0] bg-white px-4 py-3 text-sm text-[#11284f] outline-none transition focus:border-[#11284f]"
             />
             {formErrors.title ? (
               <p className="text-sm text-rose-600">{formErrors.title}</p>
@@ -324,7 +330,7 @@ export function SeasonBookBuilderForm({ entries }: SeasonBookBuilderFormProps) {
           </label>
 
           <label className="block space-y-2">
-            <span className="text-sm font-semibold text-stone-800">
+            <span className="text-sm font-semibold text-[#11284f]">
               소개문
             </span>
             <textarea
@@ -332,22 +338,22 @@ export function SeasonBookBuilderForm({ entries }: SeasonBookBuilderFormProps) {
               onChange={(event) => setIntroText(event.target.value)}
               rows={4}
               placeholder="이번 시즌을 어떤 기억으로 남기고 싶은지 적어 주세요."
-              className="w-full rounded-[20px] border border-stone-200 bg-white px-4 py-3 text-sm leading-6 text-stone-950 outline-none transition focus:border-stone-400"
+              className="w-full rounded-[20px] border border-[#d7e2f0] bg-white px-4 py-3 text-sm leading-6 text-[#11284f] outline-none transition focus:border-[#11284f]"
             />
           </label>
 
           <div className="space-y-3">
             <div className="space-y-1">
-              <p className="text-sm font-semibold text-stone-800">
+              <p className="text-sm font-semibold text-[#11284f]">
                 커버 이미지
               </p>
-              <p className="text-xs leading-5 text-stone-500">
+              <p className="text-xs leading-5 text-[#5a6f91]">
                 파일을 올리면 자동으로 호스팅한 뒤 시즌북 커버 주소에 바로
                 반영합니다.
               </p>
             </div>
 
-            <label className="inline-flex w-full cursor-pointer items-center justify-center rounded-full bg-stone-950 px-4 py-3 text-sm font-semibold text-white transition hover:bg-stone-800">
+            <label className="inline-flex w-full cursor-pointer items-center justify-center rounded-full bg-[#11284f] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#0b1d3b]">
               {isUploadingCover ? "커버 업로드 중..." : "커버 이미지 업로드"}
               <input
                 type="file"
@@ -360,7 +366,7 @@ export function SeasonBookBuilderForm({ entries }: SeasonBookBuilderFormProps) {
             <button
               type="button"
               onClick={handleUseSuggestedCover}
-              className="inline-flex w-full items-center justify-center rounded-full border border-stone-300 bg-white px-4 py-2.5 text-sm font-semibold text-stone-700 transition hover:border-stone-400 hover:bg-stone-100"
+              className="inline-flex w-full items-center justify-center rounded-full border border-[#d4ddeb] bg-white px-4 py-2.5 text-sm font-semibold text-[#11284f] transition hover:border-[#aebfd8] hover:bg-[#f8fbff]"
             >
               선택 기록의 첫 사진을 커버로 사용
             </button>
@@ -370,7 +376,7 @@ export function SeasonBookBuilderForm({ entries }: SeasonBookBuilderFormProps) {
               onClick={() =>
                 setIsManualCoverInputOpen((current) => !current)
               }
-              className="inline-flex items-center justify-center self-start rounded-full border border-stone-200 bg-white px-3 py-2 text-xs font-semibold text-stone-600 transition hover:border-stone-300 hover:text-stone-900"
+              className="inline-flex items-center justify-center self-start rounded-full border border-[#d4ddeb] bg-white px-3 py-2 text-xs font-semibold text-[#4f6488] transition hover:border-[#aebfd8] hover:text-[#11284f]"
             >
               {isManualCoverInputOpen ? "직접 URL 입력 닫기" : "직접 URL 입력"}
             </button>
@@ -388,16 +394,16 @@ export function SeasonBookBuilderForm({ entries }: SeasonBookBuilderFormProps) {
             ) : null}
 
             {coverPreviewUrl ? (
-              <div className="overflow-hidden rounded-[24px] border border-stone-200 bg-white">
-                <div className="aspect-[4/5] bg-stone-100">
+              <div className="overflow-hidden rounded-[24px] border border-[#e5ecf6] bg-white">
+                <div className="aspect-[4/5] bg-[#f3f7fc]">
                   <img
                     src={coverPreviewUrl}
                     alt="시즌북 커버 미리보기"
                     className="h-full w-full object-cover"
                   />
                 </div>
-                <div className="space-y-1 px-4 py-3 text-xs text-stone-500">
-                  <p className="font-semibold text-stone-700">
+                <div className="space-y-1 px-4 py-3 text-xs text-[#5a6f91]">
+                  <p className="font-semibold text-[#11284f]">
                     {coverAsset?.fileName || "현재 커버 이미지 미리보기"}
                   </p>
                   <p className="break-all">
@@ -409,7 +415,7 @@ export function SeasonBookBuilderForm({ entries }: SeasonBookBuilderFormProps) {
 
             {isManualCoverInputOpen ? (
               <label className="block space-y-2">
-                <span className="text-sm font-semibold text-stone-800">
+                <span className="text-sm font-semibold text-[#11284f]">
                   커버 사진 URL
                 </span>
                 <input
@@ -425,9 +431,9 @@ export function SeasonBookBuilderForm({ entries }: SeasonBookBuilderFormProps) {
                     resetEstimateFeedback();
                   }}
                   placeholder="https://..."
-                  className="w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-sm text-stone-950 outline-none transition focus:border-stone-400"
+                  className="w-full rounded-2xl border border-[#d7e2f0] bg-white px-4 py-3 text-sm text-[#11284f] outline-none transition focus:border-[#11284f]"
                 />
-                <p className="text-xs leading-5 text-stone-500">
+                <p className="text-xs leading-5 text-[#5a6f91]">
                   예외적으로 직접 URL을 넣어야 한다면, 외부에서 바로 열리는
                   이미지 주소만 사용해 주세요.
                 </p>
@@ -474,7 +480,7 @@ export function SeasonBookBuilderForm({ entries }: SeasonBookBuilderFormProps) {
             </dl>
             <Link
               href={buildOrderHref(estimateResult)}
-              className="inline-flex w-full items-center justify-center rounded-full bg-emerald-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-emerald-800"
+              className="inline-flex w-full items-center justify-center rounded-full bg-[#11284f] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#0b1d3b]"
             >
               주문 화면으로 이동
             </Link>
@@ -484,7 +490,7 @@ export function SeasonBookBuilderForm({ entries }: SeasonBookBuilderFormProps) {
         <button
           type="submit"
           disabled={isEstimating || isUploadingCover}
-          className="inline-flex w-full items-center justify-center rounded-full bg-stone-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-stone-800 disabled:cursor-not-allowed disabled:bg-stone-400"
+          className="inline-flex w-full items-center justify-center rounded-full bg-[#11284f] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#0b1d3b] disabled:cursor-not-allowed disabled:bg-[#95a8c6]"
         >
           {isUploadingCover
             ? "커버 업로드 완료 대기 중..."

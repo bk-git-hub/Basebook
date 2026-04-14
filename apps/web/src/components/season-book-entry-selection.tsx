@@ -35,10 +35,10 @@ const RESULT_LABELS: Record<GameResult, string> = {
 };
 
 const RESULT_TONE: Record<GameResult, string> = {
-  WIN: "bg-emerald-50 text-emerald-700 ring-emerald-600/15",
-  LOSE: "bg-rose-50 text-rose-700 ring-rose-600/15",
-  DRAW: "bg-amber-50 text-amber-700 ring-amber-600/15",
-  UNKNOWN: "bg-stone-100 text-stone-600 ring-stone-500/10",
+  WIN: "bg-emerald-100 text-emerald-900 ring-emerald-300/80",
+  LOSE: "bg-rose-100 text-rose-900 ring-rose-300/80",
+  DRAW: "bg-amber-100 text-amber-900 ring-amber-300/80",
+  UNKNOWN: "bg-[#f6f8fb] text-[#6a7d9f] ring-[#dbe4f0]",
 };
 
 function formatEntryDate(date: string): string {
@@ -89,13 +89,16 @@ export function SeasonBookEntrySelection({
   }
 
   return (
-    <section className="rounded-[28px] border border-stone-200 bg-white p-6 shadow-sm">
-      <div className="flex flex-col gap-4 border-b border-stone-100 pb-5 sm:flex-row sm:items-end sm:justify-between">
+    <section className="rounded-[30px] border border-[#e5ecf6] bg-white p-6 shadow-[0_18px_48px_rgba(17,40,79,0.05)]">
+      <div className="flex flex-col gap-4 border-b border-[#e6eef8] pb-5 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h2 className="text-xl font-semibold tracking-tight text-stone-950">
+          <p className="text-xs font-semibold tracking-[0.2em] text-[#c42d3c] uppercase">
+            select entries
+          </p>
+          <h2 className="mt-2 text-xl font-semibold tracking-tight text-[#11284f]">
             시즌북에 넣을 기록
           </h2>
-          <p className="mt-2 text-sm leading-6 text-stone-500">
+          <p className="mt-2 text-sm leading-6 text-[#5a6f91]">
             시즌북에 담고 싶은 경기 기록을 고르세요. 선택한 기록은 오른쪽
             요약에 바로 반영됩니다.
           </p>
@@ -105,14 +108,14 @@ export function SeasonBookEntrySelection({
           <button
             type="button"
             onClick={selectAllEntries}
-            className="inline-flex items-center justify-center rounded-full border border-stone-200 bg-white px-4 py-2 text-sm font-semibold text-stone-700 transition hover:border-stone-300 hover:bg-stone-50"
+            className="inline-flex items-center justify-center rounded-full border border-[#d4ddeb] bg-white px-4 py-2 text-sm font-semibold text-[#11284f] transition hover:border-[#aebfd8] hover:bg-[#f8fbff]"
           >
             전체 선택
           </button>
           <button
             type="button"
             onClick={clearSelection}
-            className="inline-flex items-center justify-center rounded-full border border-stone-200 bg-white px-4 py-2 text-sm font-semibold text-stone-700 transition hover:border-stone-300 hover:bg-stone-50"
+            className="inline-flex items-center justify-center rounded-full border border-[#d4ddeb] bg-white px-4 py-2 text-sm font-semibold text-[#11284f] transition hover:border-[#aebfd8] hover:bg-[#f8fbff]"
           >
             선택 해제
           </button>
@@ -129,8 +132,8 @@ export function SeasonBookEntrySelection({
               key={entry.id}
               className={`rounded-[24px] border px-5 py-4 transition ${
                 isSelected
-                  ? "border-stone-950 bg-stone-950 text-white shadow-lg shadow-stone-950/10"
-                  : "border-stone-200 bg-stone-50/80 hover:border-stone-300"
+                  ? "border-[#11284f] bg-[#11284f] text-white shadow-[0_20px_48px_rgba(17,40,79,0.16)]"
+                  : "border-[#e5ecf6] bg-white shadow-[0_12px_30px_rgba(17,40,79,0.04)] hover:border-[#cfdcf0] hover:shadow-[0_18px_38px_rgba(17,40,79,0.08)]"
               }`}
             >
               <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
@@ -143,8 +146,8 @@ export function SeasonBookEntrySelection({
                   <span
                     className={`mt-1 flex size-5 shrink-0 items-center justify-center rounded-full border text-xs font-bold ${
                       isSelected
-                        ? "border-white bg-white text-stone-950"
-                        : "border-stone-300 bg-white text-transparent"
+                        ? "border-white bg-white text-[#11284f]"
+                        : "border-[#c6d4e8] bg-white text-transparent"
                     }`}
                   >
                     ✓
@@ -163,7 +166,7 @@ export function SeasonBookEntrySelection({
                         </span>
                         <span
                           className={`text-sm font-medium ${
-                            isSelected ? "text-stone-200" : "text-stone-500"
+                            isSelected ? "text-[#d9e4f6]" : "text-[#6a7d9f]"
                           }`}
                         >
                           {formatEntryDate(entry.date)}
@@ -174,7 +177,7 @@ export function SeasonBookEntrySelection({
                       </span>
                       <span
                         className={`block text-sm leading-6 ${
-                          isSelected ? "text-stone-200" : "text-stone-600"
+                          isSelected ? "text-[#d9e4f6]" : "text-[#4f6488]"
                         }`}
                       >
                         {entry.highlight}
@@ -186,7 +189,7 @@ export function SeasonBookEntrySelection({
                         className={`relative h-20 w-16 shrink-0 overflow-hidden rounded-[18px] border sm:h-24 sm:w-20 ${
                           isSelected
                             ? "border-white/20 bg-white/10"
-                            : "border-stone-200 bg-white"
+                            : "border-[#dce6f3] bg-[#f8fbff]"
                         }`}
                       >
                         <img
@@ -203,18 +206,18 @@ export function SeasonBookEntrySelection({
                 <div
                   className={`grid gap-2 rounded-2xl px-4 py-3 text-sm ${
                     isSelected
-                      ? "bg-white/10 text-stone-100"
-                      : "bg-white text-stone-700 ring-1 ring-stone-200"
+                      ? "bg-white/10 text-[#eef4ff]"
+                      : "bg-[#fbfdff] text-[#4f6488] ring-1 ring-[#e5ecf6]"
                   }`}
                 >
-                  <p className="font-semibold">{formatScore(entry)}</p>
+                  <p className="font-semibold text-inherit">{formatScore(entry)}</p>
                   <p>{entry.photos.length}장 첨부</p>
                   <Link
                     href={`/entries/${entry.id}`}
                     className={`font-semibold underline underline-offset-4 ${
                       isSelected
-                        ? "text-white hover:text-stone-200"
-                        : "text-stone-600 hover:text-stone-950"
+                        ? "text-white hover:text-[#d9e4f6]"
+                        : "text-[#4f6488] hover:text-[#11284f]"
                     }`}
                   >
                     상세 보기
