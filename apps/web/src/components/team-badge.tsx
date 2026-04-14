@@ -46,8 +46,9 @@ export function TeamBadge({ team, size = 72 }: TeamBadgeProps) {
       <circle cx="90" cy="55" r="6" fill="white" opacity="0.22" />
 
       <g transform="translate(0 2)">
+        <circle cx="60" cy="24" r="3.2" fill={meta.palette.capBrim} opacity="0.9" />
         <path
-          d="M40 43c4-14 15-23 20-23 6 0 17 9 20 23"
+          d="M42 46c2-15 10-24 18-24s16 9 18 24"
           fill={meta.palette.cap}
           stroke={meta.palette.capBrim}
           strokeWidth="3"
@@ -55,70 +56,87 @@ export function TeamBadge({ team, size = 72 }: TeamBadgeProps) {
           strokeLinejoin="round"
         />
         <path
-          d="M36 45c9 5 39 5 48 0"
+          d="M45 45c4-4 9-6 15-6s11 2 15 6"
+          fill="none"
+          stroke={meta.palette.capText}
+          strokeOpacity="0.28"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+        />
+        <path
+          d="M60 25v19"
           fill="none"
           stroke={meta.palette.capBrim}
-          strokeWidth="5"
+          strokeOpacity="0.5"
+          strokeWidth="2"
           strokeLinecap="round"
+        />
+        <rect
+          x="50"
+          y="30"
+          width="20"
+          height="14"
+          rx="6"
+          fill={meta.palette.capBrim}
+          opacity="0.96"
         />
         <text
           x="60"
-          y="39"
+          y="39.5"
           fill={meta.palette.capText}
           fontFamily="inherit"
-          fontSize="14"
+          fontSize="11"
           fontWeight="900"
           textAnchor="middle"
         >
           {meta.capLetter}
         </text>
-
         <path
-          d="M47 46c2-8 7-13 13-13s11 5 13 13"
-          fill="none"
-          stroke={meta.palette.hair}
-          strokeWidth="6"
-          strokeLinecap="round"
+          d="M35 47c9 6 41 6 50 0 0 6-5 10-25 10s-25-4-25-10Z"
+          fill={meta.palette.capBrim}
+          stroke={meta.palette.capBrim}
+          strokeWidth="2"
+          strokeLinejoin="round"
         />
 
         <circle
           cx="60"
-          cy="62"
-          r="26"
+          cy="66"
+          r="24"
           fill={meta.palette.face}
           stroke="#6A4B3E"
           strokeWidth="3"
         />
 
         <path
-          d="M43 56c2-8 9-14 17-14s15 6 17 14"
+          d="M47 56c4-4 9-6 13-6s9 2 13 6"
           fill="none"
           stroke={meta.palette.hair}
-          strokeWidth="6"
+          strokeWidth="4.5"
           strokeLinecap="round"
         />
         <path
-          d="M45 52c2 3 5 5 8 6"
+          d="M43 63c0-5 2-10 5-13"
           fill="none"
           stroke={meta.palette.hair}
           strokeWidth="4"
           strokeLinecap="round"
         />
         <path
-          d="M75 52c-2 3-5 5-8 6"
+          d="M77 63c0-5-2-10-5-13"
           fill="none"
           stroke={meta.palette.hair}
           strokeWidth="4"
           strokeLinecap="round"
         />
 
-        <ellipse cx="50" cy="62" rx="3.8" ry="4.6" fill="#4D342A" />
-        <ellipse cx="70" cy="62" rx="3.8" ry="4.6" fill="#4D342A" />
-        <circle cx="46" cy="71" r="4.8" fill={meta.palette.blush} opacity="0.84" />
-        <circle cx="74" cy="71" r="4.8" fill={meta.palette.blush} opacity="0.84" />
-        <ellipse cx="60" cy="69" rx="4.8" ry="3.5" fill="#F6B48A" />
+        <ellipse cx="50" cy="66" rx="3.6" ry="4.4" fill="#4D342A" />
+        <ellipse cx="70" cy="66" rx="3.6" ry="4.4" fill="#4D342A" />
+        <circle cx="46" cy="75" r="4.6" fill={meta.palette.blush} opacity="0.84" />
+        <circle cx="74" cy="75" r="4.6" fill={meta.palette.blush} opacity="0.84" />
+        <ellipse cx="60" cy="72" rx="4.8" ry="3.5" fill="#F6B48A" />
         <path
-          d="M52 76c3 4 13 4 16 0"
+          d="M52 79c3 4 13 4 16 0"
           fill="none"
           stroke="#4D342A"
           strokeWidth="3"

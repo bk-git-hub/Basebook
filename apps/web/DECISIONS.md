@@ -544,3 +544,23 @@
 - Status: `approved`
 - Related Docs:
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+
+### WEB-024
+
+- Date: `2026-04-14`
+- Time: `14:38`
+- Agenda: 단순화된 팀 배지에서 모자 실루엣을 어떻게 보정할지 결정
+- Participants: User, Codex
+- Options Considered:
+  - 현재처럼 넓은 곡선 챙과 머리카락 레이어를 유지하고 세부 위치만 미세 조정한다
+  - 야구모자를 `크라운 + 전면 패치 + 챙`이 구분되는 구조로 다시 그려서 모자 인지를 우선한다
+- Decision: 팀 배지의 모자는 전면 패치와 챙이 분리된 구조로 다시 그리고, 글자는 모자 패치 위에 배치한다.
+- Rationale: 이전 버전은 챙과 앞머리 곡선이 겹치면서 눈썹처럼 읽혔다. 제품적으로는 캐릭터 디테일보다 “야구모자를 쓰고 있다”는 인지가 더 중요하므로, 실루엣을 먼저 바로잡는 쪽이 맞다.
+- Impact:
+  - 모자 글자가 얼굴이나 앞머리에 가려지지 않는다
+  - 배지가 더 직관적으로 야구 팬 캐릭터처럼 읽힌다
+  - 이후 색상만 바꿔도 팀 구분이 안정적으로 유지된다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
