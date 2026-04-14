@@ -1125,3 +1125,23 @@
 - Status: `approved`
 - Related Docs:
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+
+### WEB-054
+
+- Date: `2026-04-14`
+- Time: `22:09`
+- Agenda: `/order/[projectId]/status`를 기존 dark/stone 기반 상태보드로 둘지, 홈 톤의 요약/진행/액션 중심 화면으로 정리할지 결정
+- Participants: User, Codex
+- Options Considered:
+  - 주문 상태 화면은 기존 dark hero와 stone 계열 단계 카드를 유지하고, 취소/배송지 수정 동작만 기능적으로 남긴다
+  - 주문 상태 화면은 홈 톤의 얇은 안내 블록과 화이트/네이비/레드 기반 요약/진행/액션 구조로 재구성한다
+- Decision: `/order/[projectId]/status`는 홈 톤의 얇은 안내 블록과 화이트/네이비/레드 기반 요약/진행/액션 구조로 재구성한다.
+- Rationale: 상태 조회 화면은 주문 플로우의 마지막 재방문 지점이라 주문 입력 화면과 톤이 자연스럽게 이어져야 한다. 기존 dark hero와 stone 단계 카드는 정보는 많지만 홈과 제품 인상이 달라 보여 플로우가 끊기므로, 같은 브랜드 색과 위계로 다시 정리하는 편이 더 자연스럽다.
+- Impact:
+  - `/order/[projectId]/status` 상단은 dark hero 대신 홈 톤의 얇은 진행 안내 블록으로 바뀐다
+  - 현재 요약, 배송지 수정, 주문 취소, 진행 단계 카드가 모두 화이트/네이비/레드 기준으로 정리된다
+  - 주문 입력 화면과 주문 상태 화면 사이의 시각적 연결성이 높아진다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`

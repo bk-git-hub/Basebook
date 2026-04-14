@@ -63,22 +63,22 @@ const STEP_STATE_STYLES: Record<
   }
 > = {
   completed: {
-    badge: "bg-emerald-100 text-emerald-800",
-    card: "border-emerald-200 bg-emerald-50/80",
-    line: "bg-emerald-300",
-    marker: "border-emerald-700 bg-emerald-700 text-white",
+    badge: "border border-[#dbe6f5] bg-[#eff4fb] text-[#11284f]",
+    card: "border-[#dbe6f5] bg-[#fbfdff]",
+    line: "bg-[#bfd0e6]",
+    marker: "border-[#6f87ab] bg-[#eff4fb] text-[#11284f]",
   },
   current: {
-    badge: "bg-stone-950 text-white",
-    card: "border-stone-950 bg-white",
-    line: "bg-stone-300",
-    marker: "border-stone-950 bg-stone-950 text-white",
+    badge: "bg-[#11284f] text-white",
+    card: "border-[#11284f] bg-white shadow-[0_14px_36px_rgba(17,40,79,0.08)]",
+    line: "bg-[#7f96b8]",
+    marker: "border-[#11284f] bg-[#11284f] text-white",
   },
   pending: {
-    badge: "bg-stone-100 text-stone-600",
-    card: "border-stone-200 bg-stone-50/80",
-    line: "bg-stone-200",
-    marker: "border-stone-300 bg-white text-transparent",
+    badge: "border border-[#e5ecf6] bg-[#f8fbff] text-[#6a7fa1]",
+    card: "border-[#e5ecf6] bg-white",
+    line: "bg-[#d7e2f0]",
+    marker: "border-[#d7e2f0] bg-white text-transparent",
   },
 };
 
@@ -212,7 +212,9 @@ function createShippingFormValues(
   };
 }
 
-function validateShippingValues(values: ShippingFormValues): ShippingFormErrors {
+function validateShippingValues(
+  values: ShippingFormValues,
+): ShippingFormErrors {
   const errors: ShippingFormErrors = {};
 
   if (!values.recipientName.trim()) {
@@ -280,9 +282,7 @@ type SeasonBookOrderStatusProps = {
   status: GetSeasonBookStatusResponse;
 };
 
-export function SeasonBookOrderStatus({
-  status,
-}: SeasonBookOrderStatusProps) {
+export function SeasonBookOrderStatus({ status }: SeasonBookOrderStatusProps) {
   const router = useRouter();
   const [cancelError, setCancelError] = useState<string | null>(null);
   const [cancelResult, setCancelResult] =
@@ -391,9 +391,7 @@ export function SeasonBookOrderStatus({
     }
   }
 
-  async function handleShippingSubmit(
-    event: React.FormEvent<HTMLFormElement>,
-  ) {
+  async function handleShippingSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     const nextErrors = validateShippingValues(shippingValues);
@@ -405,7 +403,10 @@ export function SeasonBookOrderStatus({
       return;
     }
 
-    const payload = buildShippingUpdatePayload(effectiveShipping, shippingValues);
+    const payload = buildShippingUpdatePayload(
+      effectiveShipping,
+      shippingValues,
+    );
 
     if (Object.keys(payload).length === 0) {
       setShippingNotice("변경된 배송지 정보가 없습니다.");
@@ -438,21 +439,22 @@ export function SeasonBookOrderStatus({
 
   return (
     <div className="space-y-8">
-      <section className="rounded-[32px] bg-stone-950 px-8 py-10 text-white shadow-xl shadow-stone-950/10">
+      <section className="rounded-[30px] border border-[#e5ecf6] bg-white px-6 py-6 shadow-[0_18px_48px_rgba(17,40,79,0.05)] sm:px-7">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div className="space-y-4">
-            <span className="inline-flex rounded-full bg-white/12 px-3 py-1 text-xs font-semibold tracking-[0.2em] text-stone-200 uppercase">
+            <span className="inline-flex rounded-full border border-[#dce6f3] bg-[#fbfdff] px-3 py-1 text-xs font-semibold tracking-[0.2em] text-[#c42d3c] uppercase">
               Order Status
             </span>
             <div className="space-y-2">
-              <p className="text-sm font-medium text-stone-300">
+              <p className="text-sm font-medium text-[#5a6f91]">
                 주문 진행 상태
               </p>
-              <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+              <h1 className="text-3xl font-semibold tracking-tight text-[#11284f] sm:text-4xl">
                 시즌북 제작이 어디까지 진행됐는지 확인하세요
               </h1>
-              <p className="max-w-2xl text-sm leading-7 text-stone-300">
-                주문 이후의 제작, 배송 진행 단계를 한 화면에서 확인할 수 있습니다.
+              <p className="max-w-2xl text-sm leading-7 text-[#5a6f91]">
+                주문 이후의 제작, 배송 진행 단계를 한 화면에서 확인할 수
+                있습니다.
               </p>
             </div>
           </div>
@@ -461,17 +463,56 @@ export function SeasonBookOrderStatus({
             <Link
               href={buildStatusHref(status.projectId)}
               prefetch={false}
-              className="inline-flex items-center justify-center rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-stone-950 transition hover:bg-stone-100"
+              className="inline-flex items-center justify-center rounded-full bg-[#11284f] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#0b1d3b]"
             >
               상태 새로고침
             </Link>
             <Link
               href={buildOrderHref(status.projectId)}
-              className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/15"
+              className="inline-flex items-center justify-center rounded-full border border-[#d4ddeb] bg-white px-5 py-2.5 text-sm font-semibold text-[#11284f] transition hover:border-[#aebfd8] hover:bg-[#f8fbff]"
             >
               주문 화면으로 돌아가기
             </Link>
           </div>
+        </div>
+
+        <div className="mt-6 grid gap-3 md:grid-cols-3">
+          <article className="rounded-[22px] border border-[#e5ecf6] bg-[#fbfdff] px-4 py-4">
+            <p className="text-[0.7rem] font-semibold tracking-[0.18em] text-[#c42d3c] uppercase">
+              01 Overview
+            </p>
+            <h2 className="mt-2 text-lg font-semibold text-[#11284f]">
+              현재 상태 확인
+            </h2>
+            <p className="mt-2 text-sm leading-6 text-[#5a6f91]">
+              프로젝트와 주문 상태, 마지막 반영 시점을 먼저 확인합니다.
+            </p>
+          </article>
+
+          <article className="rounded-[22px] border border-[#e5ecf6] bg-[#fbfdff] px-4 py-4">
+            <p className="text-[0.7rem] font-semibold tracking-[0.18em] text-[#c42d3c] uppercase">
+              02 Shipping
+            </p>
+            <h2 className="mt-2 text-lg font-semibold text-[#11284f]">
+              배송지 수정
+            </h2>
+            <p className="mt-2 text-sm leading-6 text-[#5a6f91]">
+              배송 시작 전이라면 이 화면에서 수령인과 주소를 바로 고칠 수
+              있습니다.
+            </p>
+          </article>
+
+          <article className="rounded-[22px] border border-[#e5ecf6] bg-[#fbfdff] px-4 py-4">
+            <p className="text-[0.7rem] font-semibold tracking-[0.18em] text-[#c42d3c] uppercase">
+              03 Progress
+            </p>
+            <h2 className="mt-2 text-lg font-semibold text-[#11284f]">
+              제작 단계 추적
+            </h2>
+            <p className="mt-2 text-sm leading-6 text-[#5a6f91]">
+              결제 이후 제작과 배송이 어디까지 왔는지 단계별로 이어서 봅니다.
+            </p>
+          </article>
         </div>
       </section>
 
@@ -497,58 +538,58 @@ export function SeasonBookOrderStatus({
       ) : null}
 
       <section className="grid gap-4 lg:grid-cols-[0.9fr_1.1fr]">
-        <article className="space-y-4 rounded-[28px] border border-stone-200 bg-white p-6 shadow-sm">
+        <article className="space-y-4 rounded-[28px] border border-[#e5ecf6] bg-white p-6 shadow-[0_18px_48px_rgba(17,40,79,0.05)]">
           <div>
-            <h2 className="text-xl font-semibold tracking-tight text-stone-950">
+            <h2 className="text-xl font-semibold tracking-tight text-[#11284f]">
               현재 요약
             </h2>
-            <p className="mt-2 text-sm leading-6 text-stone-500">
+            <p className="mt-2 text-sm leading-6 text-[#5a6f91]">
               마지막으로 확인된 주문 진행 상태와 추적 정보를 보여줍니다.
             </p>
           </div>
 
           <div className="grid gap-3">
-            <div className="rounded-2xl bg-stone-50 px-4 py-4 ring-1 ring-stone-200">
-              <p className="text-xs font-semibold tracking-[0.16em] text-stone-400 uppercase">
+            <div className="rounded-2xl border border-[#e5ecf6] bg-[#fbfdff] px-4 py-4">
+              <p className="text-xs font-semibold tracking-[0.16em] text-[#c42d3c] uppercase">
                 프로젝트 상태
               </p>
-              <p className="mt-2 text-base font-semibold text-stone-950">
+              <p className="mt-2 text-base font-semibold text-[#11284f]">
                 {PROJECT_STATUS_LABELS[effectiveProjectStatus]}
               </p>
             </div>
-            <div className="rounded-2xl bg-stone-50 px-4 py-4 ring-1 ring-stone-200">
-              <p className="text-xs font-semibold tracking-[0.16em] text-stone-400 uppercase">
+            <div className="rounded-2xl border border-[#e5ecf6] bg-[#fbfdff] px-4 py-4">
+              <p className="text-xs font-semibold tracking-[0.16em] text-[#c42d3c] uppercase">
                 주문 상태
               </p>
-              <p className="mt-2 text-base font-semibold text-stone-950">
+              <p className="mt-2 text-base font-semibold text-[#11284f]">
                 {ORDER_STATUS_LABELS[effectiveOrderStatus]}
               </p>
             </div>
-            <div className="rounded-2xl bg-stone-50 px-4 py-4 ring-1 ring-stone-200">
-              <p className="text-xs font-semibold tracking-[0.16em] text-stone-400 uppercase">
+            <div className="rounded-2xl border border-[#e5ecf6] bg-[#fbfdff] px-4 py-4">
+              <p className="text-xs font-semibold tracking-[0.16em] text-[#c42d3c] uppercase">
                 상태 기준
               </p>
-              <p className="mt-2 text-base font-semibold text-stone-950">
+              <p className="mt-2 text-base font-semibold text-[#11284f]">
                 {SOURCE_LABELS[status.source]}
               </p>
             </div>
-            <div className="rounded-2xl bg-stone-50 px-4 py-4 ring-1 ring-stone-200">
-              <p className="text-xs font-semibold tracking-[0.16em] text-stone-400 uppercase">
+            <div className="rounded-2xl border border-[#e5ecf6] bg-[#fbfdff] px-4 py-4">
+              <p className="text-xs font-semibold tracking-[0.16em] text-[#c42d3c] uppercase">
                 최종 갱신
               </p>
-              <p className="mt-2 text-base font-semibold text-stone-950">
+              <p className="mt-2 text-base font-semibold text-[#11284f]">
                 {formatDateTime(effectiveUpdatedAt)}
               </p>
             </div>
           </div>
 
-          <section className="rounded-[24px] border border-sky-200 bg-sky-50 px-4 py-4">
+          <section className="rounded-[24px] border border-[#dce6f3] bg-[#f8fbff] px-4 py-4">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
               <div className="space-y-2">
-                <h3 className="text-sm font-semibold text-sky-950">
+                <h3 className="text-sm font-semibold text-[#11284f]">
                   배송지 정보
                 </h3>
-                <p className="text-sm leading-6 text-sky-900">
+                <p className="text-sm leading-6 text-[#5a6f91]">
                   현재 배송지 정보를 기준으로 필요한 항목만 바로 수정할 수
                   있습니다.
                 </p>
@@ -557,7 +598,7 @@ export function SeasonBookOrderStatus({
                 <button
                   type="button"
                   onClick={openShippingEditor}
-                  className="inline-flex items-center justify-center rounded-full bg-white px-4 py-2.5 text-sm font-semibold text-sky-950 ring-1 ring-sky-200 transition hover:bg-sky-100"
+                  className="inline-flex items-center justify-center rounded-full bg-[#11284f] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#0b1d3b]"
                 >
                   배송지 수정
                 </button>
@@ -565,7 +606,7 @@ export function SeasonBookOrderStatus({
             </div>
 
             {shippingNotice ? (
-              <p className="mt-4 rounded-2xl border border-emerald-200 bg-white px-4 py-3 text-sm leading-6 text-emerald-800">
+              <p className="mt-4 rounded-2xl border border-[#dbe6f5] bg-white px-4 py-3 text-sm leading-6 text-[#11284f]">
                 {shippingNotice}
               </p>
             ) : null}
@@ -577,28 +618,28 @@ export function SeasonBookOrderStatus({
             ) : null}
 
             {effectiveShipping ? (
-              <dl className="mt-4 grid gap-3 rounded-[24px] border border-white/80 bg-white/80 px-4 py-4 text-sm text-stone-700">
+              <dl className="mt-4 grid gap-3 rounded-[24px] border border-[#e5ecf6] bg-white px-4 py-4 text-sm text-[#5a6f91]">
                 <div className="flex items-start justify-between gap-4">
                   <dt>수령인</dt>
-                  <dd className="text-right font-semibold text-stone-900">
+                  <dd className="text-right font-semibold text-[#11284f]">
                     {effectiveShipping.recipientName}
                   </dd>
                 </div>
                 <div className="flex items-start justify-between gap-4">
                   <dt>전화번호</dt>
-                  <dd className="text-right font-semibold text-stone-900">
+                  <dd className="text-right font-semibold text-[#11284f]">
                     {effectiveShipping.recipientPhone}
                   </dd>
                 </div>
                 <div className="flex items-start justify-between gap-4">
                   <dt>우편번호</dt>
-                  <dd className="text-right font-semibold text-stone-900">
+                  <dd className="text-right font-semibold text-[#11284f]">
                     {effectiveShipping.postalCode}
                   </dd>
                 </div>
                 <div className="flex items-start justify-between gap-4">
                   <dt>주소</dt>
-                  <dd className="max-w-[70%] text-right font-semibold text-stone-900">
+                  <dd className="max-w-[70%] text-right font-semibold text-[#11284f]">
                     {effectiveShipping.address1}
                     {effectiveShipping.address2
                       ? ` ${effectiveShipping.address2}`
@@ -608,14 +649,14 @@ export function SeasonBookOrderStatus({
                 {effectiveShipping.shippingMemo ? (
                   <div className="flex items-start justify-between gap-4">
                     <dt>배송 메모</dt>
-                    <dd className="max-w-[70%] text-right font-semibold text-stone-900">
+                    <dd className="max-w-[70%] text-right font-semibold text-[#11284f]">
                       {effectiveShipping.shippingMemo}
                     </dd>
                   </div>
                 ) : null}
               </dl>
             ) : (
-              <p className="mt-4 rounded-2xl border border-dashed border-sky-200 bg-white/80 px-4 py-4 text-sm leading-6 text-sky-900">
+              <p className="mt-4 rounded-2xl border border-dashed border-[#dce6f3] bg-white px-4 py-4 text-sm leading-6 text-[#5a6f91]">
                 현재 배송지 스냅샷이 없어, 수정 시 전체 배송지를 다시 입력하는
                 방식으로 진행됩니다.
               </p>
@@ -625,16 +666,19 @@ export function SeasonBookOrderStatus({
               <form className="mt-4 space-y-4" onSubmit={handleShippingSubmit}>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <label className="space-y-2">
-                    <span className="text-sm font-semibold text-stone-800">
+                    <span className="text-sm font-semibold text-[#11284f]">
                       수령인 이름
                     </span>
                     <input
                       type="text"
                       value={shippingValues.recipientName}
                       onChange={(event) =>
-                        setShippingFieldValue("recipientName", event.target.value)
+                        setShippingFieldValue(
+                          "recipientName",
+                          event.target.value,
+                        )
                       }
-                      className="w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-sm text-stone-950 outline-none transition focus:border-stone-400"
+                      className="w-full rounded-2xl border border-[#d7e2f0] bg-white px-4 py-3 text-sm text-[#11284f] outline-none transition focus:border-[#11284f]"
                     />
                     {shippingErrors.recipientName ? (
                       <p className="text-sm text-rose-600">
@@ -644,16 +688,19 @@ export function SeasonBookOrderStatus({
                   </label>
 
                   <label className="space-y-2">
-                    <span className="text-sm font-semibold text-stone-800">
+                    <span className="text-sm font-semibold text-[#11284f]">
                       전화번호
                     </span>
                     <input
                       type="tel"
                       value={shippingValues.recipientPhone}
                       onChange={(event) =>
-                        setShippingFieldValue("recipientPhone", event.target.value)
+                        setShippingFieldValue(
+                          "recipientPhone",
+                          event.target.value,
+                        )
                       }
-                      className="w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-sm text-stone-950 outline-none transition focus:border-stone-400"
+                      className="w-full rounded-2xl border border-[#d7e2f0] bg-white px-4 py-3 text-sm text-[#11284f] outline-none transition focus:border-[#11284f]"
                     />
                     {shippingErrors.recipientPhone ? (
                       <p className="text-sm text-rose-600">
@@ -663,7 +710,7 @@ export function SeasonBookOrderStatus({
                   </label>
 
                   <label className="space-y-2">
-                    <span className="text-sm font-semibold text-stone-800">
+                    <span className="text-sm font-semibold text-[#11284f]">
                       우편번호
                     </span>
                     <input
@@ -672,7 +719,7 @@ export function SeasonBookOrderStatus({
                       onChange={(event) =>
                         setShippingFieldValue("postalCode", event.target.value)
                       }
-                      className="w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-sm text-stone-950 outline-none transition focus:border-stone-400"
+                      className="w-full rounded-2xl border border-[#d7e2f0] bg-white px-4 py-3 text-sm text-[#11284f] outline-none transition focus:border-[#11284f]"
                     />
                     {shippingErrors.postalCode ? (
                       <p className="text-sm text-rose-600">
@@ -682,7 +729,7 @@ export function SeasonBookOrderStatus({
                   </label>
 
                   <label className="space-y-2 sm:col-span-2">
-                    <span className="text-sm font-semibold text-stone-800">
+                    <span className="text-sm font-semibold text-[#11284f]">
                       기본 주소
                     </span>
                     <input
@@ -691,7 +738,7 @@ export function SeasonBookOrderStatus({
                       onChange={(event) =>
                         setShippingFieldValue("address1", event.target.value)
                       }
-                      className="w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-sm text-stone-950 outline-none transition focus:border-stone-400"
+                      className="w-full rounded-2xl border border-[#d7e2f0] bg-white px-4 py-3 text-sm text-[#11284f] outline-none transition focus:border-[#11284f]"
                     />
                     {shippingErrors.address1 ? (
                       <p className="text-sm text-rose-600">
@@ -701,7 +748,7 @@ export function SeasonBookOrderStatus({
                   </label>
 
                   <label className="space-y-2 sm:col-span-2">
-                    <span className="text-sm font-semibold text-stone-800">
+                    <span className="text-sm font-semibold text-[#11284f]">
                       상세 주소
                     </span>
                     <input
@@ -710,21 +757,24 @@ export function SeasonBookOrderStatus({
                       onChange={(event) =>
                         setShippingFieldValue("address2", event.target.value)
                       }
-                      className="w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-sm text-stone-950 outline-none transition focus:border-stone-400"
+                      className="w-full rounded-2xl border border-[#d7e2f0] bg-white px-4 py-3 text-sm text-[#11284f] outline-none transition focus:border-[#11284f]"
                     />
                   </label>
 
                   <label className="space-y-2 sm:col-span-2">
-                    <span className="text-sm font-semibold text-stone-800">
+                    <span className="text-sm font-semibold text-[#11284f]">
                       배송 메모
                     </span>
                     <textarea
                       rows={3}
                       value={shippingValues.shippingMemo}
                       onChange={(event) =>
-                        setShippingFieldValue("shippingMemo", event.target.value)
+                        setShippingFieldValue(
+                          "shippingMemo",
+                          event.target.value,
+                        )
                       }
-                      className="w-full rounded-[20px] border border-stone-200 bg-white px-4 py-3 text-sm leading-6 text-stone-950 outline-none transition focus:border-stone-400"
+                      className="w-full rounded-[20px] border border-[#d7e2f0] bg-white px-4 py-3 text-sm leading-6 text-[#11284f] outline-none transition focus:border-[#11284f]"
                     />
                   </label>
                 </div>
@@ -733,25 +783,25 @@ export function SeasonBookOrderStatus({
                   <button
                     type="submit"
                     disabled={isUpdatingShipping}
-                    className="inline-flex items-center justify-center rounded-full bg-stone-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-stone-800 disabled:cursor-not-allowed disabled:bg-stone-400"
+                    className="inline-flex items-center justify-center rounded-full bg-[#11284f] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#0b1d3b] disabled:cursor-not-allowed disabled:bg-[#95a8c6]"
                   >
                     {isUpdatingShipping ? "배송지 저장 중..." : "배송지 저장"}
                   </button>
                   <button
                     type="button"
                     onClick={closeShippingEditor}
-                    className="inline-flex items-center justify-center rounded-full border border-stone-200 bg-white px-5 py-3 text-sm font-semibold text-stone-700 transition hover:border-stone-300 hover:bg-stone-50"
+                    className="inline-flex items-center justify-center rounded-full border border-[#d4ddeb] bg-white px-5 py-3 text-sm font-semibold text-[#11284f] transition hover:border-[#aebfd8] hover:bg-[#f8fbff]"
                   >
                     수정 취소
                   </button>
                 </div>
               </form>
             ) : showShippingAction ? (
-              <p className="mt-4 text-sm leading-6 text-sky-900">
+              <p className="mt-4 text-sm leading-6 text-[#5a6f91]">
                 배송 시작 전 상태에서는 배송지 정보를 다시 저장할 수 있습니다.
               </p>
             ) : (
-              <p className="mt-4 rounded-2xl border border-white/80 bg-white/80 px-4 py-3 text-sm leading-6 text-sky-950">
+              <p className="mt-4 rounded-2xl border border-[#e5ecf6] bg-white px-4 py-3 text-sm leading-6 text-[#11284f]">
                 {getShippingAvailabilityText(effectiveOrderStatus)}
               </p>
             )}
@@ -759,9 +809,7 @@ export function SeasonBookOrderStatus({
 
           <section className="rounded-[24px] border border-rose-200 bg-rose-50 px-4 py-4">
             <div className="space-y-2">
-              <h3 className="text-sm font-semibold text-rose-900">
-                주문 취소
-              </h3>
+              <h3 className="text-sm font-semibold text-rose-900">주문 취소</h3>
               <p className="text-sm leading-6 text-rose-800">
                 이 화면에서는 취소 사유를 따로 묻지 않고 바로 취소 요청을
                 보냅니다.
@@ -790,17 +838,17 @@ export function SeasonBookOrderStatus({
             ) : null}
           </section>
 
-          <dl className="grid gap-3 rounded-[24px] border border-dashed border-stone-200 bg-stone-50/70 px-4 py-4 text-sm text-stone-600">
+          <dl className="grid gap-3 rounded-[24px] border border-dashed border-[#dce6f3] bg-[#fbfdff] px-4 py-4 text-sm text-[#5a6f91]">
             <div className="flex items-start justify-between gap-4">
               <dt>프로젝트 ID</dt>
-              <dd className="max-w-[70%] break-all text-right font-medium text-stone-800">
+              <dd className="max-w-[70%] break-all text-right font-medium text-[#11284f]">
                 {status.projectId}
               </dd>
             </div>
             {status.bookUid ? (
               <div className="flex items-start justify-between gap-4">
                 <dt>책 ID</dt>
-                <dd className="max-w-[70%] break-all text-right font-medium text-stone-800">
+                <dd className="max-w-[70%] break-all text-right font-medium text-[#11284f]">
                   {status.bookUid}
                 </dd>
               </div>
@@ -808,7 +856,7 @@ export function SeasonBookOrderStatus({
             {effectiveOrderUid ? (
               <div className="flex items-start justify-between gap-4">
                 <dt>주문 ID</dt>
-                <dd className="max-w-[70%] break-all text-right font-medium text-stone-800">
+                <dd className="max-w-[70%] break-all text-right font-medium text-[#11284f]">
                   {effectiveOrderUid}
                 </dd>
               </div>
@@ -816,7 +864,7 @@ export function SeasonBookOrderStatus({
             {status.sweetbookStatusDisplay ? (
               <div className="flex items-start justify-between gap-4">
                 <dt>연동 상태</dt>
-                <dd className="max-w-[70%] break-all text-right font-medium text-stone-800">
+                <dd className="max-w-[70%] break-all text-right font-medium text-[#11284f]">
                   {status.sweetbookStatusDisplay}
                 </dd>
               </div>
@@ -824,14 +872,14 @@ export function SeasonBookOrderStatus({
           </dl>
         </article>
 
-        <article className="rounded-[28px] border border-stone-200 bg-white p-6 shadow-sm">
+        <article className="rounded-[28px] border border-[#e5ecf6] bg-white p-6 shadow-[0_18px_48px_rgba(17,40,79,0.05)]">
           {showCancelledState ? (
             <div className="space-y-4">
               <div>
-                <h2 className="text-xl font-semibold tracking-tight text-stone-950">
+                <h2 className="text-xl font-semibold tracking-tight text-[#11284f]">
                   취소 처리 상태
                 </h2>
-                <p className="mt-2 text-sm leading-6 text-stone-500">
+                <p className="mt-2 text-sm leading-6 text-[#5a6f91]">
                   취소가 반영된 주문은 제작 단계 대신 취소 결과를 중심으로
                   확인합니다.
                 </p>
@@ -857,10 +905,10 @@ export function SeasonBookOrderStatus({
           ) : (
             <div>
               <div>
-                <h2 className="text-xl font-semibold tracking-tight text-stone-950">
+                <h2 className="text-xl font-semibold tracking-tight text-[#11284f]">
                   진행 단계
                 </h2>
-                <p className="mt-2 text-sm leading-6 text-stone-500">
+                <p className="mt-2 text-sm leading-6 text-[#5a6f91]">
                   현재 단계는 강조되고, 지난 단계와 남은 단계가 한눈에
                   구분됩니다.
                 </p>
@@ -880,10 +928,11 @@ export function SeasonBookOrderStatus({
                         <span
                           className={`mt-1 flex size-6 items-center justify-center rounded-full border text-xs font-bold ${tone.marker}`}
                         >
-                          {step.state === "completed" ||
-                          step.state === "current"
-                            ? "•"
-                            : " "}
+                          {step.state === "completed"
+                            ? "✓"
+                            : step.state === "current"
+                              ? "•"
+                              : " "}
                         </span>
                         {!isLast ? (
                           <span className={`mt-2 w-px flex-1 ${tone.line}`} />
@@ -894,7 +943,7 @@ export function SeasonBookOrderStatus({
                         className={`rounded-[24px] border px-5 py-4 ${tone.card}`}
                       >
                         <div className="flex flex-wrap items-center justify-between gap-3">
-                          <h3 className="text-base font-semibold text-stone-950">
+                          <h3 className="text-base font-semibold text-[#11284f]">
                             {step.label}
                           </h3>
                           <span
@@ -903,7 +952,7 @@ export function SeasonBookOrderStatus({
                             {STEP_STATE_LABELS[step.state]}
                           </span>
                         </div>
-                        <p className="mt-3 text-sm leading-6 text-stone-600">
+                        <p className="mt-3 text-sm leading-6 text-[#5a6f91]">
                           {step.occurredAt
                             ? formatDateTime(step.occurredAt)
                             : step.state === "pending"
