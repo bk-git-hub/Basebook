@@ -705,3 +705,29 @@
 - Related Docs:
   - `data/demo-entries.json`
   - `apps/api/scripts/db-init.cjs`
+
+### API-026
+
+- Date: `2026-04-15`
+- Time: `15:54`
+- Agenda: 이미지 업로드 차단을 막기 위한 배포 CORS 대응 범위
+- Participants: User, Codex
+- Options Considered:
+  - `WEB_ORIGIN` 기반 allowlist를 유지하면서 배포 프론트 주소만 추가한다
+  - 프리뷰와 로컬 주소를 포함하는 더 넓은 allowlist를 새로 설계한다
+  - 현재 과제 마감 대응으로 API CORS를 전면 허용한다
+- Decision:
+  - 현재 백엔드 API는 CORS를 전면 허용한다
+- Rationale:
+  - 사용자가 실제로 겪고 있는 문제는 프론트 이미지 업로드가 브라우저 단계에서 막히는 것이고, 지금은 세밀한 origin 관리보다 즉시 동작 복구가 우선이다
+  - 기존 구현은 로컬 포트와 단일 `WEB_ORIGIN`만 허용해서 Vercel 배포 주소나 예외 케이스를 빠르게 흡수하지 못했다
+  - 현재 과제 범위의 백엔드는 인증 세션이나 사용자별 권한을 다루지 않으므로, 마감 직전에는 전면 허용이 가장 단순하고 실패 가능성이 적다
+- Impact:
+  - `https://basebook-web.vercel.app/`를 포함한 모든 프론트 origin에서 업로드와 API 호출이 가능해진다
+  - 추후 인증이 들어가거나 운영 보안 요구가 생기면 allowlist 방식으로 다시 좁혀야 한다
+  - 당장 프론트는 별도 CORS 우회 코드 없이 기존 호출 방식을 유지할 수 있다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `apps/api/src/app.config.ts`
+  - `apps/api/src/app.config.spec.ts`
