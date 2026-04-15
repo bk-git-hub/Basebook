@@ -1366,6 +1366,26 @@
 - Related Docs:
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
 
+### WEB-067
+
+- Date: `2026-04-15`
+- Time: `12:51`
+- Agenda: 로컬 기본 실행은 유지한 채 Vercel에서 `apps/web` 단독 빌드가 가능하도록 모노레포 루트 인식 방식을 정할지 결정
+- Participants: User, Codex
+- Options Considered:
+  - 배포용 복제본이나 별도 루트 프로젝트를 만들어 우회한다
+  - `apps/web/next.config.ts`에 Turbopack monorepo root를 명시해 같은 소스 트리를 그대로 빌드한다
+- Decision: `apps/web/next.config.ts`에 Turbopack monorepo root를 명시해 같은 소스 트리를 그대로 빌드한다.
+- Rationale: 사용자는 심사관 로컬 실행을 절대 깨지 않는 조건을 가장 중요하게 두고 있다. 별도 복제본이나 배포 전용 구조는 다시 운영 혼선을 만들 수 있으므로, monorepo 인식만 명시적으로 보정하는 최소 설정이 가장 안전하다.
+- Impact:
+  - 로컬 기본 실행 경로와 env 기본값은 유지된다
+  - `apps/web` 단독 Vercel 빌드에서 workspace 패키지 해석 실패를 줄인다
+  - 저장소 밖 복제본 없이 같은 코드 기준으로 로컬과 배포를 맞출 수 있다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+
 ### WEB-066
 
 - Date: `2026-04-15`
