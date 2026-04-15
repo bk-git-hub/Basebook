@@ -26,7 +26,8 @@ describe("Entry detail QA smoke", () => {
     expect(
       screen.getByRole("link", { name: "이 기록 수정하기" }),
     ).toHaveAttribute("href", `/entries/${entry.id}/edit`);
-    expect(screen.getByRole("link", { name: "원본 열기" })).toHaveAttribute(
+    expect(screen.getByRole("heading", { name: "기록 요약" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /원본 열기/ })).toHaveAttribute(
       "href",
       "https://example.com/entry.png",
     );
