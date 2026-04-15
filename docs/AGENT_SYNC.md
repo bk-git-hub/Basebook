@@ -236,3 +236,16 @@
 - Required action: Authenticate Railway once from the user's interactive terminal or browser session, then resume backend deployment with the prepared Dockerfile, mounted volume, and Railway service variables.
 - User notified: yes
 - Status: open
+
+## SYNC-017
+
+- Date: 2026-04-15
+- Time: 11:50
+- Source role: Backend
+- Target role: Frontend
+- Type: ready
+- Related area: `GET /season-books/orders`
+- Summary: Shared contract now defines the season-book order-history endpoint and response shape for the order list screen.
+- Required action: Frontend can begin the order-history screen against `GET /season-books/orders` and render latest-first rows including cancelled history.
+- User notified: yes
+- Status: open

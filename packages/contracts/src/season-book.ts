@@ -87,6 +87,25 @@ export type SeasonBookOrderResponse = {
   orderStatus: SeasonBookOrderStatus;
 };
 
+export type SeasonBookOrderHistoryItem = {
+  projectId: EntityId;
+  seasonYear: number;
+  title: string;
+  bookUid?: string;
+  orderUid: string;
+  pageCount?: number;
+  totalPrice: number;
+  currency: CurrencyCode;
+  projectStatus: SeasonBookProjectStatus;
+  orderStatus: SeasonBookOrderStatus;
+  createdAt: IsoDateTimeString;
+  updatedAt: IsoDateTimeString;
+};
+
+export type GetSeasonBookOrdersResponse = {
+  orders: SeasonBookOrderHistoryItem[];
+};
+
 export type CancelSeasonBookOrderParams = {
   projectId: EntityId;
 };

@@ -354,6 +354,52 @@ type SeasonBookOrderResponse = {
 };
 ```
 
+### `GET /season-books/orders`
+
+용도:
+
+- 사용자의 시즌북 주문 내역 화면 조회
+- 최신 주문부터 목록으로 렌더링할 수 있는 최소 정보 제공
+
+응답:
+
+```ts
+type GetSeasonBookOrdersResponse = {
+  orders: SeasonBookOrderHistoryItem[];
+};
+
+type SeasonBookOrderHistoryItem = {
+  projectId: EntityId;
+  seasonYear: number;
+  title: string;
+  bookUid?: string;
+  orderUid: string;
+  pageCount?: number;
+  totalPrice: number;
+  currency: "KRW";
+  projectStatus: "DRAFT" | "ESTIMATED" | "ORDERED" | "FAILED";
+  orderStatus:
+    | "UNPLACED"
+    | "PAID"
+    | "CONFIRMED"
+    | "IN_PRODUCTION"
+    | "SHIPPED"
+    | "DELIVERED"
+    | "CANCELLED"
+    | "CANCELLED_REFUND"
+    | "ERROR"
+    | "UNKNOWN";
+  createdAt: IsoDateTimeString;
+  updatedAt: IsoDateTimeString;
+};
+```
+
+참고:
+
+- 응답 목록은 최신 항목이 먼저 오도록 `updatedAt desc` 기준으로 정렬한다
+- 주문 내역 화면은 `CANCELLED_REFUND` 같은 취소 이력도 그대로 보여준다
+- `orderUid`가 없는 견적 전용 프로젝트는 이 목록에 포함하지 않는다
+
 ### `POST /season-books/:projectId/cancel`
 
 용도:
