@@ -48,6 +48,7 @@ type AppShellProps = {
   activeSection: AppShellSection;
   title: string;
   description?: string;
+  sectionLabelOverride?: string | null;
   tone?: AppShellTone;
   children: ReactNode;
 };
@@ -56,10 +57,15 @@ export function AppShell({
   activeSection,
   title,
   description,
+  sectionLabelOverride,
   tone = "default",
   children,
 }: AppShellProps) {
   const styles = TONE_STYLES[tone];
+  const sectionLabel =
+    sectionLabelOverride === undefined
+      ? SECTION_LABELS[activeSection]
+      : sectionLabelOverride;
 
   return (
     <main className={`min-h-screen px-6 py-6 sm:px-10 ${styles.page}`}>
@@ -72,11 +78,11 @@ export function AppShell({
               </Link>
 
               <div className="space-y-2">
-                {SECTION_LABELS[activeSection] ? (
+                {sectionLabel ? (
                   <p
                     className={`text-xs font-semibold tracking-[0.18em] uppercase ${styles.sectionLabel}`}
                   >
-                    {SECTION_LABELS[activeSection]}
+                    {sectionLabel}
                   </p>
                 ) : null}
                 <p

@@ -47,6 +47,7 @@ export default async function NewSeasonBookPage() {
       activeSection="season-book"
       title="시즌북 만들기"
       description="담을 기록을 고르고 제목과 커버를 정한 뒤 견적을 확인합니다."
+      sectionLabelOverride={null}
       tone="home"
     >
       <div className="space-y-6">
@@ -54,7 +55,7 @@ export default async function NewSeasonBookPage() {
           <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
             <div className="space-y-4">
               <span className="inline-flex rounded-full border border-[#dce6f3] bg-[#fbfdff] px-3 py-1 text-xs font-semibold tracking-[0.2em] text-[#c42d3c] uppercase">
-                season book flow
+                create season book
               </span>
               <div className="space-y-2">
                 <p className="text-sm font-medium text-[#5a6f91]">
