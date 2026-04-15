@@ -74,7 +74,24 @@ cp apps/api/.env.example apps/api/.env
 Copy-Item .env.example .env
 ```
 
-### 3. Sandbox API Key 입력
+### 3. 실행 모드
+
+#### 로컬 데모 모드
+
+- 별도의 Sweetbook Sandbox API Key 없이도 실행 가능합니다.
+- `apps/api/.env`가 없어도 `apps/api/.env.example` fallback으로 서버가 올라갑니다.
+- 아래 범위는 이 모드에서 바로 확인할 수 있습니다.
+  - 시즌 대시보드
+  - 경기 일지 작성 / 조회 / 수정
+  - 이미지 업로드
+  - 로컬 시즌북 견적 / 주문 흐름
+
+#### Sandbox 연동 모드
+
+- 실제 Sweetbook Sandbox API를 호출하려면 별도 설정이 필요합니다.
+- 이 모드에서만 실제 estimate / order와 Sweetbook 상태 연동을 검증할 수 있습니다.
+
+### 4. Sandbox API Key 입력
 
 `apps/api/.env` 파일에서 아래 값을 설정합니다.
 
@@ -86,15 +103,14 @@ SWEETBOOK_API_KEY=your_real_sandbox_api_key
 
 - `your_real_sandbox_api_key` 자리에는 `api.sweetbook.com`에서 발급받은 본인 Sandbox API Key를 넣습니다.
 - 이 저장소에는 실제 키를 커밋하지 않았습니다. 로컬에서는 개인적으로 발급받은 키를 직접 입력해야 합니다.
-- 로컬 개발에서는 `apps/api/.env`가 없을 경우 `apps/api/.env.example`을 fallback으로 사용합니다.
-- 기본 설정은 `UPLOAD_STORAGE_DRIVER=local`, `SWEETBOOK_ORDER_MODE=local`이라서 외부 스토리지가 없어도 앱 자체는 바로 실행됩니다.
+- 로컬 데모 모드만 확인할 경우 이 값은 비워둬도 됩니다.
 - 실제 Sweetbook Sandbox 주문까지 end-to-end로 검증하려면 아래 조건이 필요합니다.
   - 유효한 `SWEETBOOK_API_KEY`
   - `SWEETBOOK_ORDER_MODE=sandbox`
   - 시즌북 표지 및 업로드 이미지가 Sweetbook에서 접근 가능한 공개 URL
   - 필요 시 R2 같은 공개 이미지 저장소
 
-### 4. 실행
+### 5. 실행
 
 ```powershell
 npm run dev
@@ -107,7 +123,7 @@ npm run dev
 - Web: `http://localhost:3000`
 - API: `http://localhost:4000`
 
-### 5. 실행 직후 응답 확인
+### 6. 실행 직후 응답 확인
 
 브라우저에서 아래 주소를 직접 열어 응답을 확인합니다.
 
@@ -121,18 +137,47 @@ npm run dev
 {"status":"ok"}
 ```
 
-### 6. 브라우저 점검 방법
+### 7. 수동 브라우저 검증 체크리스트
 
 1. 한 터미널에서 `npm run dev`를 실행한 채 유지합니다.
 2. 별도 브라우저 창에서 `http://localhost:3000`에 접속합니다.
 3. 아래 순서로 화면을 확인합니다.
-   - `/season`
-   - `/entries/new`
-   - `/entries/[id]`
-   - `/season-book/new`
+
+#### 1) `/season`
+
+- 더미 경기 일지 카드가 1개 이상 보여야 합니다.
+- 최근 기록 목록에서 상세 화면으로 이동할 수 있어야 합니다.
+
+#### 2) `/entries/new`
+
+- 날짜, 응원팀, 상대팀, 저장 버튼이 보여야 합니다.
+- 경기 후보 조회 버튼이 보여야 합니다.
+- 로컬 데모 모드에서는 이미지 첨부와 저장 흐름이 동작해야 합니다.
+
+#### 3) `/entries/[id]`
+
+- 기존 더미 일지 상세가 열려야 합니다.
+- 점수, 경기 정보, 사진, 메모가 보여야 합니다.
+
+#### 4) `/entries/[id]/edit`
+
+- 기존 값이 폼에 채워져 있어야 합니다.
+- 수정 후 저장하면 상세 화면으로 돌아갈 수 있어야 합니다.
+
+#### 5) `/season-book/new`
+
+- 선택 가능한 기록 목록이 보여야 합니다.
+- 시즌북 제목 입력과 견적 생성 버튼이 보여야 합니다.
+- 로컬 데모 모드에서는 로컬 estimate 흐름이 동작해야 합니다.
+
+#### 6) `/order/[projectId]` 및 `/order/[projectId]/status`
+
+- 견적 생성 후 주문 화면으로 진입할 수 있어야 합니다.
+- 로컬 데모 모드에서는 주문 완료와 상태 조회 흐름까지 확인할 수 있어야 합니다.
+
 4. 개발 서버를 종료할 때는 `npm run dev`를 실행한 터미널에서 `Ctrl + C`를 입력합니다.
 
-### 7. 실행 직후 확인 가능한 것
+### 8. 실행 직후 확인 가능한 것
 
 - 백엔드 실행 시 SQLite 스키마가 자동 초기화됩니다.
 - 더미 경기 데이터와 일지 데이터가 바로 보입니다.
@@ -160,6 +205,22 @@ npx playwright install
 ```powershell
 npm run test:web:e2e
 ```
+
+## 수동 검증과 자동 테스트의 차이
+
+- 수동 브라우저 검증: 사람이 실제 화면과 해피패스를 직접 확인하는 절차입니다.
+- `npm run test`: 단위 테스트와 백엔드 테스트를 실행합니다.
+- `npm run test:web:e2e`: Playwright 기반 자동 회귀 검증입니다.
+
+즉, README의 브라우저 점검 절차는 “사람이 직접 서비스가 떠 있고 흐름이 이어지는지” 확인하는 용도이고, 테스트 명령은 회귀 방지용 자동 검증입니다.
+
+## 문제 발생 시 확인할 항목
+
+- `http://localhost:3000`과 `http://localhost:4000`이 모두 떠 있는지 확인합니다.
+- `apps/api/.env`를 만들었는지 확인합니다.
+- 로컬 데모 모드만 확인하려는 경우 `SWEETBOOK_API_KEY`가 비어 있어도 되는지 다시 확인합니다.
+- 실제 Sandbox 주문을 기대하고 있다면 `SWEETBOOK_API_KEY`, `SWEETBOOK_ORDER_MODE=sandbox`, 공개 이미지 URL 조건을 모두 만족했는지 확인합니다.
+- Playwright 실패는 수동 브라우저 점검 실패와 원인이 다를 수 있으므로 별도 자동 테스트 문제로 분리해 봅니다.
 
 ## 주요 화면 경로
 
