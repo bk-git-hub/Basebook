@@ -156,7 +156,7 @@ export function HomeStadiumSummary({
         </div>
 
         <p className="mt-2 text-sm leading-6 text-[#5a6f91]">
-          직관으로 남긴 경기만 모아 빠르게 볼 수 있게 압축했습니다.
+          직관 경기만 담았습니다.
         </p>
 
         <div className="mt-4 flex items-center gap-4">
@@ -180,8 +180,8 @@ export function HomeStadiumSummary({
 
         <p className="mt-4 text-sm leading-6 text-[#5a6f91]">
           {trackedGames > 0
-            ? `${wins}승 ${draws}무 ${losses}패 기준 승률`
-            : "아직 직관 승무패 기록이 없습니다."}
+            ? `${wins}승 ${draws}무 ${losses}패`
+            : "아직 직관 기록이 없습니다."}
         </p>
       </section>
 
@@ -195,7 +195,7 @@ export function HomeStadiumSummary({
               직관 승률
             </h2>
             <p className="mt-2 text-sm leading-6 text-[#5a6f91]">
-              현장 관람으로 남긴 경기만 모아 승무패 흐름을 계산했습니다.
+              현장에서 본 경기 흐름입니다.
             </p>
           </div>
           <span className="rounded-full border border-[#e5ecf6] bg-[#f8fbff] px-3 py-1 text-sm font-semibold text-[#11284f]">
@@ -236,8 +236,8 @@ export function HomeStadiumSummary({
             ))}
             <p className="pt-2 text-sm leading-6 text-[#5a6f91]">
               {trackedGames > 0
-                ? `${wins}승 ${draws}무 ${losses}패 기준으로 계산한 승률입니다.`
-                : "아직 직관으로 기록된 승무패가 없어 승률은 비어 있습니다."}
+                ? `${wins}승 ${draws}무 ${losses}패`
+                : "아직 직관 기록이 없습니다."}
             </p>
           </div>
         </div>

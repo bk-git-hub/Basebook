@@ -112,8 +112,7 @@ export function HomeSeasonOverview({
             이번 시즌 기록 요약
           </h1>
           <p className="max-w-2xl text-base leading-8 text-[#4e6284] sm:text-lg">
-            선택한 팀과 직관 승무패, 최근에 남긴 일지를 한 화면에서 바로 보고
-            다음 작업으로 이어질 수 있게 정리했습니다.
+            응원 팀과 직관 흐름, 최근 일지가 한눈에 보입니다.
           </p>
         </div>
 
@@ -127,8 +126,7 @@ export function HomeSeasonOverview({
               {getTeamLabel(favoriteTeam)}
             </h2>
             <p className="mt-2 text-sm leading-6 text-[#5a6f91]">
-              {latestSeasonYear} 시즌 기록 기준으로 가장 많이 남긴 응원
-              팀입니다.
+              {latestSeasonYear} 시즌에 가장 많이 남긴 응원 팀
             </p>
           </div>
         </div>
@@ -137,17 +135,17 @@ export function HomeSeasonOverview({
           <SummaryMetric
             label="시즌 기록"
             value={`${seasonRecordCount}건`}
-            helper={`${latestSeasonYear} 시즌에 남긴 전체 기록`}
+            helper={`${latestSeasonYear} 시즌 기록`}
           />
           <SummaryMetric
             label="직관 경기"
             value={`${stadiumEntryCount}경기`}
-            helper="현장 관람으로 남긴 기록만 별도 집계"
+            helper="직관으로 남긴 경기"
           />
           <SummaryMetric
             label="최근 업데이트"
             value={latestEntryDate}
-            helper="가장 최근에 저장한 일지 날짜"
+            helper="가장 최근 일지"
           />
         </div>
 

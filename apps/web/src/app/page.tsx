@@ -225,9 +225,7 @@ function EmptyHomeState() {
                 이 홈이 시즌 요약으로 채워집니다.
               </h1>
               <p className="max-w-2xl text-base leading-8 text-[#4e6284] sm:text-lg">
-                응원 팀, 직관 승무패, 최근 일지를 한 화면에서 보려면 먼저 첫
-                경기를 기록해 주세요. 서비스 구조는 `서비스 알아보기`에서 먼저
-                확인할 수 있습니다.
+                첫 경기를 남기면 응원 기록과 최근 일지가 이 홈에 쌓입니다.
               </p>
               <div className="flex flex-wrap gap-3 pt-2">
                 <Link
@@ -273,7 +271,7 @@ function ErrorHomeState({ error }: { error: ApiClientError }) {
             home unavailable
           </span>
           <h1 className="mt-5 text-3xl font-semibold tracking-tight text-[#11284f] sm:text-4xl">
-            시즌 홈을 아직 불러오지 못했습니다.
+            시즌 홈을 불러오지 못했어요.
           </h1>
           <p className="mt-4 max-w-2xl text-base leading-8 text-[#5a6f91]">
             {error.message}
@@ -357,8 +355,7 @@ export default async function HomePage() {
                 최근에 남긴 일지
               </h2>
               <p className="mt-2 text-sm leading-6 text-[#5a6f91] sm:text-base">
-                최신 순으로 {summary.recentEntries.length}건을 바로 확인할 수
-                있습니다.
+                최근 기록 {summary.recentEntries.length}건
               </p>
             </div>
             <Link

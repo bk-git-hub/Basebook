@@ -1126,6 +1126,26 @@
 - Related Docs:
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
 
+### WEB-056
+
+- Date: `2026-04-15`
+- Time: `10:40`
+- Agenda: 홈 화면 카피를 기존 설명형 문장으로 유지할지, `~했습니다` 중심의 내부 설명 문장을 줄이고 더 짧은 제품 문구로 바꿀지 결정
+- Participants: User, Codex
+- Options Considered:
+  - 홈의 기존 문구를 유지하고 구조만 둔다
+  - 홈에서 개발 설명처럼 들리는 `~했습니다` 계열 문장과 반복 설명을 줄여 더 짧은 제품 문구로 바꾼다
+- Decision: 홈에서는 `~했습니다` 계열 설명 문장과 반복 설명을 줄이고, 더 짧은 제품 문구로 바꾼다.
+- Rationale: 현재 홈 문구 일부는 사용자를 향한 제품 카피보다 화면이 무엇을 정리하고 계산하는지 설명하는 내부 문장처럼 들린다. 이번 단계에서는 구조를 바꾸지 않고도 문장 톤만 줄여 첫인상을 더 제품답게 만드는 편이 가장 얇고 효과적이다.
+- Impact:
+  - 홈 상단 요약과 직관 승률 섹션의 설명 문장이 더 짧고 직접적으로 바뀐다
+  - 비어 있음과 오류 상태도 덜 기술 문서처럼 읽힌다
+  - CTA가 이미 말해 주는 내용을 본문에서 반복하는 비중이 줄어든다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+
 ### WEB-054
 
 - Date: `2026-04-14`
