@@ -26,6 +26,7 @@ type CreatedEstimate = {
   pageCount: number;
   totalPrice: number;
   currency: "KRW";
+  title: string;
 };
 
 type CreatedOrder = {
@@ -159,10 +160,11 @@ export async function estimateSeasonBookViaApi(
     ];
   const coverPhotoUrl =
     overrides.coverPhotoUrl || (await uploadImageAsset(request)).url;
+  const title = overrides.title || uniqueSuffix("QA 시즌북");
   const response = await request.post(`${API_BASE_URL}/season-books/estimate`, {
     data: {
       seasonYear: 2026,
-      title: overrides.title || uniqueSuffix("QA 시즌북"),
+      title,
       introText:
         overrides.introText ||
         "로컬 풀스택 QA에서 시즌북 견적 흐름을 검증합니다.",
@@ -173,7 +175,10 @@ export async function estimateSeasonBookViaApi(
 
   expect(response.status()).toBe(201);
 
-  return (await response.json()) as CreatedEstimate;
+  return {
+    ...((await response.json()) as Omit<CreatedEstimate, "title">),
+    title,
+  };
 }
 
 export async function createOrderViaApi(
