@@ -7,6 +7,7 @@ describe('SeasonBooksService', () => {
   const prisma = {
     seasonBookProject: {
       findFirst: jest.fn(),
+      findMany: jest.fn(),
       update: jest.fn(),
     },
   } as unknown as PrismaService;
@@ -156,6 +157,95 @@ describe('SeasonBooksService', () => {
     await expect(
       service.getSeasonBookStatus('missing-project'),
     ).rejects.toBeInstanceOf(NotFoundException);
+  });
+
+  it('returns latest-first order history for ordered projects only', async () => {
+    prisma.seasonBookProject.findMany.mockResolvedValue([
+      {
+        id: 'project-cancelled',
+        seasonYear: 2026,
+        title: '취소된 시즌북',
+        bookUid: 'bk_cancelled_1',
+        orderUid: 'local-order-cancelled',
+        pageCount: 28,
+        totalPrice: 21900,
+        currency: 'KRW',
+        projectStatus: 'ORDERED',
+        orderStatus: 'CANCELLED_REFUND',
+        createdAt: new Date('2026-04-14T08:00:00Z'),
+        updatedAt: new Date('2026-04-14T10:00:00Z'),
+      },
+      {
+        id: 'project-confirmed',
+        seasonYear: 2026,
+        title: '주문된 시즌북',
+        bookUid: 'bk_confirmed_1',
+        orderUid: 'local-order-confirmed',
+        pageCount: 24,
+        totalPrice: 19900,
+        currency: 'KRW',
+        projectStatus: 'ORDERED',
+        orderStatus: 'CONFIRMED',
+        createdAt: new Date('2026-04-14T07:00:00Z'),
+        updatedAt: new Date('2026-04-14T09:00:00Z'),
+      },
+      {
+        id: 'project-incomplete',
+        seasonYear: 2026,
+        title: '깨진 주문',
+        bookUid: 'bk_broken_1',
+        orderUid: 'local-order-broken',
+        pageCount: 24,
+        totalPrice: null,
+        currency: 'KRW',
+        projectStatus: 'ORDERED',
+        orderStatus: 'CONFIRMED',
+        createdAt: new Date('2026-04-14T06:00:00Z'),
+        updatedAt: new Date('2026-04-14T08:30:00Z'),
+      },
+    ]);
+
+    await expect(service.getSeasonBookOrders()).resolves.toEqual({
+      orders: [
+        {
+          projectId: 'project-cancelled',
+          seasonYear: 2026,
+          title: '취소된 시즌북',
+          bookUid: 'bk_cancelled_1',
+          orderUid: 'local-order-cancelled',
+          pageCount: 28,
+          totalPrice: 21900,
+          currency: 'KRW',
+          projectStatus: 'ORDERED',
+          orderStatus: 'CANCELLED_REFUND',
+          createdAt: '2026-04-14T08:00:00.000Z',
+          updatedAt: '2026-04-14T10:00:00.000Z',
+        },
+        {
+          projectId: 'project-confirmed',
+          seasonYear: 2026,
+          title: '주문된 시즌북',
+          bookUid: 'bk_confirmed_1',
+          orderUid: 'local-order-confirmed',
+          pageCount: 24,
+          totalPrice: 19900,
+          currency: 'KRW',
+          projectStatus: 'ORDERED',
+          orderStatus: 'CONFIRMED',
+          createdAt: '2026-04-14T07:00:00.000Z',
+          updatedAt: '2026-04-14T09:00:00.000Z',
+        },
+      ],
+    });
+    expect(prisma.seasonBookProject.findMany).toHaveBeenCalledWith({
+      where: {
+        ownerId: 'demo-user-001',
+        orderUid: {
+          not: null,
+        },
+      },
+      orderBy: [{ updatedAt: 'desc' }, { createdAt: 'desc' }],
+    });
   });
 
   it('cancels a local order while keeping the project in ordered history', async () => {

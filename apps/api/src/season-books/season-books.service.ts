@@ -37,6 +37,10 @@ import {
   mapSweetbookOrderStatus,
   resolveProgressStepKey,
 } from './season-book-status';
+import type {
+  GetSeasonBookOrdersResponse,
+  SeasonBookOrderHistoryItem,
+} from './season-books.types';
 
 type PersistedSeasonBookProjectStatus =
   | 'DRAFT'
@@ -56,6 +60,21 @@ type PersistedSeasonBookOrderStatus =
   | 'ERROR'
   | 'UNKNOWN';
 
+type OrderHistoryProjectRecord = {
+  id: string;
+  seasonYear: number;
+  title: string;
+  bookUid: string | null;
+  orderUid: string | null;
+  pageCount: number | null;
+  totalPrice: number | null;
+  currency: string | null;
+  projectStatus: string;
+  orderStatus: string;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
 @Injectable()
 export class SeasonBooksService {
   private readonly logger = new Logger(SeasonBooksService.name);
@@ -68,6 +87,25 @@ export class SeasonBooksService {
     private readonly orderPlacer: SeasonBookOrderPlacerPort,
     private readonly sweetbookClient: SweetbookClient,
   ) {}
+
+  async getSeasonBookOrders(): Promise<GetSeasonBookOrdersResponse> {
+    const projects = await this.prisma.seasonBookProject.findMany({
+      where: {
+        ownerId: DEMO_OWNER_ID,
+        orderUid: {
+          not: null,
+        },
+      },
+      orderBy: [{ updatedAt: 'desc' }, { createdAt: 'desc' }],
+    });
+
+    return {
+      orders: projects.flatMap((project) => {
+        const orderHistoryItem = this.toOrderHistoryItem(project);
+        return orderHistoryItem ? [orderHistoryItem] : [];
+      }),
+    };
+  }
 
   async getSeasonBookStatus(
     projectId: string,
@@ -602,6 +640,32 @@ export class SeasonBooksService {
       currency: project.currency as CurrencyCode,
       projectStatus: project.projectStatus as PersistedSeasonBookProjectStatus,
       orderStatus: project.orderStatus as PersistedSeasonBookOrderStatus,
+    };
+  }
+
+  private toOrderHistoryItem(
+    project: OrderHistoryProjectRecord,
+  ): SeasonBookOrderHistoryItem | null {
+    if (!project.orderUid || project.totalPrice === null || !project.currency) {
+      this.logger.warn(
+        `Skipping incomplete season-book order history record: ${project.id}`,
+      );
+      return null;
+    }
+
+    return {
+      projectId: project.id,
+      seasonYear: project.seasonYear,
+      title: project.title,
+      bookUid: project.bookUid ?? undefined,
+      orderUid: project.orderUid,
+      pageCount: project.pageCount ?? undefined,
+      totalPrice: project.totalPrice,
+      currency: project.currency as CurrencyCode,
+      projectStatus: project.projectStatus as PersistedSeasonBookProjectStatus,
+      orderStatus: project.orderStatus as PersistedSeasonBookOrderStatus,
+      createdAt: project.createdAt.toISOString(),
+      updatedAt: project.updatedAt.toISOString(),
     };
   }
 }
