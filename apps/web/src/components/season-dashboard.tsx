@@ -109,7 +109,6 @@ type SeasonDashboardView = {
   draws: number;
   unknownGames: number;
   stadiumGames: number;
-  photoCount: number;
   trackedGames: number;
   winRate: number;
 };
@@ -134,14 +133,11 @@ function buildSeasonDashboardView(
   let draws = 0;
   let unknownGames = 0;
   let stadiumGames = 0;
-  let photoCount = 0;
 
   for (const entry of seasonEntries) {
     if (entry.watchType === "STADIUM") {
       stadiumGames += 1;
     }
-
-    photoCount += entry.photos.length;
 
     switch (entry.result) {
       case "WIN":
@@ -171,7 +167,6 @@ function buildSeasonDashboardView(
     draws,
     unknownGames,
     stadiumGames,
-    photoCount,
     trackedGames,
     winRate: trackedGames ? Math.round((wins / trackedGames) * 100) : 0,
   };
@@ -244,7 +239,6 @@ export function SeasonDashboard({ dashboard }: SeasonDashboardProps) {
                 value={formatMonthDay(view.latestEntry.date)}
               />
               <InfoChip label="직관" value={`${view.stadiumGames}경기`} />
-              <InfoChip label="사진" value={`${view.photoCount}장`} />
             </div>
           </div>
 
