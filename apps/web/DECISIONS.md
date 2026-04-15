@@ -1305,3 +1305,23 @@
 - Status: `approved`
 - Related Docs:
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+
+### WEB-063
+
+- Date: `2026-04-15`
+- Time: `11:36`
+- Agenda: 시즌북 견적 생성 후 결과 박스를 남길지, 주문 화면으로 바로 이동시킬지 결정
+- Participants: User, Codex
+- Options Considered:
+  - 견적 결과 박스와 이동 버튼을 유지하고 사용자가 직접 다음 화면으로 이동한다
+  - 견적 생성 직후 주문 화면으로 바로 이동하고, 견적 요약은 주문 화면에서 다시 보여준다
+- Decision: 견적 생성 직후 주문 화면으로 바로 이동하고, 견적 요약은 주문 화면에서 다시 보여준다.
+- Rationale: 사용자는 견적 생성 후에도 별도 성공 박스를 보고 다시 눌러야 하는 흐름이 한 단계 더 많다고 판단했다. 이미 주문 화면에서 페이지 수와 금액을 다시 보여주고 있으므로, 중간 성공 박스보다 즉시 이동이 더 자연스럽다.
+- Impact:
+  - `/season-book/new`는 견적 성공 직후 `/order/[projectId]`로 자동 이동한다
+  - 견적 성공 박스와 별도 이동 버튼은 제거된다
+  - 시즌북 생성과 주문 화면의 연결 경험이 한 번의 액션으로 단순화된다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`

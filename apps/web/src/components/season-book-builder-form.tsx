@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import type {
@@ -62,6 +62,7 @@ function buildOrderHref(estimate: SeasonBookEstimateResponse): string {
 }
 
 export function SeasonBookBuilderForm({ entries }: SeasonBookBuilderFormProps) {
+  const router = useRouter();
   const [selectedEntryIds, setSelectedEntryIds] = useState<string[]>([]);
   const [title, setTitle] = useState(getInitialTitle(entries));
   const [introText, setIntroText] = useState("");
@@ -78,9 +79,8 @@ export function SeasonBookBuilderForm({ entries }: SeasonBookBuilderFormProps) {
   const [isManualCoverInputOpen, setIsManualCoverInputOpen] = useState(false);
   const [formErrors, setFormErrors] = useState<FormErrors>({});
   const [estimateError, setEstimateError] = useState<string | null>(null);
-  const [estimateResult, setEstimateResult] =
-    useState<SeasonBookEstimateResponse | null>(null);
   const [isEstimating, setIsEstimating] = useState(false);
+  const [isRedirecting, setIsRedirecting] = useState(false);
 
   const selectedEntryIdSet = new Set(selectedEntryIds);
   const selectedEntries = entries.filter((entry) =>
@@ -112,7 +112,6 @@ export function SeasonBookBuilderForm({ entries }: SeasonBookBuilderFormProps) {
 
   function resetEstimateFeedback() {
     setEstimateError(null);
-    setEstimateResult(null);
   }
 
   function clearCoverPhotoError() {
@@ -232,7 +231,6 @@ export function SeasonBookBuilderForm({ entries }: SeasonBookBuilderFormProps) {
     const nextErrors = validateEstimateRequest();
     setFormErrors(nextErrors);
     setEstimateError(null);
-    setEstimateResult(null);
 
     if (Object.keys(nextErrors).length > 0) {
       return;
@@ -242,7 +240,8 @@ export function SeasonBookBuilderForm({ entries }: SeasonBookBuilderFormProps) {
 
     try {
       const result = await estimateSeasonBook(estimateInput);
-      setEstimateResult(result);
+      setIsRedirecting(true);
+      router.replace(buildOrderHref(result));
     } catch (error) {
       if (error instanceof ApiClientError) {
         setEstimateError(error.message);
@@ -453,45 +452,14 @@ export function SeasonBookBuilderForm({ entries }: SeasonBookBuilderFormProps) {
           </p>
         ) : null}
 
-        {estimateResult ? (
-          <div className="space-y-4 rounded-[24px] border border-emerald-200 bg-emerald-50 px-4 py-4 text-sm text-emerald-900">
-            <p className="font-semibold">견적이 준비됐습니다.</p>
-            <dl className="grid gap-2">
-              <div className="flex justify-between gap-4">
-                <dt>페이지 수</dt>
-                <dd className="font-semibold">{estimateResult.pageCount}p</dd>
-              </div>
-              <div className="flex justify-between gap-4">
-                <dt>예상 금액</dt>
-                <dd className="font-semibold">
-                  {formatPrice(estimateResult.totalPrice)}{" "}
-                  {estimateResult.currency}
-                </dd>
-              </div>
-              <div className="flex justify-between gap-4">
-                <dt>크레딧</dt>
-                <dd className="font-semibold">
-                  {estimateResult.creditSufficient === false
-                    ? "부족"
-                    : "사용 가능"}
-                </dd>
-              </div>
-            </dl>
-            <Link
-              href={buildOrderHref(estimateResult)}
-              className="inline-flex w-full items-center justify-center rounded-full bg-[#11284f] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#0b1d3b]"
-            >
-              주문 화면으로 이동
-            </Link>
-          </div>
-        ) : null}
-
         <button
           type="submit"
-          disabled={isEstimating || isUploadingCover}
+          disabled={isEstimating || isUploadingCover || isRedirecting}
           className="inline-flex w-full items-center justify-center rounded-full bg-[#11284f] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#0b1d3b] disabled:cursor-not-allowed disabled:bg-[#95a8c6]"
         >
-          {isUploadingCover
+          {isRedirecting
+            ? "주문 화면으로 이동 중..."
+            : isUploadingCover
             ? "커버 업로드 완료 대기 중..."
             : isEstimating
               ? "견적 생성 중..."
