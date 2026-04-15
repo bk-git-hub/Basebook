@@ -84,6 +84,8 @@ SWEETBOOK_API_KEY=your_real_sandbox_api_key
 
 참고:
 
+- `your_real_sandbox_api_key` 자리에는 `api.sweetbook.com`에서 발급받은 본인 Sandbox API Key를 넣습니다.
+- 이 저장소에는 실제 키를 커밋하지 않았습니다. 로컬에서는 개인적으로 발급받은 키를 직접 입력해야 합니다.
 - 로컬 개발에서는 `apps/api/.env`가 없을 경우 `apps/api/.env.example`을 fallback으로 사용합니다.
 - 기본 설정은 `UPLOAD_STORAGE_DRIVER=local`, `SWEETBOOK_ORDER_MODE=local`이라서 외부 스토리지가 없어도 앱 자체는 바로 실행됩니다.
 - 실제 Sweetbook Sandbox 주문까지 end-to-end로 검증하려면 아래 조건이 필요합니다.
@@ -98,12 +100,39 @@ SWEETBOOK_API_KEY=your_real_sandbox_api_key
 npm run dev
 ```
 
+이 명령은 웹과 API 개발 서버를 함께 띄우므로, 실행한 터미널은 그대로 유지합니다.
+
 로컬 실행 주소:
 
 - Web: `http://localhost:3000`
 - API: `http://localhost:4000`
 
-### 5. 실행 직후 확인 가능한 것
+### 5. 실행 직후 응답 확인
+
+브라우저에서 아래 주소를 직접 열어 응답을 확인합니다.
+
+- 웹 홈: `http://localhost:3000`
+- 시즌 대시보드: `http://localhost:3000/season`
+- API 헬스체크: `http://localhost:4000/health`
+
+헬스체크는 아래와 비슷한 JSON이 보이면 정상입니다.
+
+```json
+{"status":"ok"}
+```
+
+### 6. 브라우저 점검 방법
+
+1. 한 터미널에서 `npm run dev`를 실행한 채 유지합니다.
+2. 별도 브라우저 창에서 `http://localhost:3000`에 접속합니다.
+3. 아래 순서로 화면을 확인합니다.
+   - `/season`
+   - `/entries/new`
+   - `/entries/[id]`
+   - `/season-book/new`
+4. 개발 서버를 종료할 때는 `npm run dev`를 실행한 터미널에서 `Ctrl + C`를 입력합니다.
+
+### 7. 실행 직후 확인 가능한 것
 
 - 백엔드 실행 시 SQLite 스키마가 자동 초기화됩니다.
 - 더미 경기 데이터와 일지 데이터가 바로 보입니다.
