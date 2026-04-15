@@ -787,3 +787,29 @@
   - `docs/planning/BACKEND_FUNCTIONAL_SPEC.md`
   - `packages/contracts/src/diary.ts`
   - `apps/api/docs/API_REFERENCE.md`
+
+### API-029
+
+- Date: `2026-04-15`
+- Time: `17:38`
+- Agenda: 로컬 대시보드 직관 승률표가 더미 엔트리를 반영하지 않는 문제의 최소 수정 범위
+- Participants: User, Codex
+- Options Considered:
+  - 프론트의 승률 계산 조건을 바꾼다
+  - 로컬 더미 엔트리의 최신 시즌 관람 형태를 직관 기준으로 보정한다
+  - 이슈를 그대로 두고 수동 테스트 때만 별도 엔트리를 만든다
+- Decision:
+  - 프론트는 건드리지 않고, 로컬 더미 엔트리와 `db:init` 보정 로직을 수정해 최신 시즌에도 `STADIUM` 기록이 존재하도록 맞춘다
+- Rationale:
+  - 현재 홈 화면의 직관 승률표는 최신 시즌 엔트리 중 `watchType === STADIUM`만 집계하는데, 기존 더미 데이터의 2026 시즌 엔트리가 `TV`와 `MOBILE`이라 승률표가 비어 보였다
+  - 이 문제는 로컬 시드 데이터와 초기화 스크립트만 손보면 해결되므로, 프론트 로직을 바꾸는 것보다 범위가 작고 안전하다
+  - `db:init` 단계에서 기존 로컬 SQLite도 자동 보정되게 하면 사용자가 별도 수동 정리 없이 다음 실행부터 바로 정상 화면을 볼 수 있다
+- Impact:
+  - 새로 시드되는 로컬 더미 데이터는 최신 시즌 직관 승률표를 정상적으로 채운다
+  - 기존 로컬 DB에 남아 있는 구버전 더미 엔트리도 다음 `db:init`에서 한 번 자동 보정된다
+  - 실제 사용자가 직접 만든 엔트리나 배포 DB의 실데이터는 이 보정 대상이 아니다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `data/demo-entries.json`
+  - `apps/api/scripts/db-init.cjs`

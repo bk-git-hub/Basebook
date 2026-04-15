@@ -31,11 +31,12 @@
     "scoreFor": 5,
     "scoreAgainst": 3,
     "result": "WIN",
-    "watchType": "TV",
-    "stadium": "Jamsil Baseball Stadium",
+    "watchType": "STADIUM",
+    "stadium": "잠실야구장",
+    "seat": "1루 테이블석 102블록 3열",
     "playerOfTheDay": "김재환",
     "highlight": "선발이 6이닝을 버텨주고 중심타선이 제때 쳐준 개막 시리즈 느낌의 경기였다.",
-    "rawMemo": "집에서 가족이랑 봤는데 7회 역전 분위기가 정말 좋았다.",
+    "rawMemo": "개막 시리즈라 잠실 분위기가 일찍부터 뜨거웠다. 7회 역전 분위기 때 응원석 전체가 일어났다.",
     "photos": [
       {
         "id": "photo-entry-doosan-2026-03-22-1",
@@ -56,9 +57,11 @@
     "scoreFor": 4,
     "scoreAgainst": 4,
     "result": "DRAW",
-    "watchType": "MOBILE",
+    "watchType": "STADIUM",
+    "stadium": "잠실야구장",
+    "seat": "1루 내야 205블록 8열",
     "highlight": "퇴근길에 휴대폰으로 보던 경기였는데, 마지막 이닝 동점 상황이 끝까지 손에 땀을 쥐게 했다.",
-    "rawMemo": "지하철에서 끝까지 보다가 내릴 역을 놓칠 뻔했다.",
+    "rawMemo": "평일 잠실 직관이었는데 마지막 이닝 동점 상황 때문에 끝까지 자리에서 못 일어났다.",
     "photos": [
       {
         "id": "photo-entry-doosan-2026-04-02-1",

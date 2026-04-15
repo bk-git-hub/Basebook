@@ -11,6 +11,30 @@ const KNOWN_INVALID_DEMO_PHOTO_URLS = [
   'https://pub-721a4bb10d7944d1891213efbc66e17e.r2.dev/uploads/2026-04-14/74bed418-47d4-4343-9050-ca3abcfe2f5b.jpg',
   'https://pub-721a4bb10d7944d1891213efbc66e17e.r2.dev/uploads/2026-04-15/96714c19-4598-4735-8853-e88e25172e2f.png',
 ];
+const LOCAL_DASHBOARD_DEMO_ENTRY_PATCHES = [
+  {
+    id: 'entry-doosan-2026-03-22',
+    expectedWatchType: 'TV',
+    data: {
+      watchType: 'STADIUM',
+      stadium: '잠실야구장',
+      seat: '1루 테이블석 102블록 3열',
+      rawMemo:
+        '개막 시리즈라 잠실 분위기가 일찍부터 뜨거웠다. 7회 역전 분위기 때 응원석 전체가 일어났다.',
+    },
+  },
+  {
+    id: 'entry-doosan-2026-04-02',
+    expectedWatchType: 'MOBILE',
+    data: {
+      watchType: 'STADIUM',
+      stadium: '잠실야구장',
+      seat: '1루 내야 205블록 8열',
+      rawMemo:
+        '평일 잠실 직관이었는데 마지막 이닝 동점 상황 때문에 끝까지 자리에서 못 일어났다.',
+    },
+  },
+];
 
 function shouldLoadFallbackEnvExample(env = process.env) {
   const runningOnRailway = Boolean(
@@ -130,11 +154,41 @@ async function removeKnownInvalidDemoPhotos() {
   }
 }
 
+async function synchronizeLocalDashboardDemoEntries() {
+  const prisma = new PrismaClient();
+
+  try {
+    let updatedCount = 0;
+
+    for (const patch of LOCAL_DASHBOARD_DEMO_ENTRY_PATCHES) {
+      const result = await prisma.diaryEntry.updateMany({
+        where: {
+          id: patch.id,
+          ownerId: 'demo-user-001',
+          watchType: patch.expectedWatchType,
+        },
+        data: patch.data,
+      });
+
+      updatedCount += result.count;
+    }
+
+    if (updatedCount > 0) {
+      console.log(
+        `Updated ${updatedCount} local demo entr${updatedCount === 1 ? 'y' : 'ies'} for stadium summary compatibility.`,
+      );
+    }
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
 async function main() {
   loadEnv();
   runPrismaInit();
   await ensureSeasonBookProjectColumns();
   await removeKnownInvalidDemoPhotos();
+  await synchronizeLocalDashboardDemoEntries();
 }
 
 main().catch((error) => {
