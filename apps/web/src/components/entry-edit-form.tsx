@@ -234,13 +234,8 @@ export function EntryEditForm({ entry }: EntryEditFormProps) {
   );
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const isStadiumVisit = values.watchType === "STADIUM";
-  const entryPageLabel = isStadiumVisit ? "직관 기록 수정" : "경기 기록 수정";
-  const entryPageDescription = isStadiumVisit
-    ? "저장된 기록을 바탕으로 결과와 현장 관람 정보를 다시 다듬을 수 있습니다."
-    : "저장된 기록을 바탕으로 결과와 시청 정보를 다시 다듬을 수 있습니다.";
   const watchInfoHeading = isStadiumVisit
     ? "결과와 관람 정보"
     : "결과와 시청 정보";
@@ -286,7 +281,6 @@ export function EntryEditForm({ entry }: EntryEditFormProps) {
     const nextErrors = validateValues(values);
     setFieldErrors(nextErrors);
     setSubmitError(null);
-    setStatusMessage(null);
 
     if (Object.keys(nextErrors).length > 0) {
       return;
@@ -295,7 +289,6 @@ export function EntryEditForm({ entry }: EntryEditFormProps) {
     const updateInput = buildUpdateInput(entry, values);
 
     if (Object.keys(updateInput).length === 0) {
-      setStatusMessage("변경된 항목이 없어 저장하지 않았습니다.");
       return;
     }
 
@@ -303,7 +296,6 @@ export function EntryEditForm({ entry }: EntryEditFormProps) {
 
     try {
       const response = await updateEntry(entry.id, updateInput);
-      setStatusMessage("수정 내용을 저장했습니다. 상세 화면으로 이동합니다.");
       startTransition(() => {
         router.push(`/entries/${response.entry.id}`);
         router.refresh();
@@ -329,17 +321,11 @@ export function EntryEditForm({ entry }: EntryEditFormProps) {
             <span className="inline-flex rounded-full border border-[#dce6f3] bg-[#fbfdff] px-3 py-1 text-xs font-semibold tracking-[0.2em] text-[#c42d3c] uppercase">
               Entry Edit
             </span>
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-[#5a6f91]">
-                {entryPageLabel}
-              </p>
+            <div>
               <h1 className="text-3xl font-semibold tracking-tight text-[#11284f] sm:text-4xl">
                 {getTeamLabel(values.favoriteTeam)} vs{" "}
                 {getTeamLabel(values.opponentTeam)}
               </h1>
-              <p className="max-w-2xl text-sm leading-7 text-[#4e6284]">
-                {entryPageDescription}
-              </p>
             </div>
           </div>
 
@@ -591,12 +577,6 @@ export function EntryEditForm({ entry }: EntryEditFormProps) {
         {submitError ? (
           <p className="rounded-2xl border border-[#f3c9cf] bg-[#fff7f8] px-4 py-3 text-sm text-[#c42d3c]">
             {submitError}
-          </p>
-        ) : null}
-
-        {statusMessage ? (
-          <p className="rounded-2xl border border-[#dce6f3] bg-[#fbfdff] px-4 py-3 text-sm text-[#11284f]">
-            {statusMessage}
           </p>
         ) : null}
 

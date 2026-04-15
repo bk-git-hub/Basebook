@@ -54,7 +54,6 @@ export default async function EntryEditPage({ params }: EntryEditPageProps) {
     <AppShell
       activeSection="entries"
       title="기록 수정"
-      description="변경한 항목만 저장하는 흐름 안에서 경기 정보와 감상을 다시 다듬습니다."
       sectionLabelOverride={null}
       tone="home"
     >

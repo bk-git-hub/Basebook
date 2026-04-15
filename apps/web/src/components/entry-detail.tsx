@@ -78,16 +78,7 @@ type EntryDetailProps = {
 
 export function EntryDetail({ entry }: EntryDetailProps) {
   const isStadiumVisit = entry.watchType === "STADIUM";
-  const detailDescription = isStadiumVisit
-    ? "그날 현장에서 남긴 결과와 감상을 다시 확인하세요."
-    : "그날 시청 흐름과 감상을 다시 확인하세요.";
   const summaryTitle = isStadiumVisit ? "직관 요약" : "기록 요약";
-  const summaryDescription = isStadiumVisit
-    ? "결과와 현장 관람 메모를 한 곳에서 확인합니다."
-    : "결과와 시청 기록을 한 곳에서 확인합니다.";
-  const photoDescription = isStadiumVisit
-    ? "첨부한 현장 사진과 업로드 결과를 바로 확인할 수 있습니다."
-    : "첨부한 사진과 화면 캡처를 바로 확인할 수 있습니다.";
   const emptyPhotoCopy = isStadiumVisit
     ? "첨부된 현장 사진이 없습니다."
     : "첨부된 사진이나 캡처가 없습니다.";
@@ -147,9 +138,6 @@ export function EntryDetail({ entry }: EntryDetailProps) {
                 {TEAM_LABELS[entry.favoriteTeam]} vs{" "}
                 {TEAM_LABELS[entry.opponentTeam]}
               </h1>
-              <p className="max-w-2xl text-sm leading-7 text-[#4e6284]">
-                {detailDescription}
-              </p>
             </div>
 
             <div className="flex flex-wrap gap-2">
@@ -198,14 +186,9 @@ export function EntryDetail({ entry }: EntryDetailProps) {
 
       <section className="grid gap-4 lg:grid-cols-[1.55fr_0.95fr]">
         <article className="rounded-[28px] border border-[#e5ecf6] bg-white p-6 shadow-[0_16px_40px_rgba(17,40,79,0.05)]">
-          <div className="space-y-2">
-            <h2 className="text-xl font-semibold tracking-tight text-[#11284f]">
-              {summaryTitle}
-            </h2>
-            <p className="text-sm leading-6 text-[#5a6f91]">
-              {summaryDescription}
-            </p>
-          </div>
+          <h2 className="text-xl font-semibold tracking-tight text-[#11284f]">
+            {summaryTitle}
+          </h2>
 
           <dl className="mt-6 grid gap-4 sm:grid-cols-2">
             {summaryItems.map((item) => (
@@ -248,14 +231,9 @@ export function EntryDetail({ entry }: EntryDetailProps) {
 
       <section className="grid gap-4 lg:grid-cols-[1.25fr_1.05fr]">
         <article className="rounded-[28px] border border-[#e5ecf6] bg-white p-6 shadow-[0_16px_40px_rgba(17,40,79,0.05)]">
-          <div className="space-y-2">
-            <h2 className="text-xl font-semibold tracking-tight text-[#11284f]">
-              감상
-            </h2>
-            <p className="text-sm leading-6 text-[#5a6f91]">
-              그날 가장 오래 남은 장면과 자세한 감상을 다시 읽을 수 있습니다.
-            </p>
-          </div>
+          <h2 className="text-xl font-semibold tracking-tight text-[#11284f]">
+            감상
+          </h2>
 
           <p className="mt-6 rounded-[24px] border border-[#e6eef8] bg-[#fbfdff] px-5 py-5 text-lg leading-8 text-[#11284f]">
             {entry.highlight}
@@ -270,14 +248,9 @@ export function EntryDetail({ entry }: EntryDetailProps) {
         </article>
 
         <article className="rounded-[28px] border border-[#e5ecf6] bg-white p-6 shadow-[0_16px_40px_rgba(17,40,79,0.05)]">
-          <div className="space-y-2">
-            <h2 className="text-xl font-semibold tracking-tight text-[#11284f]">
-              사진
-            </h2>
-            <p className="text-sm leading-6 text-[#5a6f91]">
-              {photoDescription}
-            </p>
-          </div>
+          <h2 className="text-xl font-semibold tracking-tight text-[#11284f]">
+            사진
+          </h2>
 
           {entry.photos.length > 0 ? (
             <ul className="mt-6 grid gap-3 sm:grid-cols-2">

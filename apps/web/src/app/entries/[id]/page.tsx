@@ -56,7 +56,6 @@ export default async function EntryDetailPage({
     <AppShell
       activeSection="entries"
       title="기록 상세"
-      description="저장된 경기 요약과 감상, 사진을 다시 읽고 바로 수정 흐름으로 이어갈 수 있습니다."
       tone="home"
     >
       {result.status === "error" ? (
