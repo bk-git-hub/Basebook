@@ -19,6 +19,15 @@ private/
 incident-reports/
 apps/api/assets/
 
+# internal collaboration docs
+AGENTS.md
+BASEBOOK_TEAM_PLAYBOOK.md
+SUBMISSION_NOTES.md
+docs/AGENT_SYNC.md
+apps/api/docs/backend_reminder.md
+apps/web/docs/frontend_reminder.md
+tests/web/NEXT_QA_HANDOFF.md
+
 # database
 *.db
 *.db-journal
