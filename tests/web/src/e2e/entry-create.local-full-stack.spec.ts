@@ -12,7 +12,7 @@ test("creates a new entry through the local-only full-stack QA environment", asy
   const suffix = Date.now();
   const highlight = `로컬 풀스택 생성 검증 ${suffix}`;
   const apiBaseUrl =
-    process.env.PLAYWRIGHT_API_BASE_URL || "http://localhost:4000";
+    process.env.PLAYWRIGHT_API_BASE_URL || "http://127.0.0.1:4100";
 
   await page.goto("/entries/new");
 

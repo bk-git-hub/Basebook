@@ -9,12 +9,20 @@ const localFullStackDir = path.resolve(
   "local-full-stack",
 );
 const apiPrismaDir = path.resolve(repoRoot, "apps/api/prisma");
+const defaultPlaywrightHost = process.env.PLAYWRIGHT_HOST || "127.0.0.1";
 const defaultPlaywrightPort = process.env.PLAYWRIGHT_PORT || "3100";
+const defaultPlaywrightApiPort = process.env.PLAYWRIGHT_API_PORT || "4100";
 const webBaseURL =
   process.env.PLAYWRIGHT_BASE_URL ||
-  `http://localhost:${defaultPlaywrightPort}`;
+  `http://${defaultPlaywrightHost}:${defaultPlaywrightPort}`;
 const apiBaseURL =
-  process.env.PLAYWRIGHT_API_BASE_URL || "http://localhost:4000";
+  process.env.PLAYWRIGHT_API_BASE_URL ||
+  `http://${defaultPlaywrightHost}:${defaultPlaywrightApiPort}`;
+const webServerUrl = new URL(webBaseURL);
+const apiServerUrl = new URL(apiBaseURL);
+
+process.env.PLAYWRIGHT_BASE_URL ??= webBaseURL;
+process.env.PLAYWRIGHT_API_BASE_URL ??= apiBaseURL;
 
 function readStringEnv() {
   return Object.fromEntries(
@@ -47,7 +55,7 @@ export default defineConfig({
       env: {
         ...baseEnv,
         DATABASE_URL: apiDatabaseUrl,
-        PORT: "4000",
+        PORT: apiServerUrl.port || defaultPlaywrightApiPort,
         SWEETBOOK_ESTIMATE_MODE: "local",
         SWEETBOOK_ORDER_MODE: "local",
         UPLOAD_STORAGE_DRIVER: "local",
@@ -58,7 +66,8 @@ export default defineConfig({
     },
     {
       command:
-        `npm run build -w apps/web && npm run start -w apps/web -- --port ${defaultPlaywrightPort}`,
+        "npm run build -w apps/web && " +
+        `npm run start -w apps/web -- --hostname ${webServerUrl.hostname} --port ${webServerUrl.port || defaultPlaywrightPort}`,
       cwd: repoRoot,
       env: {
         ...baseEnv,

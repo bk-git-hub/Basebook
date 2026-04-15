@@ -6,7 +6,7 @@ const PNG_BUFFER = Buffer.from(
 );
 
 const API_BASE_URL =
-  process.env.PLAYWRIGHT_API_BASE_URL || "http://localhost:4000";
+  process.env.PLAYWRIGHT_API_BASE_URL || "http://127.0.0.1:4100";
 
 type UploadedAsset = {
   id: string;
