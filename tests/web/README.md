@@ -16,7 +16,7 @@
   - 빠른 회귀 확인과 payload/validation 검증 담당
 - `src/e2e`
   - Playwright 기반 브라우저 smoke test
-  - 실제 브라우저에서 라우트가 production build 기준으로 뜨는지 확인
+  - 실제 브라우저에서 production build 기준 라우트와 로컬 API 연동이 뜨는지 확인
 - `src/fixtures`
   - 테스트 전용 fixture
   - UI가 받는 계약 형태를 반복 가능하게 만든다
@@ -34,9 +34,9 @@
 - `test:unit`
   - 폼 validation, payload 생성, 링크/문구 렌더링 같은 UI 의사결정 로직을 빠르게 확인한다.
 - `test:e2e`
-  - 실제 Chromium에서 `/entries/new` 페이지 셸과 모바일 전용 제어가 production build 기준으로 정상 렌더링되는지 확인한다.
+  - 실제 Chromium에서 `/entries/new`가 로컬 전용 API, 로컬 SQLite DB, 로컬 업로드 저장소와 연결된 상태로 정상 동작하는지 확인한다.
 - `test:e2e:order-report`
-  - `POST /uploads/image` -> `POST /season-books/estimate` -> `POST /season-books/order` happy path를 실제 브라우저로 검증하고 스크린샷, Markdown, PDF 증거를 남긴다.
+  - `POST /uploads/image` -> `POST /season-books/estimate` -> `POST /season-books/order` -> `/order/[projectId]/status` happy path를 실제 브라우저로 검증하고 스크린샷, Markdown, PDF 증거를 남긴다.
 - `MANUAL_E2E_SCENARIOS.md`
   - 사람 손으로 봐야 하는 UX와 탐색형 QA를 담당한다.
 
@@ -66,7 +66,8 @@ cmd.exe /d /s /c C:/Progra~1/nodejs/npm.cmd --prefix C:/Users/bksoft/Documents/S
 - 시즌 대시보드, 기록 상세, 기록 생성, 기록 수정 화면의 핵심 UI 결정 로직
 - `/entries/new` 라우트가 실제 브라우저와 production build 기준으로 뜨는지 여부
 - `/entries/new`의 모바일 팀 선택과 직관/비직관 조건부 필드가 실제 브라우저에서 깨지지 않는지 여부
-- 시즌북 견적 생성부터 주문 완료 화면까지의 로컬 happy path
+- `/entries/new`에서 로컬 업로드 이미지가 실제 로컬 API URL로 저장되고 상세 화면까지 이어지는지 여부
+- 시즌북 견적 생성부터 주문 상태 화면까지의 로컬 happy path
 - 통합 흐름에 대한 시각적 증거와 재검토 가능한 보고서
 
 ## 아직 따로 보강해야 하는 것

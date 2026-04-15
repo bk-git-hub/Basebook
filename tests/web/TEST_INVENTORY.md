@@ -118,6 +118,26 @@
   - 사진 업로드
   - 실제 저장 후 이동
 
+## `src/e2e/entry-create.local-full-stack.spec.ts`
+
+- 타입: Playwright full-stack smoke
+- 존재 이유:
+  - 사용자가 가장 자주 체감하는 `/entries/new` 흐름은 단순 렌더링이 아니라 "사진 업로드 -> 기록 저장 -> 상세 진입"까지 이어져야 의미가 있다.
+  - 게다가 시험관 기준 검증에서는 배포 서버가 아니라 로컬 API, 로컬 DB, 로컬 업로드 저장소만 써야 하므로 그 조건을 자동화로 고정할 필요가 있었다.
+- 핵심 검증:
+  - Playwright가 `apps/api`와 `apps/web` production build를 직접 띄우는지
+  - 테스트용 `DATABASE_URL`, `UPLOAD_STORAGE_DRIVER=local`이 적용된 API에서 `/uploads/image`가 호출되는지
+  - 업로드된 이미지 URL이 `localhost:4000/uploads/local/...` 형태의 로컬 자산인지
+  - 업로드한 사진이 `POST /entries` payload 결과와 상세 화면에 그대로 이어지는지
+  - 생성 후 `/entries/[id]` 상세 화면과 `GET /entries/:id` 응답이 같은 사진 URL과 감상 문구를 보여주는지
+- 이 테스트가 통과하면 보증할 수 있는 것:
+  - `/entries/new`는 로컬 풀스택 환경에서도 실제로 저장 가능한 상태다.
+  - 테스트 중 배포 DB나 외부 이미지 저장소를 건드리지 않고도 업로드/생성 흐름을 재현할 수 있다.
+- 이 테스트만으로는 보증하지 못하는 것:
+  - 수정 흐름
+  - 주문 흐름
+  - 각종 실패 케이스 전체
+
 ## `scripts/qa-api-server.cjs`
 
 - 타입: QA helper script
@@ -126,7 +146,9 @@
   - 그래서 compiled API를 QA 전용으로 올리는 작은 부트 스크립트를 분리했다.
 - 핵심 역할:
   - API를 `127.0.0.1:4000`에서 띄운다.
-  - report script가 독립적으로 API readiness를 기다릴 수 있게 한다.
+  - 로컬 estimate/order 모드와 로컬 업로드 드라이버를 강제한다.
+  - 필요 시 `db:init`을 먼저 수행해 테스트용 DB가 비어 있어도 부팅 가능하게 만든다.
+- report script가 독립적으로 API readiness를 기다릴 수 있게 한다.
 - 이 스크립트가 있으면 좋은 점:
   - 통합 테스트가 "누가 미리 서버를 띄워놨는가"에 덜 의존한다.
 
@@ -138,12 +160,13 @@
   - 실제 happy path를 돌리고, 스크린샷과 PDF 증거를 같이 남기기 위해 만들었다.
 - 핵심 검증:
   - API와 웹 production build
+  - 로컬 전용 DB / 로컬 업로드 저장소 / 로컬 주문 모드 강제
+  - `/season-book/new`에서 기록 선택과 브라우저 기반 커버 이미지 업로드
   - `POST /uploads/image`
-  - `/season-book/new`에서 기록 선택과 견적 생성
   - `POST /season-books/estimate`
   - `/order/[projectId]`에서 배송지 입력과 주문 접수
   - `POST /season-books/order`
-  - 완료 화면의 `CONFIRMED`, `ORDERED` 표시
+  - `/order/[projectId]/status`에서 `주문 확인`, `주문 완료` 표시
 - 산출물:
   - PNG 스크린샷
   - Markdown 리포트
@@ -151,10 +174,10 @@
   - 실행 로그
 - 이 스크립트가 통과하면 보증할 수 있는 것:
   - 로컬 happy path 기준 프론트-백 연결이 실제로 이어진다.
+  - 업로드된 커버가 외부 공개 URL이 아니라 로컬 API 자산 URL이어도 주문 흐름이 이어진다.
   - 발표나 handoff에 쓸 수 있는 시각적 증거가 남는다.
 - 이 스크립트만으로는 보증하지 못하는 것:
   - 모든 실패 케이스
-  - 주문 진행 상태 조회
   - 주문 취소, 배송지 변경
   - 외부 서비스의 실주문 production 검증
 
@@ -167,7 +190,9 @@
 - 핵심 역할:
   - `src/e2e`를 테스트 루트로 사용
   - Chromium 프로젝트 사용
-  - `baseURL`과 `webServer`를 `localhost:3000` 기준으로 지정
+  - `apps/api`와 `apps/web` production build를 함께 올린다
+  - `DATABASE_URL`, `UPLOAD_STORAGE_DRIVER`, 시즌북 모드를 로컬 전용 값으로 강제한다
+  - 테스트 결과가 남는 전용 SQLite DB 디렉터리를 준비한 뒤 실행한다
 
 ## `vitest.config.ts`
 
