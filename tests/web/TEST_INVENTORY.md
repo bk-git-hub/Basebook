@@ -138,6 +138,71 @@
   - 주문 흐름
   - 각종 실패 케이스 전체
 
+## `src/e2e/frontend-route-regression.local.spec.ts`
+
+- 타입: Playwright route regression
+- 존재 이유:
+  - 홈부터 주문 폼까지 주요 라우트가 production build 기준으로 실제 브라우저에서 살아 있는지 한 번에 점검할 필요가 있었다.
+  - 라우트가 많아질수록 "페이지가 아예 안 뜨는 회귀"를 빠르게 잡는 망이 별도로 필요하다.
+- 핵심 검증:
+  - `/`, `/about`, `/season`, `/entries/[id]`, `/entries/[id]/edit`, `/season-book/new`, `/order/[projectId]`
+  - 상세 not-found 상태
+  - 홈/시즌/주문 화면의 대표 CTA와 요약 카드
+- 이 테스트가 통과하면 보증할 수 있는 것:
+  - 주요 라우트 셸과 핵심 CTA가 production build 기준으로 사라지지 않았다.
+  - 최소한의 서버 데이터 로딩과 라우팅 연결은 유지된다.
+- 이 테스트만으로는 보증하지 못하는 것:
+  - 실제 상태 변경
+  - 실패 상태 전반
+
+## `src/e2e/entry-management.local.spec.ts`
+
+- 타입: Playwright full-stack flow
+- 존재 이유:
+  - 기록 작성만 검증하면 반쪽이다. 실제 서비스에서는 작성한 기록을 수정하고 삭제하는 흐름도 같이 살아 있어야 한다.
+- 핵심 검증:
+  - `/entries/[id]/edit`에서 감상 수정 후 상세로 복귀
+  - `/entries/[id]`에서 삭제 다이얼로그 확인 후 `/season?entryDeleted=success` 리다이렉트
+- 이 테스트가 통과하면 보증할 수 있는 것:
+  - 기록 수정/삭제 UI와 API 연결이 로컬 브라우저 기준으로 이어진다.
+- 이 테스트만으로는 보증하지 못하는 것:
+  - 삭제 실패 시나리오
+  - 대량 수정이나 복합 필드 변경
+
+## `src/e2e/order-management.local-full-stack.spec.ts`
+
+- 타입: Playwright full-stack flow
+- 존재 이유:
+  - 사용자 피드백 기준으로 가장 약했던 영역이 주문 내역, 배송지 수정, 주문 취소였다.
+  - 이 흐름은 단순 렌더링이 아니라 실제 상태 전이를 포함하므로 브라우저 기준 검증이 필요했다.
+- 핵심 검증:
+  - `/order` empty state 후 주문 생성 뒤 populated state
+  - 주문 내역 카드에서 상태 화면 이동
+  - `/order/[projectId]/status`에서 배송지 수정
+  - `/order/[projectId]/status`에서 주문 취소
+- 이 테스트가 통과하면 보증할 수 있는 것:
+  - 주문 내역 화면이 실제 주문 데이터를 표시한다.
+  - 배송지 수정과 주문 취소가 브라우저에서 로컬 API까지 이어진다.
+- 이 테스트만으로는 보증하지 못하는 것:
+  - 외부 Sweetbook sandbox 상태 변화
+  - webhook 기반 후속 상태 전이
+
+## `src/e2e/season-book-failures.local.spec.ts`
+
+- 타입: Playwright failure regression
+- 존재 이유:
+  - 성공 흐름만 통과해도 실제 사용자 경험은 충분히 보장되지 않는다.
+  - 시즌북 builder와 주문 화면의 대표 실패 경로를 브라우저 기준으로 고정해둘 필요가 있었다.
+- 핵심 검증:
+  - `/season-book/new` 필수값 누락 validation
+  - 선택 기록 사진이 없을 때 커버 추천 실패 메시지
+  - `/order/[projectId]`의 견적 요약 누락 fallback
+  - `/order/[projectId]/status`의 알 수 없는 프로젝트 에러 상태
+- 이 테스트가 통과하면 보증할 수 있는 것:
+  - 시즌북/주문 화면의 대표 실패 상태가 프론트에서 무너지지 않는다.
+- 이 테스트만으로는 보증하지 못하는 것:
+  - 브라우저에서 만들 수 없는 API 계약 오류 전체
+
 ## `scripts/qa-api-server.cjs`
 
 - 타입: QA helper script
@@ -194,6 +259,7 @@
   - `apps/api`와 `apps/web` production build를 함께 올린다
   - `DATABASE_URL`, `UPLOAD_STORAGE_DRIVER`, 시즌북 모드를 로컬 전용 값으로 강제한다
   - 테스트 결과가 남는 전용 SQLite DB 디렉터리를 준비한 뒤 실행한다
+  - shared local DB 충돌을 줄이기 위해 browser E2E를 단일 worker로 직렬 실행한다
 
 ## `vitest.config.ts`
 
