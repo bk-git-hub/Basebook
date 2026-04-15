@@ -75,3 +75,7 @@ export type GetEntriesResponse = {
 export type GetEntryResponse = {
   entry: DiaryEntry;
 };
+
+export type DeleteEntryResponse = {
+  entry: DiaryEntry;
+};

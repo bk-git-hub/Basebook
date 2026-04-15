@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import type {
+  DeleteEntryResponse,
   DiaryEntry,
   DiaryEntrySummary,
   GetEntriesQuery,
@@ -184,7 +185,7 @@ export class EntriesService {
     };
   }
 
-  async deleteEntry(id: string): Promise<GetEntryResponse> {
+  async deleteEntry(id: string): Promise<DeleteEntryResponse> {
     const existingEntry = await this.prisma.diaryEntry.findFirst({
       where: {
         id,
