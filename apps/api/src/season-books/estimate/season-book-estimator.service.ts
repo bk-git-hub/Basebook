@@ -18,6 +18,10 @@ export class SeasonBookEstimatorService implements SeasonBookEstimatorPort {
   estimate(input: SeasonBookEstimateInput): Promise<SeasonBookEstimateResult> {
     const config = getSweetbookConfig();
 
+    if (config.orderMode === 'sandbox') {
+      return this.sweetbookEstimator.estimate(input);
+    }
+
     if (config.estimateMode === 'local') {
       return this.localEstimator.estimate(input);
     }

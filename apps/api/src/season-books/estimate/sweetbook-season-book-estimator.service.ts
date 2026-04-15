@@ -6,6 +6,7 @@ import {
   type SweetbookBookSpec,
 } from '../../sweetbook/sweetbook.client';
 import { getSweetbookConfig } from '../../sweetbook/sweetbook.config';
+import { resolveSweetbookChargedCreditAmount } from '../../sweetbook/sweetbook-pricing';
 import type {
   SeasonBookEstimateInput,
   SeasonBookEstimateResult,
@@ -97,7 +98,7 @@ export class SweetbookSeasonBookEstimatorService implements SeasonBookEstimatorP
     return {
       bookUid: book.bookUid,
       pageCount: finalPageCount,
-      totalPrice: Math.round(estimate.totalAmount ?? 0),
+      totalPrice: resolveSweetbookChargedCreditAmount(estimate),
       currency: 'KRW',
       creditSufficient: estimate.creditSufficient ?? true,
     };

@@ -35,6 +35,7 @@ export type SweetbookOrderEstimate = {
   totalAmount?: number;
   totalProductAmount?: number;
   totalShippingFee?: number;
+  totalPackagingFee?: number;
   creditSufficient?: boolean;
 };
 
@@ -43,6 +44,10 @@ export type SweetbookCreatedOrder = {
   orderStatus?: number;
   orderStatusDisplay?: string;
   totalAmount?: number;
+  totalProductAmount?: number;
+  totalShippingFee?: number;
+  totalPackagingFee?: number;
+  paidCreditAmount?: number;
 };
 
 export type SweetbookOrderDetail = {
@@ -50,6 +55,10 @@ export type SweetbookOrderDetail = {
   orderStatus?: number;
   orderStatusDisplay?: string;
   totalAmount?: number;
+  totalProductAmount?: number;
+  totalShippingFee?: number;
+  totalPackagingFee?: number;
+  paidCreditAmount?: number;
   refundAmount?: number;
   cancelReason?: string;
   cancelledAt?: string;

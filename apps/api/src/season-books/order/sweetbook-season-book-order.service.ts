@@ -1,5 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { SweetbookClient } from '../../sweetbook/sweetbook.client';
+import { resolveSweetbookChargedCreditAmount } from '../../sweetbook/sweetbook-pricing';
 import { mapSweetbookOrderStatus } from '../season-book-status';
 import type {
   SeasonBookOrderInput,
@@ -34,7 +35,13 @@ export class SweetbookSeasonBookOrderService implements SeasonBookOrderPlacerPor
 
     return {
       orderUid: order.orderUid,
-      totalPrice: Math.round(order.totalAmount ?? input.totalPrice),
+      totalPrice: resolveSweetbookChargedCreditAmount({
+        totalAmount: order.totalAmount,
+        totalProductAmount: order.totalProductAmount,
+        totalShippingFee: order.totalShippingFee,
+        totalPackagingFee: order.totalPackagingFee,
+        paidCreditAmount: order.paidCreditAmount,
+      }),
       currency: 'KRW',
       orderStatus: mapSweetbookOrderStatus(order.orderStatus),
     };
