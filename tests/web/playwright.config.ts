@@ -31,9 +31,10 @@ const apiDatabaseUrl = `file:${path
 
 export default defineConfig({
   testDir: "./src/e2e",
-  fullyParallel: true,
+  fullyParallel: false,
   reporter: "list",
   timeout: 60000,
+  workers: 1,
   use: {
     baseURL: webBaseURL,
     trace: "on-first-retry",
