@@ -122,6 +122,7 @@ npm run dev
 
 - Web: `http://localhost:3000`
 - API: `http://localhost:4000`
+- Playwright E2E 전용 Web: `http://localhost:3100`
 
 ### 6. 실행 직후 응답 확인
 
@@ -134,7 +135,7 @@ npm run dev
 헬스체크는 아래와 비슷한 JSON이 보이면 정상입니다.
 
 ```json
-{"status":"ok"}
+{"ok":true,"service":"basebook-api"}
 ```
 
 ### 7. 수동 브라우저 검증 체크리스트
@@ -206,6 +207,9 @@ npx playwright install
 npm run test:web:e2e
 ```
 
+- Playwright E2E는 개발용 `3000` 포트 대신 전용 `3100` 포트에서 Next.js 프로덕션 서버를 따로 띄워 검증합니다.
+- 이미 `3100` 포트를 점유한 프로세스가 있다면 먼저 종료한 뒤 다시 실행합니다.
+
 ## 수동 검증과 자동 테스트의 차이
 
 - 수동 브라우저 검증: 사람이 실제 화면과 해피패스를 직접 확인하는 절차입니다.
@@ -217,6 +221,7 @@ npm run test:web:e2e
 ## 문제 발생 시 확인할 항목
 
 - `http://localhost:3000`과 `http://localhost:4000`이 모두 떠 있는지 확인합니다.
+- `npm run test:web:e2e` 실행 시에는 `http://localhost:3100` 포트를 다른 프로세스가 사용 중이지 않은지 확인합니다.
 - `apps/api/.env`를 만들었는지 확인합니다.
 - 로컬 데모 모드만 확인하려는 경우 `SWEETBOOK_API_KEY`가 비어 있어도 되는지 다시 확인합니다.
 - 실제 Sandbox 주문을 기대하고 있다면 `SWEETBOOK_API_KEY`, `SWEETBOOK_ORDER_MODE=sandbox`, 공개 이미지 URL 조건을 모두 만족했는지 확인합니다.
