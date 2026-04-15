@@ -7,6 +7,10 @@ const { PrismaClient } = require('@prisma/client');
 const apiRoot = resolve(__dirname, '..');
 const envPath = resolve(apiRoot, '.env');
 const fallbackEnvPath = resolve(apiRoot, '.env.example');
+const KNOWN_INVALID_DEMO_PHOTO_URLS = [
+  'https://pub-721a4bb10d7944d1891213efbc66e17e.r2.dev/uploads/2026-04-14/74bed418-47d4-4343-9050-ca3abcfe2f5b.jpg',
+  'https://pub-721a4bb10d7944d1891213efbc66e17e.r2.dev/uploads/2026-04-15/96714c19-4598-4735-8853-e88e25172e2f.png',
+];
 
 function shouldLoadFallbackEnvExample(env = process.env) {
   const runningOnRailway = Boolean(
@@ -104,10 +108,33 @@ async function ensureSeasonBookProjectColumns() {
   }
 }
 
+async function removeKnownInvalidDemoPhotos() {
+  const prisma = new PrismaClient();
+
+  try {
+    const result = await prisma.photo.deleteMany({
+      where: {
+        url: {
+          in: KNOWN_INVALID_DEMO_PHOTO_URLS,
+        },
+      },
+    });
+
+    if (result.count > 0) {
+      console.log(
+        `Removed ${result.count} invalid demo photo reference(s) from the database.`,
+      );
+    }
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
 async function main() {
   loadEnv();
   runPrismaInit();
   await ensureSeasonBookProjectColumns();
+  await removeKnownInvalidDemoPhotos();
 }
 
 main().catch((error) => {

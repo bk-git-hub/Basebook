@@ -678,3 +678,30 @@
   - `apps/api/.env.example`
 - Related Milestones:
   - `docs/milestones/backend.md`
+
+### API-025
+
+- Date: `2026-04-15`
+- Time: `13:01`
+- Agenda: Remove invalid demo image references that break Sweetbook sandbox rendering
+- Participants: User, Codex
+- Options Considered:
+  - Keep the current demo image references and manually avoid the broken entries during testing
+  - Convert or re-upload the problematic assets before changing any data references
+  - Remove the known-bad image references from demo data and automatically clean them from existing databases on startup
+- Decision:
+  - Remove the HEIC-disguised `.jpg` reference from seeded demo entry data
+  - Automatically delete the currently known invalid demo photo URLs from the database during `db:init`
+- Rationale:
+  - Sweetbook sandbox accepts the book and template IDs, but fails when it receives image assets whose actual file format does not match the extension or whose content is not usable for rendering
+  - The user asked for the problematic entry photos to be removed immediately rather than investing another slice in asset conversion
+  - Startup cleanup protects existing local and deployed SQLite databases without requiring a manual admin-only reset step
+- Impact:
+  - Demo entries may legitimately exist without photos, and season-book estimation should fall back to the selected cover image for those entries
+  - Existing Railway and local databases can self-heal on the next `db:init` run or app restart
+  - Future asset-hardening work can add upload-time validation separately without blocking the current demo path
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `data/demo-entries.json`
+  - `apps/api/scripts/db-init.cjs`

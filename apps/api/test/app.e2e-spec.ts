@@ -85,7 +85,7 @@ describe('AppController (e2e)', () => {
       .expect(200)
       .expect(({ body }) => {
         expect(body.entry.id).toBe('entry-doosan-2025-09-18');
-        expect(body.entry.photos).toHaveLength(1);
+        expect(body.entry.photos).toEqual([]);
       });
   });
 
