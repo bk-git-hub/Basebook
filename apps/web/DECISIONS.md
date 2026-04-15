@@ -1265,3 +1265,23 @@
 - Status: `approved`
 - Related Docs:
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+
+### WEB-061
+
+- Date: `2026-04-15`
+- Time: `11:48`
+- Agenda: 로딩 화면 전반에서 페이지별 스켈레톤을 유지할지, 우선 공용 브랜디드 로고 로딩으로 통일할지 결정
+- Participants: User, Codex
+- Options Considered:
+  - 각 라우트의 스켈레톤 로딩을 홈 톤으로 다시 다듬어 계속 유지한다
+  - 지금은 공용 Basebook 로고 로딩으로 빠르게 통일하고, 시간이 남으면 나중에 페이지별 스켈레톤을 다시 설계한다
+- Decision: 지금은 공용 Basebook 로고 로딩으로 빠르게 통일하고, 페이지별 스켈레톤은 추후 여유가 있을 때 다시 설계한다.
+- Rationale: 사용자는 현재 로딩 품질에서 가장 중요한 과제가 “예전 블랙/화이트 톤을 빨리 바로잡는 것”이라고 판단했다. 라우트별 스켈레톤은 유지 비용이 크고 톤 불일치가 반복되고 있으므로, MVP 단계에서는 공용 브랜디드 로딩으로 정리하는 편이 더 빠르고 안정적이다.
+- Impact:
+  - 현재 라우트 `loading.tsx`들은 검은 히어로/stone 카드 대신 같은 로고 중심 로딩 화면을 사용한다
+  - 로딩 경험은 더 브랜드 일관성이 높아지지만, 페이지별 뼈대 예고는 추후 개선 과제로 남는다
+  - 이후 필요하면 개별 페이지 성격에 맞는 스켈레톤을 다시 도입할 수 있다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
