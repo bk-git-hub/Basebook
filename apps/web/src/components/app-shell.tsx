@@ -5,7 +5,7 @@ type AppShellSection = "season" | "entries" | "season-book" | "order";
 type AppShellTone = "default" | "home";
 
 const SECTION_LABELS: Record<AppShellSection, string> = {
-  season: "기록 흐름",
+  season: "",
   entries: "기록 작성",
   "season-book": "시즌북 제작",
   order: "주문 진행",
@@ -72,11 +72,13 @@ export function AppShell({
               </Link>
 
               <div className="space-y-2">
-                <p
-                  className={`text-xs font-semibold tracking-[0.18em] uppercase ${styles.sectionLabel}`}
-                >
-                  {SECTION_LABELS[activeSection]}
-                </p>
+                {SECTION_LABELS[activeSection] ? (
+                  <p
+                    className={`text-xs font-semibold tracking-[0.18em] uppercase ${styles.sectionLabel}`}
+                  >
+                    {SECTION_LABELS[activeSection]}
+                  </p>
+                ) : null}
                 <p
                   className={`text-lg font-semibold tracking-tight ${styles.sectionTitle}`}
                 >

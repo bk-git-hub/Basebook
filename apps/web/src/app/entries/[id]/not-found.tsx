@@ -7,7 +7,7 @@ export default function EntryNotFound() {
     <AppShell
       activeSection="entries"
       title="직관 기록 상세"
-      description="저장된 기록을 다시 열거나 다른 기록 흐름으로 이동할 수 있습니다."
+      description="저장된 기록을 다시 열거나 다른 기록으로 이동할 수 있습니다."
     >
       <div className="max-w-3xl rounded-[28px] border border-stone-200 bg-white p-8 shadow-sm">
         <span className="inline-flex rounded-full bg-stone-100 px-3 py-1 text-xs font-semibold tracking-[0.18em] text-stone-500 uppercase">

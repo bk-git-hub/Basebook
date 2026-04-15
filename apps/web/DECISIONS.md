@@ -1246,3 +1246,22 @@
 - Status: `approved`
 - Related Docs:
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+
+### WEB-060
+
+- Date: `2026-04-15`
+- Time: `11:35`
+- Agenda: 공통 셸의 `/season` 섹션 라벨로 쓰이던 `기록 흐름` 표현을 유지할지 제거할지 결정
+- Participants: User, Codex
+- Options Considered:
+  - `기록 흐름`을 더 자연스러운 다른 표현으로 치환한다
+  - `/season`에서는 해당 라벨을 아예 제거하고 제목만 남긴다
+- Decision: `/season`에서는 `기록 흐름` 라벨을 아예 제거한다. 관련 잔여 문구도 함께 정리한다.
+- Rationale: 사용자는 `기록 흐름`이 제품 문구라기보다 에이전트가 구현 플로우를 설명하는 내부 표현처럼 느껴진다고 판단했다. 이미 페이지 제목이 `시즌 기록`으로 충분히 역할을 설명하므로 별도 라벨은 정보 가치보다 어색함이 더 크다.
+- Impact:
+  - `/season` 상단 셸은 제목 중심으로 더 자연스럽게 읽힌다
+  - 상세 not-found에 남아 있던 `다른 기록 흐름` 표현도 더 일반적인 문장으로 정리된다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
