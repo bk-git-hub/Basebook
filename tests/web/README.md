@@ -4,11 +4,12 @@
 
 ## 먼저 읽을 문서
 
-1. `TEST_ARCHITECTURE.md`
-2. `TEST_INVENTORY.md`
-3. `TEST_MATRIX.md`
-4. `MANUAL_E2E_SCENARIOS.md`
-5. `NEXT_QA_HANDOFF.md`
+1. `../PROJECT_TEST_GUARANTEES.md`
+2. `TEST_ARCHITECTURE.md`
+3. `TEST_INVENTORY.md`
+4. `TEST_MATRIX.md`
+5. `MANUAL_E2E_SCENARIOS.md`
+6. `NEXT_QA_HANDOFF.md`
 
 ## 디렉터리 구성
 
@@ -83,6 +84,7 @@ cmd.exe /d /s /c C:/Progra~1/nodejs/npm.cmd --prefix C:/Users/bksoft/Documents/S
 
 ## 발표할 때 이 문서를 쓰는 방법
 
+- 먼저 `../PROJECT_TEST_GUARANTEES.md`로 프론트/백 전체 테스트 지형도와 보증 범위를 설명한다.
 - 먼저 `TEST_ARCHITECTURE.md`로 왜 테스트를 여러 층으로 나눴는지 설명한다.
 - 다음으로 `TEST_INVENTORY.md`와 `TEST_MATRIX.md`에서 각 테스트 파일의 존재 이유와 라우트별 보증 범위를 설명한다.
 - 마지막으로 `test-results/order-flow-report` 산출물을 보여주며 실제 증거를 제시한다.
