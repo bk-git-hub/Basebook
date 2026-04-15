@@ -1345,3 +1345,23 @@
 - Status: `approved`
 - Related Docs:
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+
+### WEB-065
+
+- Date: `2026-04-15`
+- Time: `11:57`
+- Agenda: 새 주문 내역 화면을 어떤 경로와 상세 진입 방식으로 먼저 구현할지 결정
+- Participants: User, Codex
+- Options Considered:
+  - `/order`를 주문 내역 목록으로 사용하고, 각 주문 카드는 상태 화면으로 바로 이동시킨다
+  - 별도 `/orders` 경로를 만들거나, 카드 클릭 시 주문 입력 화면으로 먼저 이동시킨다
+- Decision: `/order`를 주문 내역 목록으로 사용하고, 각 주문 카드는 `/order/[projectId]/status`로 바로 이동시킨다.
+- Rationale: 기존 주문 관련 라우트가 이미 `/order/[projectId]`, `/order/[projectId]/status`로 잡혀 있어 같은 상위 경로 아래에 목록을 두는 편이 가장 자연스럽다. 사용자가 주문 내역에서 가장 자주 확인할 정보도 현재 진행 상태이므로, 목록에서 바로 상태 화면으로 들어가는 동선이 가장 짧다.
+- Impact:
+  - `/order`는 최신순 주문 목록 화면이 된다
+  - 주문 카드에는 프로젝트/주문 상태, 제목, 금액, 페이지 수, 생성·갱신 시각이 표시된다
+  - 진입 버튼은 추후 별도 작업으로 추가하되, 목록 화면 자체는 먼저 완성한다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
