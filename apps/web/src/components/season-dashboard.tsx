@@ -21,9 +21,9 @@ const RESULT_LABELS: Record<GameResult, string> = {
 };
 
 const RESULT_TONE: Record<GameResult, string> = {
-  WIN: "border-[#d9e4f4] bg-[#eef3fb] text-[#11284f]",
-  LOSE: "border-[#f3c9cf] bg-[#fff3f4] text-[#c42d3c]",
-  DRAW: "border-[#e1e8f3] bg-[#f8fbff] text-[#5a6f91]",
+  WIN: "border-emerald-200 bg-emerald-50 text-emerald-900",
+  LOSE: "border-rose-200 bg-rose-50 text-rose-900",
+  DRAW: "border-amber-200 bg-amber-50 text-amber-900",
   UNKNOWN: "border-[#e1e8f3] bg-[#f5f7fb] text-[#6a7d9f]",
 };
 
@@ -287,17 +287,17 @@ export function SeasonDashboard({ dashboard }: SeasonDashboardProps) {
           <SummaryStatCard
             label="승리"
             value={`${view.wins}`}
-            className="border-[#d9e4f4] bg-[#eef3fb] text-[#11284f]"
+            className="border-emerald-200 bg-emerald-50 text-emerald-950"
           />
           <SummaryStatCard
             label="패배"
             value={`${view.losses}`}
-            className="border-[#f3c9cf] bg-[#fff3f4] text-[#c42d3c]"
+            className="border-rose-200 bg-rose-50 text-rose-950"
           />
           <SummaryStatCard
             label="무승부"
             value={`${view.draws}`}
-            className="border-[#e1e8f3] bg-[#f8fbff] text-[#5a6f91]"
+            className="border-amber-200 bg-amber-50 text-amber-950"
           />
         </div>
 
