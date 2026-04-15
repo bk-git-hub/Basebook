@@ -1365,3 +1365,23 @@
 - Status: `approved`
 - Related Docs:
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+
+### WEB-066
+
+- Date: `2026-04-15`
+- Time: `12:09`
+- Agenda: 홈의 주요 액션 영역에서 시즌북 주문 내역 진입을 버튼으로 노출할지, 보조 링크로 둘지 결정
+- Participants: User, Codex
+- Options Considered:
+  - 기존 `새 일지 남기기`, `시즌북 제작` 옆에 `주문 내역` 버튼을 같은 액션 레벨로 추가한다
+  - `주문 내역`은 작은 보조 링크로만 노출해 액션 영역의 밀도를 낮춘다
+- Decision: 홈의 주요 액션 영역에 `주문 내역` 버튼을 추가하고 `/order`로 바로 연결한다.
+- Rationale: 사용자는 시즌북을 만든 뒤 상태와 배송을 다시 확인하는 동선이 홈에도 필요하다고 판단했다. 이미 홈에 `새 일지 남기기`, `시즌북 제작`이 주요 버튼으로 배치돼 있으므로, 관리 동선인 `주문 내역`도 같은 수준의 액션으로 보여 주는 편이 더 직접적이고 찾기 쉽다.
+- Impact:
+  - 홈에서 `새 일지 남기기 / 시즌북 제작 / 주문 내역`의 3개 주요 동선이 함께 보인다
+  - `주문 내역`은 `/order` 목록 화면으로 바로 연결된다
+  - 모바일에서는 3개 버튼이 한 줄에 보이도록 액션 영역 폭과 타이포를 함께 조정한다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`

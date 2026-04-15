@@ -87,18 +87,24 @@ export function HomeSeasonOverview({
           </div>
         </div>
 
-        <div className="mt-4 grid grid-cols-2 gap-2">
+        <div className="mt-4 grid grid-cols-3 gap-2">
           <Link
             href="/entries/new"
-            className="inline-flex items-center justify-center rounded-full bg-[#11284f] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#0b1d3b]"
+            className="inline-flex items-center justify-center rounded-full bg-[#11284f] px-3 py-2.5 text-[13px] font-semibold whitespace-nowrap text-white transition hover:bg-[#0b1d3b]"
           >
             새 일지 남기기
           </Link>
           <Link
             href="/season-book/new"
-            className="inline-flex items-center justify-center rounded-full border border-[#11284f] bg-white px-4 py-2.5 text-sm font-semibold text-[#11284f] transition hover:bg-[#f8fbff]"
+            className="inline-flex items-center justify-center rounded-full border border-[#11284f] bg-white px-3 py-2.5 text-[13px] font-semibold whitespace-nowrap text-[#11284f] transition hover:bg-[#f8fbff]"
           >
             시즌북 제작
+          </Link>
+          <Link
+            href="/order"
+            className="inline-flex items-center justify-center rounded-full border border-[#11284f] bg-white px-3 py-2.5 text-[13px] font-semibold whitespace-nowrap text-[#11284f] transition hover:bg-[#f8fbff]"
+          >
+            주문 내역
           </Link>
         </div>
       </section>
@@ -161,6 +167,12 @@ export function HomeSeasonOverview({
             className="inline-flex items-center justify-center rounded-full border border-[#11284f] bg-white px-5 py-3 text-sm font-semibold text-[#11284f] transition hover:border-[#0b1d3b] hover:bg-[#f8fbff]"
           >
             시즌북 제작
+          </Link>
+          <Link
+            href="/order"
+            className="inline-flex items-center justify-center rounded-full border border-[#11284f] bg-white px-5 py-3 text-sm font-semibold text-[#11284f] transition hover:border-[#0b1d3b] hover:bg-[#f8fbff]"
+          >
+            주문 내역
           </Link>
         </div>
       </section>
