@@ -8,9 +8,11 @@ const repoRoot = path.resolve(__dirname, "../../..");
 const webRoot = path.resolve(__dirname, "..");
 const outputDir = path.join(webRoot, "test-results", "order-flow-report");
 const apiPrismaDir = path.resolve(repoRoot, "apps/api/prisma");
-const baseWebUrl = "http://127.0.0.1:3000";
-const baseApiUrl = "http://127.0.0.1:4000";
+const baseWebUrl = process.env.QA_WEB_BASE_URL || "http://127.0.0.1:3200";
+const baseApiUrl = process.env.QA_API_BASE_URL || "http://127.0.0.1:4100";
 const npmCommand = process.platform === "win32" ? "npm.cmd" : "npm";
+const webPort = new URL(baseWebUrl).port || "3200";
+const apiPort = new URL(baseApiUrl).port || "4100";
 const localDatabaseUrl = `file:${path
   .relative(apiPrismaDir, path.join(outputDir, "order-flow.db"))
   .replace(/\\/g, "/")}`;
@@ -18,7 +20,7 @@ const localOnlyEnv = {
   ...process.env,
   DATABASE_URL: localDatabaseUrl,
   NEXT_PUBLIC_API_BASE_URL: baseApiUrl,
-  PORT: "4000",
+  PORT: apiPort,
   SWEETBOOK_ESTIMATE_MODE: "local",
   SWEETBOOK_ORDER_MODE: "local",
   UPLOAD_STORAGE_DRIVER: "local",
@@ -426,27 +428,35 @@ async function main() {
   const startedProcesses = [];
 
   try {
-    if (!(await canFetch(`${baseApiUrl}/health`))) {
-      console.log("Starting QA API server...");
-      const apiServer = spawnLogged(
-        npmCommand,
-        ["run", "start:prod", "-w", "apps/api"],
-        "api-server",
+    if (await canFetch(`${baseApiUrl}/health`)) {
+      throw new Error(
+        `Expected isolated QA API port ${baseApiUrl} to be free, but an existing server is already responding.`,
       );
-      startedProcesses.push(apiServer.child);
-      await waitFor(`${baseApiUrl}/health`, "QA API server");
     }
 
-    if (!(await canFetch(baseWebUrl))) {
-      console.log("Starting web server...");
-      const webServer = spawnLogged(
-        npmCommand,
-        ["run", "start", "-w", "apps/web", "--", "--port", "3000"],
-        "web-server",
+    if (await canFetch(baseWebUrl)) {
+      throw new Error(
+        `Expected isolated QA web port ${baseWebUrl} to be free, but an existing server is already responding.`,
       );
-      startedProcesses.push(webServer.child);
-      await waitFor(baseWebUrl, "web server");
     }
+
+    console.log("Starting QA API server...");
+    const apiServer = spawnLogged(
+      npmCommand,
+      ["run", "start:prod", "-w", "apps/api"],
+      "api-server",
+    );
+    startedProcesses.push(apiServer.child);
+    await waitFor(`${baseApiUrl}/health`, "QA API server");
+
+    console.log("Starting web server...");
+    const webServer = spawnLogged(
+      npmCommand,
+      ["run", "start", "-w", "apps/web", "--", "--port", webPort],
+      "web-server",
+    );
+    startedProcesses.push(webServer.child);
+    await waitFor(baseWebUrl, "web server");
 
     console.log("Running browser order flow...");
     const result = await runBrowserFlow();
