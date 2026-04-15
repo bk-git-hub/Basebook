@@ -1,12 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-import type {
-  SeasonBookOrderRequest,
-  SeasonBookOrderResponse,
-} from "@basebook/contracts";
+import type { SeasonBookOrderRequest } from "@basebook/contracts";
 
 import { ApiClientError } from "@/lib/api/http";
 import { createSeasonBookOrder } from "@/lib/api/season-books";
@@ -96,12 +94,12 @@ export function SeasonBookOrderForm({
   estimateSummary,
   projectId,
 }: SeasonBookOrderFormProps) {
+  const router = useRouter();
   const [values, setValues] = useState<OrderFormValues>(INITIAL_VALUES);
   const [fieldErrors, setFieldErrors] = useState<OrderFormErrors>({});
   const [orderError, setOrderError] = useState<string | null>(null);
-  const [orderResult, setOrderResult] =
-    useState<SeasonBookOrderResponse | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isRedirecting, setIsRedirecting] = useState(false);
 
   function setFieldValue<K extends OrderFormField>(
     field: K,
@@ -111,7 +109,6 @@ export function SeasonBookOrderForm({
       ...current,
       [field]: nextValue,
     }));
-    setOrderResult(null);
     setOrderError(null);
     setFieldErrors((current) => {
       if (!current[field]) {
@@ -130,7 +127,6 @@ export function SeasonBookOrderForm({
     const nextErrors = validateValues(values);
     setFieldErrors(nextErrors);
     setOrderError(null);
-    setOrderResult(null);
 
     if (Object.keys(nextErrors).length > 0) {
       return;
@@ -141,7 +137,8 @@ export function SeasonBookOrderForm({
     try {
       const orderInput = buildOrderInput(projectId, values);
       const response = await createSeasonBookOrder(orderInput);
-      setOrderResult(response);
+      setIsRedirecting(true);
+      router.replace(buildOrderStatusHref(response.projectId));
     } catch (error) {
       if (error instanceof ApiClientError) {
         setOrderError(error.message);
@@ -162,10 +159,7 @@ export function SeasonBookOrderForm({
     >
       <section className="rounded-[30px] border border-[#e5ecf6] bg-white p-6 shadow-[0_18px_48px_rgba(17,40,79,0.05)]">
         <div className="border-b border-[#e6eef8] pb-5">
-          <p className="text-xs font-semibold tracking-[0.2em] text-[#c42d3c] uppercase">
-            shipping form
-          </p>
-          <h2 className="mt-2 text-xl font-semibold tracking-tight text-[#11284f]">
+          <h2 className="text-xl font-semibold tracking-tight text-[#11284f]">
             배송 정보
           </h2>
           <p className="mt-2 text-sm leading-6 text-[#5a6f91]">
@@ -261,27 +255,14 @@ export function SeasonBookOrderForm({
 
       <aside className="h-fit space-y-6 rounded-[30px] border border-[#e5ecf6] bg-white p-6 shadow-[0_18px_48px_rgba(17,40,79,0.05)] lg:sticky lg:top-6">
         <div>
-          <p className="text-xs font-semibold tracking-[0.2em] text-[#c42d3c] uppercase">
-            order summary
-          </p>
           <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[#11284f]">
-            견적 확인 완료
+            주문 확인
           </h2>
-          <p className="mt-3 text-sm leading-6 text-[#5a6f91]">
-            이전 단계에서 만든 시즌북 견적을 바탕으로 주문을 이어갑니다.
-          </p>
         </div>
 
         {estimateSummary ? (
           <section className="space-y-4 rounded-[24px] border border-[#e5ecf6] bg-[#fbfdff] px-4 py-4">
-            <div>
-              <p className="text-sm font-semibold text-[#11284f]">
-                주문 전 확인
-              </p>
-              <p className="mt-1 text-sm leading-6 text-[#5a6f91]">
-                배송 정보를 입력하기 전에 제작 분량과 예상 금액을 다시 확인하세요.
-              </p>
-            </div>
+            <p className="text-sm font-semibold text-[#11284f]">제작 정보</p>
             <dl className="grid gap-3">
               <div className="flex items-center justify-between gap-4 rounded-2xl bg-white px-4 py-3 ring-1 ring-[#e5ecf6]">
                 <dt className="text-sm text-[#5a6f91]">페이지 수</dt>
@@ -308,7 +289,7 @@ export function SeasonBookOrderForm({
           </section>
         ) : (
           <section className="rounded-[24px] border border-[#f2dfb2] bg-[#fff8e8] px-4 py-4 text-sm leading-6 text-[#8b6420]">
-            견적 정보를 다시 확인하려면 견적 화면에서 주문 화면으로 이동해 주세요.
+            견적 정보를 다시 불러와 주세요.
           </section>
         )}
 
@@ -318,46 +299,16 @@ export function SeasonBookOrderForm({
           </p>
         ) : null}
 
-        {orderResult ? (
-          <div className="space-y-4 rounded-[24px] border border-emerald-200 bg-emerald-50 px-4 py-4 text-sm text-emerald-900">
-            <p className="font-semibold">주문이 접수되었습니다.</p>
-            <dl className="grid gap-2">
-              <div className="flex justify-between gap-4">
-                <dt>주문 ID</dt>
-                <dd className="break-all text-right font-semibold">
-                  {orderResult.orderUid}
-                </dd>
-              </div>
-              <div className="flex justify-between gap-4">
-                <dt>금액</dt>
-                <dd className="font-semibold">
-                  {formatPrice(orderResult.totalPrice)} {orderResult.currency}
-                </dd>
-              </div>
-              <div className="flex justify-between gap-4">
-                <dt>주문 상태</dt>
-                <dd className="font-semibold">{orderResult.orderStatus}</dd>
-              </div>
-              <div className="flex justify-between gap-4">
-                <dt>프로젝트 상태</dt>
-                <dd className="font-semibold">{orderResult.projectStatus}</dd>
-              </div>
-            </dl>
-            <Link
-              href={buildOrderStatusHref(orderResult.projectId)}
-              className="inline-flex w-full items-center justify-center rounded-full bg-[#11284f] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#0b1d3b]"
-            >
-              주문 진행 상태 보기
-            </Link>
-          </div>
-        ) : null}
-
         <button
           type="submit"
-          disabled={isSubmitting}
+          disabled={isSubmitting || isRedirecting}
           className="inline-flex w-full items-center justify-center rounded-full bg-[#11284f] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#0b1d3b] disabled:cursor-not-allowed disabled:bg-[#95a8c6]"
         >
-          {isSubmitting ? "주문 접수 중..." : "시즌북 주문 접수"}
+          {isRedirecting
+            ? "상태 화면으로 이동 중..."
+            : isSubmitting
+              ? "주문 접수 중..."
+              : "주문하기"}
         </button>
 
         <Link

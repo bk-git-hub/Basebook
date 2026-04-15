@@ -50,7 +50,6 @@ export default async function OrderStatusPage({
     <AppShell
       activeSection="order"
       title="주문 진행 상태"
-      description="결제 이후 제작과 배송 단계가 어디까지 왔는지 재진입과 새로고침 기준으로 확인합니다."
       tone="home"
     >
       {result.status === "error" ? (

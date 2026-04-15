@@ -144,16 +144,16 @@ function canCancelOrder(
 function getCancelAvailabilityText(status: SeasonBookOrderStatusType) {
   switch (status) {
     case "UNPLACED":
-      return "아직 주문이 접수되지 않아 취소할 대상이 없습니다.";
+      return "아직 주문 전입니다.";
     case "DELIVERED":
-      return "배송이 완료된 주문은 이 화면에서 취소할 수 없습니다.";
+      return "배송이 완료돼 취소할 수 없습니다.";
     case "ERROR":
-      return "오류 상태 주문은 상태를 다시 확인한 뒤 처리해 주세요.";
+      return "주문 상태를 다시 확인해 주세요.";
     case "CANCELLED":
     case "CANCELLED_REFUND":
-      return "이미 취소 처리된 주문입니다.";
+      return "이미 취소된 주문입니다.";
     default:
-      return "취소 가능한 주문 상태가 아닙니다.";
+      return "지금은 취소할 수 없습니다.";
   }
 }
 
@@ -184,18 +184,18 @@ function canEditShipping(
 function getShippingAvailabilityText(status: SeasonBookOrderStatusType) {
   switch (status) {
     case "UNPLACED":
-      return "아직 주문이 접수되지 않아 배송지를 수정할 수 없습니다.";
+      return "아직 주문 전입니다.";
     case "SHIPPED":
-      return "배송이 시작된 주문은 이 화면에서 배송지를 변경할 수 없습니다.";
+      return "배송이 시작돼 배송지를 수정할 수 없습니다.";
     case "DELIVERED":
-      return "배송이 완료된 주문은 배송지 수정 대상이 아닙니다.";
+      return "배송이 완료돼 배송지를 수정할 수 없습니다.";
     case "ERROR":
-      return "오류 상태 주문은 상태를 다시 확인한 뒤 처리해 주세요.";
+      return "주문 상태를 다시 확인해 주세요.";
     case "CANCELLED":
     case "CANCELLED_REFUND":
-      return "취소 처리된 주문은 배송지를 변경할 수 없습니다.";
+      return "취소된 주문은 배송지를 수정할 수 없습니다.";
     default:
-      return "현재 주문 상태에서는 배송지 수정이 제한됩니다.";
+      return "지금은 배송지를 수정할 수 없습니다.";
   }
 }
 
@@ -439,82 +439,21 @@ export function SeasonBookOrderStatus({ status }: SeasonBookOrderStatusProps) {
 
   return (
     <div className="space-y-8">
-      <section className="rounded-[30px] border border-[#e5ecf6] bg-white px-6 py-6 shadow-[0_18px_48px_rgba(17,40,79,0.05)] sm:px-7">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-          <div className="space-y-4">
-            <span className="inline-flex rounded-full border border-[#dce6f3] bg-[#fbfdff] px-3 py-1 text-xs font-semibold tracking-[0.2em] text-[#c42d3c] uppercase">
-              Order Status
-            </span>
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-[#5a6f91]">
-                주문 진행 상태
-              </p>
-              <h1 className="text-3xl font-semibold tracking-tight text-[#11284f] sm:text-4xl">
-                시즌북 제작이 어디까지 진행됐는지 확인하세요
-              </h1>
-              <p className="max-w-2xl text-sm leading-7 text-[#5a6f91]">
-                주문 이후의 제작, 배송 진행 단계를 한 화면에서 확인할 수
-                있습니다.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex flex-wrap gap-3">
-            <Link
-              href={buildStatusHref(status.projectId)}
-              prefetch={false}
-              className="inline-flex items-center justify-center rounded-full bg-[#11284f] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#0b1d3b]"
-            >
-              상태 새로고침
-            </Link>
-            <Link
-              href={buildOrderHref(status.projectId)}
-              className="inline-flex items-center justify-center rounded-full border border-[#d4ddeb] bg-white px-5 py-2.5 text-sm font-semibold text-[#11284f] transition hover:border-[#aebfd8] hover:bg-[#f8fbff]"
-            >
-              주문 화면으로 돌아가기
-            </Link>
-          </div>
-        </div>
-
-        <div className="mt-6 grid gap-3 md:grid-cols-3">
-          <article className="rounded-[22px] border border-[#e5ecf6] bg-[#fbfdff] px-4 py-4">
-            <p className="text-[0.7rem] font-semibold tracking-[0.18em] text-[#c42d3c] uppercase">
-              01 Overview
-            </p>
-            <h2 className="mt-2 text-lg font-semibold text-[#11284f]">
-              현재 상태 확인
-            </h2>
-            <p className="mt-2 text-sm leading-6 text-[#5a6f91]">
-              프로젝트와 주문 상태, 마지막 반영 시점을 먼저 확인합니다.
-            </p>
-          </article>
-
-          <article className="rounded-[22px] border border-[#e5ecf6] bg-[#fbfdff] px-4 py-4">
-            <p className="text-[0.7rem] font-semibold tracking-[0.18em] text-[#c42d3c] uppercase">
-              02 Shipping
-            </p>
-            <h2 className="mt-2 text-lg font-semibold text-[#11284f]">
-              배송지 수정
-            </h2>
-            <p className="mt-2 text-sm leading-6 text-[#5a6f91]">
-              배송 시작 전이라면 이 화면에서 수령인과 주소를 바로 고칠 수
-              있습니다.
-            </p>
-          </article>
-
-          <article className="rounded-[22px] border border-[#e5ecf6] bg-[#fbfdff] px-4 py-4">
-            <p className="text-[0.7rem] font-semibold tracking-[0.18em] text-[#c42d3c] uppercase">
-              03 Progress
-            </p>
-            <h2 className="mt-2 text-lg font-semibold text-[#11284f]">
-              제작 단계 추적
-            </h2>
-            <p className="mt-2 text-sm leading-6 text-[#5a6f91]">
-              결제 이후 제작과 배송이 어디까지 왔는지 단계별로 이어서 봅니다.
-            </p>
-          </article>
-        </div>
-      </section>
+      <div className="flex flex-wrap justify-end gap-3">
+        <Link
+          href={buildStatusHref(status.projectId)}
+          prefetch={false}
+          className="inline-flex items-center justify-center rounded-full bg-[#11284f] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#0b1d3b]"
+        >
+          새로고침
+        </Link>
+        <Link
+          href={buildOrderHref(status.projectId)}
+          className="inline-flex items-center justify-center rounded-full border border-[#d4ddeb] bg-white px-5 py-2.5 text-sm font-semibold text-[#11284f] transition hover:border-[#aebfd8] hover:bg-[#f8fbff]"
+        >
+          주문 정보
+        </Link>
+      </div>
 
       {showCancelledBanner ? (
         <section className="rounded-[28px] border border-rose-200 bg-rose-50 px-6 py-5 text-rose-900 shadow-sm">
@@ -524,8 +463,8 @@ export function SeasonBookOrderStatus({ status }: SeasonBookOrderStatusProps) {
             </h2>
             <p className="text-sm leading-6 text-rose-800">
               {cancelResult?.cancelledAt
-                ? `${formatDateTime(cancelResult.cancelledAt)} 기준으로 주문 취소 응답을 받았습니다.`
-                : "주문 취소 응답을 받았습니다."}
+                ? `취소 시각 ${formatDateTime(cancelResult.cancelledAt)}`
+                : "주문 취소가 반영되었습니다."}
             </p>
             {typeof cancelResult?.refundAmount === "number" ? (
               <p className="text-sm font-medium text-rose-900">
@@ -541,11 +480,8 @@ export function SeasonBookOrderStatus({ status }: SeasonBookOrderStatusProps) {
         <article className="space-y-4 rounded-[28px] border border-[#e5ecf6] bg-white p-6 shadow-[0_18px_48px_rgba(17,40,79,0.05)]">
           <div>
             <h2 className="text-xl font-semibold tracking-tight text-[#11284f]">
-              현재 요약
+              주문 정보
             </h2>
-            <p className="mt-2 text-sm leading-6 text-[#5a6f91]">
-              마지막으로 확인된 주문 진행 상태와 추적 정보를 보여줍니다.
-            </p>
           </div>
 
           <div className="grid gap-3">
@@ -567,7 +503,7 @@ export function SeasonBookOrderStatus({ status }: SeasonBookOrderStatusProps) {
             </div>
             <div className="rounded-2xl border border-[#e5ecf6] bg-[#fbfdff] px-4 py-4">
               <p className="text-xs font-semibold tracking-[0.16em] text-[#c42d3c] uppercase">
-                상태 기준
+                반영 기준
               </p>
               <p className="mt-2 text-base font-semibold text-[#11284f]">
                 {SOURCE_LABELS[status.source]}
@@ -585,15 +521,9 @@ export function SeasonBookOrderStatus({ status }: SeasonBookOrderStatusProps) {
 
           <section className="rounded-[24px] border border-[#dce6f3] bg-[#f8fbff] px-4 py-4">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-              <div className="space-y-2">
-                <h3 className="text-sm font-semibold text-[#11284f]">
-                  배송지 정보
-                </h3>
-                <p className="text-sm leading-6 text-[#5a6f91]">
-                  현재 배송지 정보를 기준으로 필요한 항목만 바로 수정할 수
-                  있습니다.
-                </p>
-              </div>
+              <h3 className="text-sm font-semibold text-[#11284f]">
+                배송지 정보
+              </h3>
               {showShippingAction && !isEditingShipping ? (
                 <button
                   type="button"
@@ -657,8 +587,7 @@ export function SeasonBookOrderStatus({ status }: SeasonBookOrderStatusProps) {
               </dl>
             ) : (
               <p className="mt-4 rounded-2xl border border-dashed border-[#dce6f3] bg-white px-4 py-4 text-sm leading-6 text-[#5a6f91]">
-                현재 배송지 스냅샷이 없어, 수정 시 전체 배송지를 다시 입력하는
-                방식으로 진행됩니다.
+                저장된 배송지가 없어 새로 입력해 주세요.
               </p>
             )}
 
@@ -796,11 +725,7 @@ export function SeasonBookOrderStatus({ status }: SeasonBookOrderStatusProps) {
                   </button>
                 </div>
               </form>
-            ) : showShippingAction ? (
-              <p className="mt-4 text-sm leading-6 text-[#5a6f91]">
-                배송 시작 전 상태에서는 배송지 정보를 다시 저장할 수 있습니다.
-              </p>
-            ) : (
+            ) : showShippingAction ? null : (
               <p className="mt-4 rounded-2xl border border-[#e5ecf6] bg-white px-4 py-3 text-sm leading-6 text-[#11284f]">
                 {getShippingAvailabilityText(effectiveOrderStatus)}
               </p>
@@ -808,13 +733,7 @@ export function SeasonBookOrderStatus({ status }: SeasonBookOrderStatusProps) {
           </section>
 
           <section className="rounded-[24px] border border-rose-200 bg-rose-50 px-4 py-4">
-            <div className="space-y-2">
-              <h3 className="text-sm font-semibold text-rose-900">주문 취소</h3>
-              <p className="text-sm leading-6 text-rose-800">
-                이 화면에서는 취소 사유를 따로 묻지 않고 바로 취소 요청을
-                보냅니다.
-              </p>
-            </div>
+            <h3 className="text-sm font-semibold text-rose-900">주문 취소</h3>
 
             {showCancelAction ? (
               <button
@@ -879,10 +798,6 @@ export function SeasonBookOrderStatus({ status }: SeasonBookOrderStatusProps) {
                 <h2 className="text-xl font-semibold tracking-tight text-[#11284f]">
                   취소 처리 상태
                 </h2>
-                <p className="mt-2 text-sm leading-6 text-[#5a6f91]">
-                  취소가 반영된 주문은 제작 단계 대신 취소 결과를 중심으로
-                  확인합니다.
-                </p>
               </div>
 
               <div className="rounded-[24px] border border-rose-200 bg-rose-50 px-5 py-5">
@@ -891,8 +806,8 @@ export function SeasonBookOrderStatus({ status }: SeasonBookOrderStatusProps) {
                 </p>
                 <p className="mt-3 text-sm leading-6 text-rose-800">
                   {cancelResult?.cancelledAt
-                    ? `${formatDateTime(cancelResult.cancelledAt)} 기준으로 주문이 취소되었습니다.`
-                    : "상태 조회 기준으로 주문이 취소된 상태입니다."}
+                    ? `취소 시각 ${formatDateTime(cancelResult.cancelledAt)}`
+                    : "주문이 취소된 상태입니다."}
                 </p>
                 {typeof cancelResult?.refundAmount === "number" ? (
                   <p className="mt-3 text-sm font-medium text-rose-900">
@@ -908,10 +823,6 @@ export function SeasonBookOrderStatus({ status }: SeasonBookOrderStatusProps) {
                 <h2 className="text-xl font-semibold tracking-tight text-[#11284f]">
                   진행 단계
                 </h2>
-                <p className="mt-2 text-sm leading-6 text-[#5a6f91]">
-                  현재 단계는 강조되고, 지난 단계와 남은 단계가 한눈에
-                  구분됩니다.
-                </p>
               </div>
 
               <ol className="mt-6 space-y-4">
@@ -956,8 +867,8 @@ export function SeasonBookOrderStatus({ status }: SeasonBookOrderStatusProps) {
                           {step.occurredAt
                             ? formatDateTime(step.occurredAt)
                             : step.state === "pending"
-                              ? "아직 시작 전 단계입니다."
-                              : "최근 갱신 시점에 이 단계로 확인되었습니다."}
+                              ? "아직 전입니다."
+                              : "진행 중입니다."}
                         </p>
                       </div>
                     </li>

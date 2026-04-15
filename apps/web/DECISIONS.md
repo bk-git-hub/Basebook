@@ -1285,3 +1285,23 @@
 - Status: `approved`
 - Related Docs:
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+
+### WEB-062
+
+- Date: `2026-04-15`
+- Time: `11:31`
+- Agenda: 주문 입력/상태 화면의 상단 설명 카드를 유지할지, 제품형 헤더로 줄이고 주문 성공 후 상태 화면으로 바로 이동시킬지 결정
+- Participants: User, Codex
+- Options Considered:
+  - 상단 단계 카드와 설명 문구를 유지하고, 주문 성공 후에는 결과 박스를 보여준 뒤 사용자가 직접 상태 화면으로 이동한다
+  - 상단 단계 카드를 걷어내고 문구를 제품형으로 줄이며, 주문 성공 후에는 상태 화면으로 바로 이동한다
+- Decision: 상단 단계 카드를 걷어내고 문구를 제품형으로 줄이며, 주문 성공 후에는 상태 화면으로 바로 이동한다.
+- Rationale: 사용자는 현재 주문 화면이 제품이라기보다 “개발자가 플로우를 설명하는 화면”처럼 느껴진다고 판단했고, 성공 후 직접 버튼을 눌러 다음 화면으로 이동하는 경험도 불필요한 한 단계라고 봤다. 주문과 상태 조회는 이미 목적이 분명한 화면이라, 설명 카드보다 핵심 입력/상태 정보와 즉시 이동이 더 자연스럽다.
+- Impact:
+  - `/order/[projectId]`와 `/order/[projectId]/status` 상단의 단계 설명 카드가 제거된다
+  - `flow`, `응답`, `기준`, `스냅샷` 같은 시스템/개발자 톤 문구가 제품 문구로 바뀐다
+  - 주문 성공 후 상태 화면으로 자동 이동해 사용자가 별도 성공 박스를 거치지 않는다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
