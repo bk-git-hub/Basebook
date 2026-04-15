@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import type { GetEntriesResponse, GetEntryResponse } from '@basebook/contracts';
 import { CreateEntryDto } from './dto/create-entry.dto';
 import { GetEntriesQueryDto } from './dto/get-entries-query.dto';
@@ -30,5 +30,10 @@ export class EntriesController {
     @Body() body: UpdateEntryDto,
   ): Promise<GetEntryResponse> {
     return this.entriesService.updateEntry(id, body);
+  }
+
+  @Delete(':id')
+  deleteEntry(@Param('id') id: string): Promise<GetEntryResponse> {
+    return this.entriesService.deleteEntry(id);
   }
 }

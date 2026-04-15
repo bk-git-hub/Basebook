@@ -184,6 +184,36 @@ export class EntriesService {
     };
   }
 
+  async deleteEntry(id: string): Promise<GetEntryResponse> {
+    const existingEntry = await this.prisma.diaryEntry.findFirst({
+      where: {
+        id,
+        ownerId: DEMO_OWNER_ID,
+      },
+      include: {
+        photos: {
+          orderBy: {
+            sortOrder: 'asc',
+          },
+        },
+      },
+    });
+
+    if (!existingEntry) {
+      throw new NotFoundException(`Entry ${id} was not found`);
+    }
+
+    await this.prisma.diaryEntry.delete({
+      where: {
+        id,
+      },
+    });
+
+    return {
+      entry: this.toDiaryEntry(existingEntry),
+    };
+  }
+
   private toPhotoCreateInputs(photos: PhotoAsset[]) {
     return photos.map((photo, index) => ({
       id: photo.id || randomUUID(),

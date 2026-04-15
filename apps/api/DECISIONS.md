@@ -731,3 +731,30 @@
 - Related Docs:
   - `apps/api/src/app.config.ts`
   - `apps/api/src/app.config.spec.ts`
+
+### API-027
+
+- Date: `2026-04-15`
+- Time: `16:28`
+- Agenda: 기존 배포 DB를 유지한 채 일지 삭제 기능을 추가하는 최소 작업 범위
+- Participants: User, Codex
+- Options Considered:
+  - 기존 데이터를 초기화하고 새로 시작한다
+  - 프론트 수정 전에 백엔드 삭제 API부터 추가한다
+  - 삭제 기능을 다음 작업으로 미룬다
+- Decision:
+  - 기존 배포 DB는 유지하고, 백엔드에 `DELETE /entries/:id`를 추가한다
+- Rationale:
+  - 사용자는 지금 저장된 실제 엔트리를 지우지 않고 유지하면서, 일지 단건 삭제만 가능한 상태를 원한다
+  - 삭제는 entries 범위 안에서 완결되는 작은 기능이라 지금 시점에 가장 빠르게 안정적으로 추가할 수 있다
+  - 버튼이 없는 문제는 프론트 작업이지만, 백엔드 삭제 API를 먼저 열어두면 프론트는 바로 연결만 하면 된다
+- Impact:
+  - 배포 DB는 유지되고, 특정 엔트리만 선택적으로 삭제할 수 있다
+  - 사진은 Prisma cascade로 함께 정리된다
+  - 프론트는 다음 슬라이스에서 삭제 버튼과 확인 UI만 연결하면 된다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `apps/api/src/entries/entries.controller.ts`
+  - `apps/api/src/entries/entries.service.ts`
+  - `apps/api/test/app.e2e-spec.ts`

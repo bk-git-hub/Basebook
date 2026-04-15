@@ -144,6 +144,28 @@ describe('AppController (e2e)', () => {
       });
   });
 
+  it('/entries/:id (DELETE) deletes an existing entry and removes it from later reads', async () => {
+    await request(baseUrl)
+      .delete('/entries/entry-doosan-2026-04-02')
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body.entry.id).toBe('entry-doosan-2026-04-02');
+        expect(body.entry.photos).toHaveLength(2);
+      });
+
+    await request(baseUrl)
+      .get('/entries')
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body.entries).toHaveLength(2);
+        expect(body.entries.map((entry: { id: string }) => entry.id)).not.toContain(
+          'entry-doosan-2026-04-02',
+        );
+      });
+
+    await request(baseUrl).get('/entries/entry-doosan-2026-04-02').expect(404);
+  });
+
   it('/uploads/image (POST) stores a local image asset and exposes a retrievable URL', async () => {
     const pngBuffer = Buffer.from(
       'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Wn0X3sAAAAASUVORK5CYII=',
