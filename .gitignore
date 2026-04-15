@@ -34,3 +34,6 @@ pnpm-debug.log*
 Thumbs.db
 .vscode/
 .gstack/
+.codex-deploy/
+.codex-tmp/
+apps/web/public/sample-images/
