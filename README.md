@@ -98,6 +98,20 @@ Copy-Item .env.example .env
 - 실제 Sweetbook Sandbox API를 호출하려면 별도 설정이 필요합니다.
 - 이 모드에서만 실제 estimate / order와 Sweetbook 상태 연동을 검증할 수 있습니다.
 
+#### 실행 모드별 차이
+
+| 모드 | 필요한 설정 | 실제로 가능한 것 |
+|---|---|---|
+| 로컬 데모 모드 | 추가 설정 없음 | 일지 작성/조회/수정, 로컬 이미지 업로드, 로컬 시즌북 견적, 로컬 주문/상태 조회 |
+| 부분 Sandbox 연동 모드 | `SWEETBOOK_API_KEY` 입력 | Sweetbook API 연결 상태와 일부 연동 확인 가능, 하지만 주문은 기본적으로 local 모드 |
+| Sandbox 주문 검증 모드 | `SWEETBOOK_API_KEY` + `SWEETBOOK_ORDER_MODE=sandbox` + 공개 이미지 URL | 실제 Sweetbook Sandbox estimate / order / 상태 연동 검증 |
+
+정리하면:
+
+- API 키가 전혀 없어도 로컬 데모는 바로 실행됩니다.
+- API 키만 넣으면 Sweetbook 연결 준비는 되지만, 주문은 기본적으로 여전히 local 모드입니다.
+- 실제 Sweetbook Sandbox 주문까지 검증하려면 `SWEETBOOK_ORDER_MODE=sandbox`와 Sweetbook가 접근 가능한 공개 이미지 URL이 추가로 필요합니다.
+
 ### 4. Sandbox API Key 입력
 
 `apps/api/.env` 파일에서 아래 값을 설정합니다.
@@ -111,11 +125,51 @@ SWEETBOOK_API_KEY=your_real_sandbox_api_key
 - `your_real_sandbox_api_key` 자리에는 `api.sweetbook.com`에서 발급받은 본인 Sandbox API Key를 넣습니다.
 - 이 저장소에는 실제 키를 커밋하지 않았습니다. 로컬에서는 개인적으로 발급받은 키를 직접 입력해야 합니다.
 - 로컬 데모 모드만 확인할 경우 이 값은 비워둬도 됩니다.
-- 실제 Sweetbook Sandbox 주문까지 end-to-end로 검증하려면 아래 조건이 필요합니다.
+
+예시 1. 로컬 데모만 확인할 때
+
+```env
+SWEETBOOK_API_KEY=your_sandbox_api_key_here
+SWEETBOOK_ESTIMATE_MODE=auto
+SWEETBOOK_ORDER_MODE=local
+UPLOAD_STORAGE_DRIVER=local
+```
+
+- placeholder 값을 그대로 둬도 로컬 데모는 실행됩니다.
+- 이 경우 시즌북 견적/주문 흐름은 로컬 데모 기준으로 동작합니다.
+
+예시 2. 실제 Sweetbook Sandbox 연결을 일부 확인할 때
+
+```env
+SWEETBOOK_API_KEY=your_real_sandbox_api_key
+SWEETBOOK_ESTIMATE_MODE=auto
+SWEETBOOK_ORDER_MODE=local
+UPLOAD_STORAGE_DRIVER=local
+```
+
+- 이 경우 Sweetbook API를 호출할 수 있는 상태가 됩니다.
+- 다만 주문은 여전히 local 모드라서 실제 Sandbox 주문 생성까지는 가지 않습니다.
+
+예시 3. 실제 Sweetbook Sandbox 주문까지 검증할 때
+
+```env
+SWEETBOOK_API_KEY=your_real_sandbox_api_key
+SWEETBOOK_ESTIMATE_MODE=auto
+SWEETBOOK_ORDER_MODE=sandbox
+UPLOAD_STORAGE_DRIVER=r2
+R2_ACCOUNT_ID=your_cloudflare_account_id_here
+R2_ACCESS_KEY_ID=your_r2_access_key_id_here
+R2_SECRET_ACCESS_KEY=your_r2_secret_access_key_here
+R2_BUCKET=your_r2_bucket_name_here
+R2_PUBLIC_BASE_URL=https://your-public-r2-domain.example.com
+```
+
+- 실제 Sweetbook Sandbox 주문까지 end-to-end로 검증하려면 아래 조건이 모두 필요합니다.
   - 유효한 `SWEETBOOK_API_KEY`
   - `SWEETBOOK_ORDER_MODE=sandbox`
   - 시즌북 표지 및 업로드 이미지가 Sweetbook에서 접근 가능한 공개 URL
   - 필요 시 R2 같은 공개 이미지 저장소
+- `localhost` 업로드 URL은 Sweetbook 서버에서 접근할 수 없기 때문에, 실제 Sandbox 주문 검증에는 공개 이미지 URL이 필요합니다.
 
 ### 5. 실행
 
