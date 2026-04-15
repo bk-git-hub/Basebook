@@ -276,8 +276,7 @@ export function SeasonBookBuilderForm({ entries }: SeasonBookBuilderFormProps) {
             {selectedEntryIds.length}개 기록
           </h2>
           <p className="mt-2 text-sm leading-6 text-[#5a6f91]">
-            선택 수, 시즌, 사진 수를 기준으로 지금 구성한 시즌북 범위를 바로
-            확인할 수 있습니다.
+            지금 담은 기록 구성을 한눈에 봅니다.
           </p>
         </div>
 
@@ -348,8 +347,8 @@ export function SeasonBookBuilderForm({ entries }: SeasonBookBuilderFormProps) {
                 커버 이미지
               </p>
               <p className="text-xs leading-5 text-[#5a6f91]">
-                파일을 올리면 자동으로 호스팅한 뒤 시즌북 커버 주소에 바로
-                반영합니다.
+                커버로 쓸 이미지를 올려 주세요. 선택한 기록의 첫 사진도 사용할
+                수 있습니다.
               </p>
             </div>
 
@@ -434,8 +433,8 @@ export function SeasonBookBuilderForm({ entries }: SeasonBookBuilderFormProps) {
                   className="w-full rounded-2xl border border-[#d7e2f0] bg-white px-4 py-3 text-sm text-[#11284f] outline-none transition focus:border-[#11284f]"
                 />
                 <p className="text-xs leading-5 text-[#5a6f91]">
-                  예외적으로 직접 URL을 넣어야 한다면, 외부에서 바로 열리는
-                  이미지 주소만 사용해 주세요.
+                  직접 URL을 넣는 경우에는 이미지가 바로 열리는 주소를 사용해
+                  주세요.
                 </p>
               </label>
             ) : null}
@@ -456,7 +455,7 @@ export function SeasonBookBuilderForm({ entries }: SeasonBookBuilderFormProps) {
 
         {estimateResult ? (
           <div className="space-y-4 rounded-[24px] border border-emerald-200 bg-emerald-50 px-4 py-4 text-sm text-emerald-900">
-            <p className="font-semibold">견적 생성이 완료되었습니다.</p>
+            <p className="font-semibold">견적이 준비됐습니다.</p>
             <dl className="grid gap-2">
               <div className="flex justify-between gap-4">
                 <dt>페이지 수</dt>

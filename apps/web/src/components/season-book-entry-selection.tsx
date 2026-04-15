@@ -99,8 +99,7 @@ export function SeasonBookEntrySelection({
             시즌북에 넣을 기록
           </h2>
           <p className="mt-2 text-sm leading-6 text-[#5a6f91]">
-            시즌북에 담고 싶은 경기 기록을 고르세요. 선택한 기록은 오른쪽
-            요약에 바로 반영됩니다.
+            시즌북에 담고 싶은 경기 기록을 고르세요.
           </p>
         </div>
 

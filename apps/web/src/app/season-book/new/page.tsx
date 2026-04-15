@@ -46,7 +46,7 @@ export default async function NewSeasonBookPage() {
     <AppShell
       activeSection="season-book"
       title="시즌북 만들기"
-      description="담을 기록을 고르고, 제목과 커버를 정한 뒤 견적 생성으로 이어갑니다."
+      description="담을 기록을 고르고 제목과 커버를 정한 뒤 견적을 확인합니다."
       tone="home"
     >
       <div className="space-y-6">
@@ -61,11 +61,11 @@ export default async function NewSeasonBookPage() {
                   기록 선택 단계
                 </p>
                 <h1 className="text-2xl font-semibold tracking-tight text-[#11284f] sm:text-3xl">
-                  담을 기록을 고르고 바로 견적까지 이어가세요
+                  담을 기록을 고르고 견적까지 이어가세요
                 </h1>
                 <p className="max-w-2xl text-sm leading-7 text-[#5a6f91]">
-                  고른 경기 기록은 오른쪽 요약에 바로 반영됩니다. 제목과 커버만
-                  정하면 책 제작 전 예상 금액을 바로 확인할 수 있습니다.
+                  기록을 고르고 제목과 커버를 정하면 예상 페이지 수와 금액을
+                  볼 수 있습니다.
                 </p>
               </div>
             </div>
@@ -87,7 +87,7 @@ export default async function NewSeasonBookPage() {
                 기록 선택
               </h2>
               <p className="mt-2 text-sm leading-6 text-[#5a6f91]">
-                시즌북에 넣을 경기를 고르면 선택 수와 사진 수가 바로 집계됩니다.
+                시즌북에 담을 기록을 먼저 고릅니다.
               </p>
             </article>
 
@@ -99,7 +99,7 @@ export default async function NewSeasonBookPage() {
                 제목과 커버
               </h2>
               <p className="mt-2 text-sm leading-6 text-[#5a6f91]">
-                시즌북 제목과 소개문, 커버 사진을 정해 책의 첫인상을 잡습니다.
+                제목, 소개문, 커버를 정합니다.
               </p>
             </article>
 
@@ -111,7 +111,7 @@ export default async function NewSeasonBookPage() {
                 견적 확인
               </h2>
               <p className="mt-2 text-sm leading-6 text-[#5a6f91]">
-                예상 페이지 수와 금액을 확인한 뒤 주문 화면으로 넘어갈 수 있습니다.
+                예상 페이지 수와 금액을 확인합니다.
               </p>
             </article>
           </div>
@@ -123,7 +123,7 @@ export default async function NewSeasonBookPage() {
               Season Book
             </p>
             <h2 className="mt-3 text-2xl font-semibold tracking-tight text-[#11284f]">
-              기록 목록을 불러오지 못했습니다
+              기록을 불러오지 못했어요
             </h2>
             <p className="mt-3 text-sm leading-7 text-[#5a6f91]">
               {result.message}
@@ -138,7 +138,7 @@ export default async function NewSeasonBookPage() {
               시즌북에 넣을 기록이 없습니다
             </h2>
             <p className="mt-3 text-sm leading-7 text-[#5a6f91]">
-              먼저 새 직관 기록을 작성한 뒤 시즌북 선택 화면으로 돌아오세요.
+              먼저 기록을 남기면 여기서 시즌북을 만들 수 있습니다.
             </p>
             <Link
               href="/entries/new"

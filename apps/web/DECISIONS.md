@@ -1226,3 +1226,23 @@
 - Status: `approved`
 - Related Docs:
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+
+### WEB-059
+
+- Date: `2026-04-15`
+- Time: `11:28`
+- Agenda: `/season-book/new`에서 설명 문구를 최대한 제거할지, 필요한 안내는 남기되 내부 동작 설명은 줄일지 결정
+- Participants: User, Codex
+- Options Considered:
+  - `/season-book/new`의 설명 문구를 대폭 제거하고 선택/입력 UI만 남긴다
+  - `/season-book/new`는 설명이 필요한 작업 화면으로 두되, 내부 동작이나 집계 방식 설명은 줄이고 행동 안내 중심으로 정리한다
+- Decision: `/season-book/new`는 설명이 필요한 작업 화면으로 두되, 내부 동작이나 집계 방식 설명은 줄이고 행동 안내 중심으로 정리한다.
+- Rationale: 시즌북 만들기 화면은 사용자가 기록 선택, 커버 설정, 견적 확인 순서를 이해해야 해서 설명 자체를 모두 없애면 진입 장벽이 생긴다. 대신 현재 문구 중에는 “오른쪽 요약에 반영된다”, “집계된다”, “호스팅된다”처럼 구현 설명에 가까운 표현이 많아 제품다움이 떨어지므로, 필요한 안내만 남기고 문장을 더 짧고 직접적으로 바꾸는 편이 적절하다.
+- Impact:
+  - 상단 안내와 단계 카드가 더 짧고 읽기 쉬운 제품 문구로 바뀐다
+  - 기록 선택/요약/커버 섹션에서 내부 동작 설명의 비중이 줄어든다
+  - empty/error/견적 상태도 더 직접적인 톤으로 정리된다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
