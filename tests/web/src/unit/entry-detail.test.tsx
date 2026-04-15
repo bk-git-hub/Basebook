@@ -1,9 +1,17 @@
 import { render, screen } from "@testing-library/react";
+import { vi } from "vitest";
 
 import { EntryDetail } from "@/components/entry-detail";
 import { EntryDetailErrorState } from "@/components/entry-detail-state";
 
 import { createEntry } from "../fixtures/entries";
+
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({
+    push: vi.fn(),
+    refresh: vi.fn(),
+  }),
+}));
 
 describe("Entry detail QA smoke", () => {
   it("renders the saved entry payload and edit CTA", () => {
