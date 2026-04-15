@@ -394,7 +394,6 @@ export function EntryEditForm({ entry }: EntryEditFormProps) {
                 label="응원 팀"
                 value={values.favoriteTeam}
                 onChange={(team) => setFieldValue("favoriteTeam", team)}
-                hint="오늘 기록의 기준이 되는 팀을 먼저 골라 주세요."
                 disabledTeams={[values.opponentTeam]}
               />
 
@@ -403,7 +402,6 @@ export function EntryEditForm({ entry }: EntryEditFormProps) {
                 value={values.opponentTeam}
                 onChange={(team) => setFieldValue("opponentTeam", team)}
                 error={fieldErrors.opponentTeam}
-                hint="응원 팀과 다른 팀을 골라 주세요. 같은 팀을 고르면 저장 전에 알려드립니다."
                 disabledTeams={[values.favoriteTeam]}
               />
             </div>
