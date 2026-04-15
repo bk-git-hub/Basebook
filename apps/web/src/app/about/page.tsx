@@ -16,9 +16,9 @@ const featureCards = [
   },
   {
     label: "Make",
-    title: "견적부터 주문까지 이어집니다",
+    title: "견적 확인 뒤 바로 주문합니다",
     description:
-      "고른 기록으로 책 분량을 확인하고, 같은 흐름에서 주문까지 마칩니다.",
+      "고른 기록으로 책 분량을 확인하고 바로 주문할 수 있습니다.",
   },
 ];
 
@@ -31,7 +31,7 @@ const journeySteps = [
   {
     step: "02",
     title: "시즌 다시 보기",
-    description: "홈과 시즌 화면에서 최근 기록과 직관 흐름을 빠르게 살핍니다.",
+    description: "홈과 시즌 화면에서 최근 기록과 직관 승무패를 빠르게 살핍니다.",
   },
   {
     step: "03",
@@ -63,7 +63,7 @@ const quickLinks = [
 
 export const metadata: Metadata = {
   title: "서비스 소개 | Basebook",
-  description: "Basebook의 기록, 시즌 요약, 시즌북 제작 흐름을 소개하는 화면",
+  description: "Basebook의 기록, 시즌 요약, 시즌북 제작을 소개하는 화면",
 };
 
 export default function AboutPage() {
@@ -129,10 +129,10 @@ export default function AboutPage() {
                   경기마다 감정과 사진을 함께 남기기
                 </div>
                 <div className="rounded-[18px] border border-[#e5ecf6] bg-white px-4 py-3 text-sm text-[#5a6f91]">
-                  시즌 흐름을 홈과 시즌 화면에서 다시 보기
+                  시즌 기록을 홈과 시즌 화면에서 다시 보기
                 </div>
                 <div className="rounded-[18px] border border-[#e5ecf6] bg-white px-4 py-3 text-sm text-[#5a6f91]">
-                  고른 기록으로 시즌북 제작과 주문 이어가기
+                  고른 기록으로 시즌북 만들고 주문하기
                 </div>
               </div>
             </div>
@@ -164,11 +164,11 @@ export default function AboutPage() {
               journey
             </p>
             <h2 className="text-3xl font-semibold tracking-tight text-[#11284f]">
-              Basebook을 쓰는 흐름
+              Basebook으로 할 수 있는 일
             </h2>
             <p className="max-w-2xl text-sm leading-7 text-[#5a6f91]">
-              기록을 남긴 뒤 시즌을 돌아보고, 필요한 장면만 골라 시즌북으로
-              이어집니다.
+              기록을 남기고 시즌을 돌아본 뒤, 필요한 장면만 골라 시즌북으로
+              만듭니다.
             </p>
           </div>
 

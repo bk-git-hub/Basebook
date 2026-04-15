@@ -1325,3 +1325,23 @@
 - Status: `approved`
 - Related Docs:
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+
+### WEB-064
+
+- Date: `2026-04-15`
+- Time: `11:42`
+- Agenda: `/about` 페이지에서 영어 라벨은 유지하되, `흐름`처럼 개발 설명톤으로 읽히는 문구를 제품 문구로 바꿀지 결정
+- Participants: User, Codex
+- Options Considered:
+  - 영어 라벨과 함께 `흐름`, `이어집니다`, `이어가기` 같은 표현도 유지한다
+  - 영어 라벨은 유지하되, 개발 설명톤으로 읽히는 표현만 제품 문장으로 바꾼다
+- Decision: 영어 라벨은 유지하고, `흐름`, `이어집니다`, `이어가기` 같은 개발 설명톤 표현만 제품 문장으로 바꾼다.
+- Rationale: 사용자는 `/about`의 영어 라벨 자체는 어색하지 않다고 봤지만, `흐름` 같은 표현은 프로덕트 문구보다 구현 설명처럼 느껴진다고 판단했다. 따라서 시각적 라벨 체계는 유지하고, 실제 본문 문장만 더 자연스러운 서비스 언어로 정리하는 쪽이 적절하다.
+- Impact:
+  - `/about`의 소개 문구는 더 제품형 어조로 정리된다
+  - `journey` 같은 영어 섹션 라벨은 그대로 유지된다
+  - `흐름` 중심 표현은 `시즌 기록`, `할 수 있는 일`, `바로 주문하기` 같은 사용자 중심 문장으로 바뀐다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
