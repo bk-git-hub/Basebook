@@ -34,7 +34,7 @@
 - `test:unit`
   - 폼 validation, payload 생성, 링크/문구 렌더링 같은 UI 의사결정 로직을 빠르게 확인한다.
 - `test:e2e`
-  - 실제 Chromium에서 페이지 셸이 깨지지 않고 뜨는지 확인한다.
+  - 실제 Chromium에서 `/entries/new` 페이지 셸과 모바일 전용 제어가 production build 기준으로 정상 렌더링되는지 확인한다.
 - `test:e2e:order-report`
   - `POST /uploads/image` -> `POST /season-books/estimate` -> `POST /season-books/order` happy path를 실제 브라우저로 검증하고 스크린샷, Markdown, PDF 증거를 남긴다.
 - `MANUAL_E2E_SCENARIOS.md`
@@ -65,6 +65,7 @@ cmd.exe /d /s /c C:/Progra~1/nodejs/npm.cmd --prefix C:/Users/bksoft/Documents/S
 
 - 시즌 대시보드, 기록 상세, 기록 생성, 기록 수정 화면의 핵심 UI 결정 로직
 - `/entries/new` 라우트가 실제 브라우저와 production build 기준으로 뜨는지 여부
+- `/entries/new`의 모바일 팀 선택과 직관/비직관 조건부 필드가 실제 브라우저에서 깨지지 않는지 여부
 - 시즌북 견적 생성부터 주문 완료 화면까지의 로컬 happy path
 - 통합 흐름에 대한 시각적 증거와 재검토 가능한 보고서
 

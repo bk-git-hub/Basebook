@@ -1,6 +1,6 @@
 # Next QA Handoff
 
-Last updated: 2026-04-14 KST
+Last updated: 2026-04-15 KST
 
 이 문서는 다음 QA 작업을 시작하기 전에 먼저 읽는 인수인계 노트다. `AGENTS.md`와 `docs/AGENT_SYNC.md`가 최상위 규칙이고, 이 문서는 `tests/web` 관점의 실행 메모만 담는다.
 
@@ -43,8 +43,9 @@ Last updated: 2026-04-14 KST
 
 ## 현재 확인된 상태
 
-- `tests/web` unit smoke는 최근 기준으로 4 files / 8 tests 통과 상태였다.
-- `tests/web` Playwright smoke는 최근 기준으로 1 test 통과 상태였다.
+- `tests/web` unit smoke는 현재 기준으로 4 files / 13 tests 통과 상태다.
+- `tests/web` Playwright smoke는 현재 기준으로 2 tests 통과 상태다.
+- 루트의 `npm run test:web:e2e` 명령은 현재 다시 통과하며, `tests/web/playwright.config.ts`는 `localhost:3000` 기준으로 production build 서버를 직접 올리도록 맞춰져 있다.
 - `test:e2e:order-report`는 최근 기준으로 아래 happy path를 실제 브라우저에서 통과했다.
   - `POST /uploads/image`
   - `/season-book/new`
