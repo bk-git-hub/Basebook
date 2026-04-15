@@ -16,6 +16,24 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
+type SeasonPageProps = {
+  searchParams: Promise<{
+    entryDeleted?: string;
+  }>;
+};
+
+function getDeleteNotice(entryDeleted?: string) {
+  if (entryDeleted === "success") {
+    return "일지를 삭제했습니다.";
+  }
+
+  if (entryDeleted === "missing") {
+    return "이미 삭제된 일지입니다.";
+  }
+
+  return null;
+}
+
 async function loadSeasonEntries() {
   try {
     return {
@@ -38,8 +56,10 @@ async function loadSeasonEntries() {
   }
 }
 
-export default async function SeasonPage() {
+export default async function SeasonPage({ searchParams }: SeasonPageProps) {
+  const resolvedSearchParams = await searchParams;
   const result = await loadSeasonEntries();
+  const deleteNotice = getDeleteNotice(resolvedSearchParams.entryDeleted);
 
   return (
     <AppShell
@@ -47,6 +67,12 @@ export default async function SeasonPage() {
       title="시즌 기록"
       tone="home"
     >
+      {deleteNotice ? (
+        <section className="rounded-[24px] border border-[#dbe6f5] bg-[#eff4fb] px-5 py-4 shadow-[0_12px_30px_rgba(17,40,79,0.05)]">
+          <p className="text-sm font-semibold text-[#11284f]">{deleteNotice}</p>
+        </section>
+      ) : null}
+
       {result.status === "error" ? (
         <SeasonDashboardErrorState message={result.message} />
       ) : result.data.entries.length === 0 ? (

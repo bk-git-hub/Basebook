@@ -46,3 +46,11 @@ export async function createEntry(
     },
   });
 }
+
+export async function deleteEntry(id: string): Promise<GetEntryResponse> {
+  return fetchJson<GetEntryResponse>(`/entries/${id}`, {
+    init: {
+      method: "DELETE",
+    },
+  });
+}

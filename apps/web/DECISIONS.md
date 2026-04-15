@@ -1386,6 +1386,26 @@
 - Related Docs:
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
 
+### WEB-068
+
+- Date: `2026-04-15`
+- Time: `13:41`
+- Agenda: 엔트리 삭제 기능을 빠르게 붙이되 확인 UI를 브라우저 기본 confirm으로 갈지, 커스텀 모달까지 같이 구현할지 결정
+- Participants: User, Codex
+- Options Considered:
+  - 브라우저 기본 `confirm()`으로 삭제 확인만 붙인다
+  - 제품 톤에 맞는 커스텀 확인 모달까지 함께 구현한다
+- Decision: 엔트리 삭제는 `DELETE /entries/:id` 연동과 함께 커스텀 확인 모달까지 같이 구현한다.
+- Rationale: 사용자는 삭제도 제품 경험의 일부라고 봤고, 기본 브라우저 confirm보다 서비스 톤에 맞는 확인 UI가 필요하다고 판단했다. 이번 기능은 상세 화면 기준 1건 삭제 플로우로 범위가 충분히 작아, 커스텀 모달까지 포함해도 atomic slice를 유지할 수 있다.
+- Impact:
+  - 상세 화면에서 수정과 함께 삭제 액션이 명확히 노출된다
+  - 삭제 전 사용자는 커스텀 모달로 한 번 더 확인한다
+  - 성공 시 시즌 기록 화면으로 이동하고, 이미 삭제된 경우에도 목록 화면에서 상태를 안내할 수 있다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+
 ### WEB-066
 
 - Date: `2026-04-15`

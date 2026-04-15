@@ -8,6 +8,8 @@ import type {
   WatchType,
 } from "@basebook/contracts";
 
+import { EntryDetailActions } from "@/components/entry-detail-actions";
+
 const TEAM_LABELS: Record<TeamCode, string> = {
   LG: "LG 트윈스",
   DOOSAN: "두산 베어스",
@@ -173,12 +175,7 @@ export function EntryDetail({ entry }: EntryDetailProps) {
               >
                 {RESULT_LABELS[entry.result]}
               </span>
-              <Link
-                href={`/entries/${entry.id}/edit`}
-                className="inline-flex items-center justify-center rounded-full bg-[#11284f] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#0b1d3b]"
-              >
-                이 기록 수정하기
-              </Link>
+              <EntryDetailActions entryId={entry.id} />
             </div>
           </div>
         </div>
@@ -299,12 +296,6 @@ export function EntryDetail({ entry }: EntryDetailProps) {
           className="inline-flex items-center justify-center rounded-full bg-[#11284f] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#0b1d3b]"
         >
           시즌 대시보드로 돌아가기
-        </Link>
-        <Link
-          href={`/entries/${entry.id}/edit`}
-          className="inline-flex items-center justify-center rounded-full border border-[#d4ddeb] bg-white px-5 py-3 text-sm font-semibold text-[#11284f] transition hover:border-[#aebfd8] hover:bg-[#f8fbff]"
-        >
-          수정 화면 열기
         </Link>
       </div>
     </div>
