@@ -2,6 +2,8 @@
 
 베이스북은 야구팬이 경기마다 감정, 사진, 맥락을 기록하고, 시즌이 끝나면 그 기록을 한 권의 책으로 주문할 수 있는 웹 서비스입니다.
 
+- 배포 데모: [https://basebook-web.vercel.app/](https://basebook-web.vercel.app/)
+
 ## 서비스 소개
 
 ### 어떤 서비스인가요?
