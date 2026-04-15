@@ -13,8 +13,6 @@ import { TeamBadge } from "@/components/team-badge";
 import { formatMonthDay, formatMonthDayWithWeekday } from "@/lib/date-format";
 import { getTeamLabel } from "@/lib/team-meta";
 
-const RECENT_ENTRY_LIMIT = 4;
-
 const RESULT_LABELS: Record<GameResult, string> = {
   WIN: "승",
   LOSE: "패",
@@ -104,7 +102,7 @@ type SeasonDashboardView = {
   latestSeasonYear: number;
   favoriteTeam: TeamCode;
   latestEntry: DiaryEntry;
-  recentEntries: DiaryEntry[];
+  seasonEntries: DiaryEntry[];
   totalGames: number;
   wins: number;
   losses: number;
@@ -166,7 +164,7 @@ function buildSeasonDashboardView(
     latestSeasonYear,
     favoriteTeam: inferFavoriteTeam(seasonEntries),
     latestEntry: seasonEntries[0],
-    recentEntries: seasonEntries.slice(0, RECENT_ENTRY_LIMIT),
+    seasonEntries,
     totalGames: seasonEntries.length,
     wins,
     losses,
@@ -313,7 +311,7 @@ export function SeasonDashboard({ dashboard }: SeasonDashboardProps) {
       <section className="rounded-[30px] border border-[#e5ecf6] bg-white p-5 shadow-[0_18px_48px_rgba(17,40,79,0.06)] sm:p-6">
         <div className="flex flex-col gap-2 border-b border-[#edf2f8] pb-4 sm:flex-row sm:items-end sm:justify-between">
           <h2 className="text-xl font-semibold tracking-tight text-[#11284f] sm:text-2xl">
-            최근 기록
+            전체 기록
           </h2>
           <p className="text-sm font-medium text-[#5a6f91]">
             전체 {view.totalGames}건
@@ -321,7 +319,7 @@ export function SeasonDashboard({ dashboard }: SeasonDashboardProps) {
         </div>
 
         <div className="mt-4 space-y-3">
-          {view.recentEntries.map((entry) => (
+          {view.seasonEntries.map((entry) => (
             <Link
               key={entry.id}
               href={`/entries/${entry.id}`}
