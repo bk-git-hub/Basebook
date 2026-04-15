@@ -37,6 +37,7 @@
   - 실제 Chromium에서 `/entries/new`가 로컬 전용 API, 로컬 SQLite DB, 로컬 업로드 저장소와 연결된 상태로 정상 동작하는지 확인한다.
 - `test:e2e:order-report`
   - `POST /uploads/image` -> `POST /season-books/estimate` -> `POST /season-books/order` -> `/order/[projectId]/status` happy path를 실제 브라우저로 검증하고 스크린샷, Markdown, PDF 증거를 남긴다.
+  - 이미 떠 있는 개발 서버를 재사용하지 않고, QA 전용 로컬 포트에서 API와 web production server를 새로 올린다.
 - `MANUAL_E2E_SCENARIOS.md`
   - 사람 손으로 봐야 하는 UX와 탐색형 QA를 담당한다.
 

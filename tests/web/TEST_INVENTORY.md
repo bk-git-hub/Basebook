@@ -160,6 +160,7 @@
   - 실제 happy path를 돌리고, 스크린샷과 PDF 증거를 같이 남기기 위해 만들었다.
 - 핵심 검증:
   - API와 웹 production build
+  - QA 전용 포트에서 새 서버를 직접 띄워 기존 dev 서버를 재사용하지 않음
   - 로컬 전용 DB / 로컬 업로드 저장소 / 로컬 주문 모드 강제
   - `/season-book/new`에서 기록 선택과 브라우저 기반 커버 이미지 업로드
   - `POST /uploads/image`
