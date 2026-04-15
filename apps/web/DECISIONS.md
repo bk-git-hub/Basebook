@@ -1185,3 +1185,23 @@
 - Status: `approved`
 - Related Docs:
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+
+### WEB-057
+
+- Date: `2026-04-15`
+- Time: `11:00`
+- Agenda: `/season` 화면의 설명형 문구를 유지할지, 숫자와 카드만으로 읽히도록 보조 문구를 거의 제거할지 결정
+- Participants: User, Codex
+- Options Considered:
+  - `/season`의 현재 설명 문구를 유지하고 일부 문장만 짧게 다듬는다
+  - `/season`은 A안으로 가서 헤더 설명, 카드 보조 문구, 최근 기록 안내 같은 설명형 카피를 거의 제거한다
+- Decision: `/season`은 A안으로 가서 헤더 설명, 카드 보조 문구, 최근 기록 안내 같은 설명형 카피를 거의 제거한다.
+- Rationale: 사용자가 이미 숫자, 팀 배지, 승무패, 최근 기록 카드만으로 화면을 충분히 읽을 수 있다고 판단했고, 현재 문장들은 제품 카피보다 화면 사용법을 설명하는 내부 안내처럼 들린다. 이번 단계에서는 구조를 바꾸기보다 불필요한 문장을 걷어내는 편이 가장 얇고 효과적이다.
+- Impact:
+  - `/season` 상단은 제목과 핵심 숫자 중심으로 더 짧고 직접적으로 읽힌다
+  - 요약 카드와 최근 기록 섹션에서 중복 설명 문구가 사라진다
+  - 빈 상태와 오류 상태도 과한 안내 대신 더 간결한 제품 톤으로 정리된다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`

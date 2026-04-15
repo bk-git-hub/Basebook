@@ -45,7 +45,6 @@ export default async function SeasonPage() {
     <AppShell
       activeSection="season"
       title="시즌 기록"
-      description="최신 시즌 기준으로 응원 기록과 최근 일지를 빠르게 확인합니다."
       tone="home"
     >
       {result.status === "error" ? (

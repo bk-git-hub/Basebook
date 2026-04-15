@@ -47,7 +47,7 @@ const TONE_STYLES: Record<
 type AppShellProps = {
   activeSection: AppShellSection;
   title: string;
-  description: string;
+  description?: string;
   tone?: AppShellTone;
   children: ReactNode;
 };
@@ -82,9 +82,13 @@ export function AppShell({
                 >
                   {title}
                 </p>
-                <p className={`text-sm leading-6 ${styles.sectionDescription}`}>
-                  {description}
-                </p>
+                {description ? (
+                  <p
+                    className={`text-sm leading-6 ${styles.sectionDescription}`}
+                  >
+                    {description}
+                  </p>
+                ) : null}
               </div>
             </div>
           </div>

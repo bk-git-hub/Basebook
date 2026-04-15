@@ -211,12 +211,10 @@ function InfoChip({ label, value }: { label: string; value: string }) {
 function SummaryStatCard({
   label,
   value,
-  helper,
   className,
 }: {
   label: string;
   value: string;
-  helper: string;
   className: string;
 }) {
   return (
@@ -225,7 +223,6 @@ function SummaryStatCard({
       <p className="mt-3 text-2xl font-semibold tracking-tight sm:text-[2rem]">
         {value}
       </p>
-      <p className="mt-2 text-sm leading-6">{helper}</p>
     </article>
   );
 }
@@ -242,10 +239,6 @@ export function SeasonDashboard({ dashboard }: SeasonDashboardProps) {
       <section className="rounded-[32px] border border-[#e5ecf6] bg-white px-5 py-6 shadow-[0_18px_48px_rgba(17,40,79,0.06)] sm:px-8 sm:py-8">
         <div className="flex flex-col gap-6 xl:flex-row xl:items-start xl:justify-between">
           <div className="min-w-0 space-y-4">
-            <span className="inline-flex rounded-full border border-[#dce6f3] bg-[#fbfdff] px-3 py-1 text-xs font-semibold tracking-[0.2em] text-[#c42d3c] uppercase">
-              season dashboard
-            </span>
-
             <div className="flex items-center gap-4">
               <div className="rounded-[24px] border border-[#e5ecf6] bg-[#fbfdff] p-3">
                 <TeamBadge team={view.favoriteTeam} size={72} />
@@ -256,13 +249,8 @@ export function SeasonDashboard({ dashboard }: SeasonDashboardProps) {
                   {view.latestSeasonYear} 시즌
                 </p>
                 <h1 className="mt-1 text-[1.9rem] font-semibold tracking-tight text-[#11284f] sm:text-[2.4rem]">
-                  {getTeamLabel(view.favoriteTeam)} 기록 흐름
+                  {getTeamLabel(view.favoriteTeam)}
                 </h1>
-                <p className="mt-2 text-sm leading-6 text-[#5a6f91] sm:text-[0.97rem]">
-                  최근 기록 {formatCompactDate(view.latestEntry.date)}까지
-                  반영해 승무패와 기록 흐름을 한 자리에서 바로 읽을 수 있게
-                  정리했습니다.
-                </p>
               </div>
             </div>
 
@@ -277,16 +265,14 @@ export function SeasonDashboard({ dashboard }: SeasonDashboardProps) {
           </div>
 
           <aside className="rounded-[28px] border border-[#e5ecf6] bg-[#fbfdff] p-4 sm:p-5 xl:max-w-xs">
-            <p className="text-xs font-semibold tracking-[0.18em] text-[#c42d3c] uppercase">
-              season snapshot
-            </p>
+            <p className="text-sm font-semibold text-[#5a6f91]">직관 승률</p>
             <p className="mt-3 text-3xl font-semibold tracking-tight text-[#11284f] sm:text-[2.2rem]">
               {view.trackedGames > 0 ? `${view.winRate}%` : "-"}
             </p>
-            <p className="mt-2 text-sm leading-6 text-[#5a6f91]">
+            <p className="mt-2 text-sm font-medium text-[#5a6f91]">
               {view.trackedGames > 0
-                ? `${view.wins}승 ${view.draws}무 ${view.losses}패 기준 승률`
-                : "승무패가 기록된 경기부터 승률이 계산됩니다."}
+                ? `${view.wins}승 ${view.draws}무 ${view.losses}패`
+                : "승무패 기록 없음"}
             </p>
 
             <div className="mt-4 flex flex-col gap-2 sm:flex-row xl:flex-col">
@@ -312,51 +298,37 @@ export function SeasonDashboard({ dashboard }: SeasonDashboardProps) {
           <SummaryStatCard
             label="시즌 기록"
             value={`${view.totalGames}건`}
-            helper={`${view.latestSeasonYear} 시즌에 남긴 전체 기록`}
             className="border-[#e5ecf6] bg-[#fbfdff] text-[#11284f]"
           />
           <SummaryStatCard
             label="승리"
             value={`${view.wins}`}
-            helper="결과가 승리로 저장된 경기 수"
             className="border-[#d9e4f4] bg-[#eef3fb] text-[#11284f]"
           />
           <SummaryStatCard
             label="패배"
             value={`${view.losses}`}
-            helper="결과가 패배로 저장된 경기 수"
             className="border-[#f3c9cf] bg-[#fff3f4] text-[#c42d3c]"
           />
           <SummaryStatCard
             label="무승부"
             value={`${view.draws}`}
-            helper="결과가 무승부로 저장된 경기 수"
             className="border-[#e1e8f3] bg-[#f8fbff] text-[#5a6f91]"
           />
         </div>
 
         {view.unknownGames > 0 ? (
-          <p className="rounded-[22px] border border-[#e5ecf6] bg-white px-4 py-3 text-sm leading-6 text-[#5a6f91]">
-            결과 미정으로 남아 있는 기록 {view.unknownGames}건은 승무패
-            집계에서 제외됩니다.
+          <p className="rounded-[22px] border border-[#e5ecf6] bg-white px-4 py-3 text-sm font-medium text-[#5a6f91]">
+            미정 {view.unknownGames}건 제외
           </p>
         ) : null}
       </section>
 
       <section className="rounded-[30px] border border-[#e5ecf6] bg-white p-5 shadow-[0_18px_48px_rgba(17,40,79,0.06)] sm:p-6">
         <div className="flex flex-col gap-2 border-b border-[#edf2f8] pb-4 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <p className="text-xs font-semibold tracking-[0.18em] text-[#c42d3c] uppercase">
-              recent entries
-            </p>
-            <h2 className="mt-1 text-xl font-semibold tracking-tight text-[#11284f] sm:text-2xl">
-              최근 기록
-            </h2>
-            <p className="mt-1 text-sm leading-6 text-[#5a6f91]">
-              이번 시즌에서 최신 {view.recentEntries.length}건을 먼저
-              보여줍니다.
-            </p>
-          </div>
+          <h2 className="text-xl font-semibold tracking-tight text-[#11284f] sm:text-2xl">
+            최근 기록
+          </h2>
           <p className="text-sm font-medium text-[#5a6f91]">
             전체 {view.totalGames}건
           </p>
