@@ -290,3 +290,21 @@
   - Railway CLI login and first real deploy still require the user's authenticated Railway session
 - Next Step:
   - authenticate Railway on the user's machine and execute the first backend deployment
+
+### BE-MILESTONE-016
+
+- Date: `2026-04-15`
+- Time: `16:45`
+- Milestone: Diary delete endpoint and backend API docs synchronized
+- Status: `ready_for_review`
+- Summary:
+  - `DELETE /entries/:id` is now implemented and deployed without resetting the existing production SQLite data
+  - shared contract and planning docs now reflect the latest implemented backend endpoints including entry deletion and order history
+  - `apps/api/docs/API_REFERENCE.md` was added as a static human-readable endpoint reference for frontend and QA
+- Related Decision IDs:
+  - `API-027`
+  - `API-028`
+- Blocking Items:
+  - frontend delete button wiring is still pending in `apps/web`
+- Next Step:
+  - connect the frontend delete action to `DELETE /entries/:id`

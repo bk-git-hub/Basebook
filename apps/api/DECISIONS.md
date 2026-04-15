@@ -758,3 +758,32 @@
   - `apps/api/src/entries/entries.controller.ts`
   - `apps/api/src/entries/entries.service.ts`
   - `apps/api/test/app.e2e-spec.ts`
+
+### API-028
+
+- Date: `2026-04-15`
+- Time: `16:45`
+- Agenda: 최신 구현과 문서 드리프트를 줄이기 위한 백엔드 API 문서화 기준
+- Participants: User, Codex
+- Options Considered:
+  - 기존 planning 문서만 부분 수정한다
+  - Swagger를 새로 붙여서 자동 문서화까지 한 번에 시도한다
+  - planning 문서와 공유 타입을 최신화하고, 사람이 바로 읽을 수 있는 정적 API 레퍼런스를 추가한다
+- Decision:
+  - `docs/planning/*`와 `packages/contracts/*`를 최신 구현에 맞춰 갱신한다
+  - 백엔드 전용 정적 레퍼런스 문서를 `apps/api/docs/API_REFERENCE.md`에 추가한다
+- Rationale:
+  - 지금 시점에서는 Swagger 신규 도입보다 기존 문서와 계약을 먼저 맞추는 것이 빠르고 안정적이다
+  - 프론트와 QA는 구현된 엔드포인트를 한 파일에서 빠르게 확인할 수 있는 읽기 쉬운 문서가 필요하다
+  - planning 문서, 공유 타입, 정적 레퍼런스를 같은 슬라이스에서 함께 갱신하면 이후 드리프트를 줄일 수 있다
+- Impact:
+  - 새 엔드포인트를 추가할 때 `packages/contracts`, planning 문서, `apps/api/docs/API_REFERENCE.md`를 함께 갱신해야 한다
+  - 프론트와 QA는 정적 API 레퍼런스를 빠른 조회용 문서로 사용할 수 있다
+  - Swagger는 후속 선택지로 남기되, 현재 제출 범위에서는 필수가 아니다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/CONTRACT_SPEC.md`
+  - `docs/planning/BACKEND_FUNCTIONAL_SPEC.md`
+  - `packages/contracts/src/diary.ts`
+  - `apps/api/docs/API_REFERENCE.md`

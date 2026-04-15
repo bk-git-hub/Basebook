@@ -261,11 +261,36 @@ type UpdateDiaryEntryInput = Partial<CreateDiaryEntryInput>;
 
 - `GetEntryResponse`와 동일 shape
 
+### `DELETE /entries/:id`
+
+용도:
+
+- 기존 일지 삭제
+
+응답:
+
+```ts
+type DeleteEntryResponse = {
+  entry: DiaryEntry;
+};
+```
+
+참고:
+
+- 성공 시 삭제 직전의 엔트리 본문을 그대로 반환한다
+- 연결된 사진은 DB cascade로 함께 정리된다
+- 삭제 후 같은 id로 `GET /entries/:id`를 다시 호출하면 `404`가 반환된다
+
 ### `POST /uploads/image`
 
 용도:
 
 - 사용자 업로드 이미지 저장
+
+참고:
+
+- 응답 `asset.url`은 Sweetbook이 실제로 가져갈 수 있는 public URL이어야 한다
+- 구현은 환경에 따라 로컬 정적 파일 또는 Cloudflare R2 public URL을 사용할 수 있다
 
 응답:
 

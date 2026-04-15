@@ -12,7 +12,7 @@
 
 - 입력 검증
 - 경기 후보 데이터 조회
-- 일지 저장/조회/수정
+- 일지 저장/조회/수정/삭제
 - 이미지 업로드 처리
 - 시즌북 생성 파이프라인
 - Sweetbook API 호출
@@ -57,7 +57,7 @@
 
 역할:
 
-- 일지 생성/조회/수정
+- 일지 생성/조회/수정/삭제
 - 시즌 요약 집계
 
 ### `upload`
@@ -65,7 +65,7 @@
 역할:
 
 - 이미지 업로드
-- Blob URL 반환
+- public URL 반환
 
 ### `season-book`
 
@@ -82,7 +82,7 @@
 
 역할:
 
-- SDK 래핑
+- Sweetbook HTTP API 클라이언트 래핑
 - BookSpecs/Templates 조회
 - books/cover/contents/finalization/estimate/order 처리
 - webhook event 수신 동기화
@@ -168,11 +168,18 @@
 
 - 일지 수정
 
+### `DELETE /entries/:id`
+
+역할:
+
+- 일지 삭제
+- 연결된 사진 정리
+
 ### `POST /uploads/image`
 
 역할:
 
-- 업로드 파일을 Vercel Blob에 저장
+- 업로드 파일을 로컬 정적 저장소 또는 Cloudflare R2에 저장
 - URL과 파일명 반환
 
 ### `POST /season-books/estimate`
@@ -198,6 +205,13 @@
 - 배송지 검증
 - Sweetbook order 생성
 - `orderUid` 저장
+
+### `GET /season-books/orders`
+
+역할:
+
+- 사용자 주문 내역 목록 조회
+- 최신 주문부터 화면에 바로 그릴 수 있는 최소 정보 반환
 
 ### `GET /season-books/:projectId/status`
 
@@ -274,7 +288,7 @@
 ### Phase B3. 일지 CRUD
 
 - diary model/schema
-- list/detail/create/update
+- list/detail/create/update/delete
 - 시즌 요약 계산
 
 완료 기준:
@@ -283,11 +297,12 @@
 - `GET /entries/:id`
 - `POST /entries`
 - `PATCH /entries/:id`
+- `DELETE /entries/:id`
 
 ### Phase B4. 이미지 업로드
 
 - upload controller/service
-- Blob 저장
+- local 또는 R2 저장
 - asset response shape 고정
 
 완료 기준:
@@ -330,6 +345,7 @@
 완료 기준:
 
 - `POST /season-books/order` 동작
+- `GET /season-books/orders` 동작
 - `GET /season-books/:projectId/status` 동작
 - 상태 응답이 배송지 prefill 기준 데이터로도 사용 가능
 
