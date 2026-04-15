@@ -9,6 +9,7 @@ import { HomeStadiumSummary } from "@/components/home-stadium-summary";
 import { TeamBadge } from "@/components/team-badge";
 import { getEntries } from "@/lib/api/entries";
 import { ApiClientError } from "@/lib/api/http";
+import { formatMonthDay, formatMonthDayWithWeekday } from "@/lib/date-format";
 import { getTeamLabel } from "@/lib/team-meta";
 
 const RECENT_ENTRY_LIMIT = 4;
@@ -142,21 +143,6 @@ function buildHomeSummary(entries: DiaryEntry[]): HomeSummary | null {
     seasonRecordCount: seasonEntries.length,
     winRate,
   };
-}
-
-function formatEntryDate(date: string) {
-  return new Intl.DateTimeFormat("ko-KR", {
-    month: "long",
-    day: "numeric",
-    weekday: "short",
-  }).format(new Date(date));
-}
-
-function formatCompactDate(date: string) {
-  return new Intl.DateTimeFormat("ko-KR", {
-    month: "numeric",
-    day: "numeric",
-  }).format(new Date(date));
 }
 
 function formatScore(entry: DiaryEntry) {
@@ -329,7 +315,7 @@ export default async function HomePage() {
                 latestSeasonYear={summary.latestSeasonYear}
                 seasonRecordCount={summary.seasonRecordCount}
                 stadiumEntryCount={summary.stadiumEntries.length}
-                latestEntryDate={formatCompactDate(latestEntry.date)}
+                latestEntryDate={formatMonthDay(latestEntry.date)}
               />
             </div>
 
@@ -385,7 +371,7 @@ export default async function HomePage() {
                             {RESULT_LABELS[entry.result]}
                           </span>
                           <span className="text-sm font-medium text-[#6a7d9f]">
-                            {formatEntryDate(entry.date)}
+                            {formatMonthDayWithWeekday(entry.date)}
                           </span>
                         </div>
                         <h3 className="mt-2 text-lg font-semibold tracking-tight text-[#11284f] sm:mt-3 sm:text-xl">

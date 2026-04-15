@@ -10,6 +10,7 @@ import type {
 } from "@basebook/contracts";
 
 import { TeamBadge } from "@/components/team-badge";
+import { formatMonthDay, formatMonthDayWithWeekday } from "@/lib/date-format";
 import { getTeamLabel } from "@/lib/team-meta";
 
 const RECENT_ENTRY_LIMIT = 4;
@@ -34,21 +35,6 @@ const WATCH_TYPE_LABELS: Record<WatchType, string> = {
   MOBILE: "모바일 시청",
   OTHER: "기타",
 };
-
-function formatEntryDate(date: string): string {
-  return new Intl.DateTimeFormat("ko-KR", {
-    month: "long",
-    day: "numeric",
-    weekday: "short",
-  }).format(new Date(date));
-}
-
-function formatCompactDate(date: string): string {
-  return new Intl.DateTimeFormat("ko-KR", {
-    month: "numeric",
-    day: "numeric",
-  }).format(new Date(date));
-}
 
 function formatScore(entry: DiaryEntry): string {
   if (
@@ -257,7 +243,7 @@ export function SeasonDashboard({ dashboard }: SeasonDashboardProps) {
             <div className="flex flex-wrap gap-2">
               <InfoChip
                 label="최근 기록"
-                value={formatCompactDate(view.latestEntry.date)}
+                value={formatMonthDay(view.latestEntry.date)}
               />
               <InfoChip label="직관" value={`${view.stadiumGames}경기`} />
               <InfoChip label="사진" value={`${view.photoCount}장`} />
@@ -352,7 +338,7 @@ export function SeasonDashboard({ dashboard }: SeasonDashboardProps) {
                     {WATCH_TYPE_LABELS[entry.watchType]}
                   </span>
                   <span className="text-sm font-medium text-[#5a6f91]">
-                    {formatEntryDate(entry.date)}
+                    {formatMonthDayWithWeekday(entry.date)}
                   </span>
                 </div>
 

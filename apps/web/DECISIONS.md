@@ -1205,3 +1205,24 @@
 - Status: `approved`
 - Related Docs:
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+
+### WEB-058
+
+- Date: `2026-04-15`
+- Time: `11:08`
+- Agenda: `/season` 후속 정리에서 날짜 표기, 섹션 명칭, 승무패 색상, 사진 수 노출 범위를 어떤 기준으로 맞출지 결정
+- Participants: User, Codex
+- Options Considered:
+  - `/season`만 부분 수정하고 숫자/텍스트 스타일은 현재 화면 기준으로 유지한다
+  - 홈과 `/season`의 날짜 표기와 승무패 색을 더 일관되게 맞추고, `/season`은 전체 기록 관점에 맞게 명칭과 보조 정보도 정리한다
+- Decision: 홈과 `/season`의 날짜 표기와 승무패 색을 더 일관되게 맞추고, `/season`은 전체 기록 관점에 맞게 명칭과 보조 정보도 정리한다. 사진 수 노출은 A안으로 가서 상단 전체 사진 장수만 제거하고 카드 내 사진 정보는 유지한다.
+- Rationale: 사용자는 `4.2.` 같은 숫자형 날짜와 `/season`의 일부 용어, 색상, 사진 수 노출이 현재 제품 톤과 맞지 않는다고 판단했다. 이 단계에서는 홈과 `/season` 사이의 일관성을 높이되, 사진 정보는 완전히 없애기보다 가장 불필요한 상단 집계만 제거하는 얇은 수정이 적절하다.
+- Impact:
+  - 홈과 `/season`의 월/일 표기는 `4월 2일`처럼 더 명확하게 읽힌다
+  - `/season`의 리스트는 최근 기록보다 전체 기록 성격이 더 분명해진다
+  - 승/무/패 시각 강조가 홈과 같은 초록/노랑/빨강 톤으로 통일된다
+  - `/season` 상단 집계에서 전체 사진 장수는 제거되지만 카드 내부 사진 정보는 유지된다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
