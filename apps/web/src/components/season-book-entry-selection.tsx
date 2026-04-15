@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 
 import type {
@@ -50,11 +51,15 @@ function formatEntryDate(date: string): string {
   }).format(new Date(date));
 }
 
-function formatScore(entry: DiaryEntry): string {
-  if (
+function hasScore(entry: DiaryEntry): boolean {
+  return (
     typeof entry.scoreFor === "number" &&
     typeof entry.scoreAgainst === "number"
-  ) {
+  );
+}
+
+function formatScore(entry: DiaryEntry): string {
+  if (hasScore(entry)) {
     return `${entry.scoreFor} : ${entry.scoreAgainst}`;
   }
 
@@ -125,22 +130,23 @@ export function SeasonBookEntrySelection({
         {entries.map((entry) => {
           const isSelected = selectedEntryIdSet.has(entry.id);
           const representativePhoto = entry.photos[0];
+          const entryHasScore = hasScore(entry);
 
           return (
             <article
               key={entry.id}
-              className={`rounded-[24px] border px-5 py-4 transition ${
+              className={`rounded-[24px] border px-4 py-4 transition sm:px-5 ${
                 isSelected
                   ? "border-[#11284f] bg-[#11284f] text-white shadow-[0_20px_48px_rgba(17,40,79,0.16)]"
                   : "border-[#e5ecf6] bg-white shadow-[0_12px_30px_rgba(17,40,79,0.04)] hover:border-[#cfdcf0] hover:shadow-[0_18px_38px_rgba(17,40,79,0.08)]"
               }`}
             >
-              <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
+              <div className="space-y-4">
                 <button
                   type="button"
                   onClick={() => toggleEntry(entry.id)}
                   aria-pressed={isSelected}
-                  className="flex flex-1 items-start gap-4 text-left"
+                  className="flex w-full items-start gap-3 text-left sm:gap-4"
                 >
                   <span
                     className={`mt-1 flex size-5 shrink-0 items-center justify-center rounded-full border text-xs font-bold ${
@@ -151,8 +157,8 @@ export function SeasonBookEntrySelection({
                   >
                     ✓
                   </span>
-                  <span className="flex min-w-0 flex-1 items-start justify-between gap-4">
-                    <span className="min-w-0 space-y-3">
+                  <span className="flex min-w-0 flex-1 items-start gap-3 sm:gap-4">
+                    <span className="min-w-0 flex-1 space-y-3">
                       <span className="flex flex-wrap items-center gap-2">
                         <span
                           className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ring-inset ${
@@ -174,6 +180,36 @@ export function SeasonBookEntrySelection({
                       <span className="block text-lg font-semibold tracking-tight">
                         {formatEntryTitle(entry)}
                       </span>
+                      <span className="flex flex-wrap items-center gap-2">
+                        <span
+                          className={`inline-flex items-center rounded-full border px-3 py-1.5 text-sm font-semibold ${
+                            isSelected
+                              ? "border-white/15 bg-white/10 text-white"
+                              : "border-[#dce6f3] bg-[#fbfdff] text-[#11284f]"
+                          }`}
+                        >
+                          {entryHasScore ? (
+                            <>
+                              <span
+                                className={`mr-2 text-[0.72rem] font-semibold tracking-[0.16em] uppercase ${
+                                  isSelected
+                                    ? "text-[#d9e4f6]"
+                                    : "text-[#6a7d9f]"
+                                }`}
+                              >
+                                점수
+                              </span>
+                              <span className="text-base font-semibold tracking-tight">
+                                {formatScore(entry)}
+                              </span>
+                            </>
+                          ) : (
+                            <span className="text-sm font-semibold">
+                              {formatScore(entry)}
+                            </span>
+                          )}
+                        </span>
+                      </span>
                       <span
                         className={`block text-sm leading-6 ${
                           isSelected ? "text-[#d9e4f6]" : "text-[#4f6488]"
@@ -185,17 +221,19 @@ export function SeasonBookEntrySelection({
 
                     {representativePhoto ? (
                       <span
-                        className={`relative h-20 w-16 shrink-0 overflow-hidden rounded-[18px] border sm:h-24 sm:w-20 ${
+                        className={`relative size-[4.5rem] shrink-0 overflow-hidden rounded-[18px] border sm:size-20 ${
                           isSelected
                             ? "border-white/20 bg-white/10"
                             : "border-[#dce6f3] bg-[#f8fbff]"
                         }`}
                       >
-                        <img
+                        <Image
                           src={representativePhoto.url}
                           alt={`${formatEntryTitle(entry)} 대표 사진`}
-                          loading="lazy"
-                          className="h-full w-full object-cover"
+                          fill
+                          unoptimized
+                          sizes="(min-width: 640px) 80px, 72px"
+                          className="object-cover"
                         />
                       </span>
                     ) : null}
@@ -203,17 +241,20 @@ export function SeasonBookEntrySelection({
                 </button>
 
                 <div
-                  className={`grid gap-2 rounded-2xl px-4 py-3 text-sm ${
+                  className={`flex items-center justify-between gap-3 border-t pt-3 text-sm ${
                     isSelected
-                      ? "bg-white/10 text-[#eef4ff]"
-                      : "bg-[#fbfdff] text-[#4f6488] ring-1 ring-[#e5ecf6]"
+                      ? "border-white/10 text-[#d9e4f6]"
+                      : "border-[#edf2f8] text-[#5a6f91]"
                   }`}
                 >
-                  <p className="font-semibold text-inherit">{formatScore(entry)}</p>
-                  <p>{entry.photos.length}장 첨부</p>
+                  <p className="font-medium text-inherit">
+                    {entry.photos.length > 0
+                      ? `사진 ${entry.photos.length}장`
+                      : "사진 없음"}
+                  </p>
                   <Link
                     href={`/entries/${entry.id}`}
-                    className={`font-semibold underline underline-offset-4 ${
+                    className={`font-semibold ${
                       isSelected
                         ? "text-white hover:text-[#d9e4f6]"
                         : "text-[#4f6488] hover:text-[#11284f]"
