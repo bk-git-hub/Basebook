@@ -162,12 +162,6 @@ export function HomeSeasonOverview({
           >
             시즌북 제작
           </Link>
-          <Link
-            href="/about"
-            className="inline-flex items-center justify-center rounded-full border border-[#d4ddeb] bg-white px-5 py-3 text-sm font-semibold text-[#11284f] transition hover:border-[#aebfd8]"
-          >
-            서비스 알아보기
-          </Link>
         </div>
       </section>
     </>
