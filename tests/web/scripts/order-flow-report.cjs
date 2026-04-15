@@ -2,14 +2,27 @@ const { spawn } = require("node:child_process");
 const fs = require("node:fs");
 const path = require("node:path");
 
-const { chromium, request } = require("@playwright/test");
+const { chromium } = require("@playwright/test");
 
 const repoRoot = path.resolve(__dirname, "../../..");
 const webRoot = path.resolve(__dirname, "..");
 const outputDir = path.join(webRoot, "test-results", "order-flow-report");
+const apiPrismaDir = path.resolve(repoRoot, "apps/api/prisma");
 const baseWebUrl = "http://127.0.0.1:3000";
 const baseApiUrl = "http://127.0.0.1:4000";
 const npmCommand = process.platform === "win32" ? "npm.cmd" : "npm";
+const localDatabaseUrl = `file:${path
+  .relative(apiPrismaDir, path.join(outputDir, "order-flow.db"))
+  .replace(/\\/g, "/")}`;
+const localOnlyEnv = {
+  ...process.env,
+  DATABASE_URL: localDatabaseUrl,
+  NEXT_PUBLIC_API_BASE_URL: baseApiUrl,
+  PORT: "4000",
+  SWEETBOOK_ESTIMATE_MODE: "local",
+  SWEETBOOK_ORDER_MODE: "local",
+  UPLOAD_STORAGE_DRIVER: "local",
+};
 const pngBuffer = Buffer.from(
   "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Wn0X3sAAAAASUVORK5CYII=",
   "base64",
@@ -31,7 +44,7 @@ function spawnLogged(command, args, name) {
       : { command, args };
   const child = spawn(spawnTarget.command, spawnTarget.args, {
     cwd: repoRoot,
-    env: process.env,
+    env: localOnlyEnv,
     stdio: ["ignore", "pipe", "pipe"],
     windowsHide: true,
   });
@@ -135,14 +148,14 @@ function writeMarkdownReport(result) {
     "",
     "## Scope",
     "",
-    "- Browser flow: `/season-book/new` -> estimate creation -> `/order/[projectId]` -> shipping form -> order completion",
+    "- Browser flow: `/season-book/new` -> local cover upload -> estimate creation -> `/order/[projectId]` -> shipping form -> order status",
     "- Backend endpoints observed: `POST /uploads/image`, `POST /season-books/estimate`, `POST /season-books/order`",
     "- Secret handling: API keys and raw uploaded asset URLs are intentionally omitted.",
     "",
     "## Result",
     "",
     `- Overall: ${result.ok ? "PASS" : "FAIL"}`,
-    `- R2/public cover URL accepted: ${result.uploadedCoverHostIsPublic ? "yes" : "no"}`,
+    `- Local cover URL accepted: ${result.uploadedCoverIsLocal ? "yes" : "no"}`,
     `- Estimate response status: ${result.estimateStatus}`,
     `- Order response status: ${result.orderStatus}`,
     `- Final order status visible: ${result.finalOrderStatus}`,
@@ -221,11 +234,11 @@ async function writePdfReport(result) {
         <p>Generated: ${new Date().toISOString()}</p>
         <div class="summary">
           <p><strong>Overall:</strong> ${result.ok ? "PASS" : "FAIL"}</p>
-          <p><strong>Scope:</strong> <code>/season-book/new</code> -> estimate -> <code>/order/[projectId]</code> -> order completion</p>
+          <p><strong>Scope:</strong> <code>/season-book/new</code> -> local cover upload -> estimate -> <code>/order/[projectId]</code> -> order status</p>
           <p><strong>Estimate status:</strong> ${result.estimateStatus}</p>
           <p><strong>Order status:</strong> ${result.orderStatus}</p>
           <p><strong>Final UI status:</strong> ${result.finalOrderStatus} / ${result.finalProjectStatus}</p>
-          <p><strong>R2/public cover URL accepted:</strong> ${result.uploadedCoverHostIsPublic ? "yes" : "no"}</p>
+          <p><strong>Local cover URL accepted:</strong> ${result.uploadedCoverIsLocal ? "yes" : "no"}</p>
           <p><strong>Secret handling:</strong> API keys and raw uploaded asset URLs are intentionally omitted.</p>
         </div>
         ${screenshotSections}
@@ -244,30 +257,6 @@ async function writePdfReport(result) {
 }
 
 async function runBrowserFlow() {
-  const api = await request.newContext();
-  const uploadResponse = await api.post(`${baseApiUrl}/uploads/image`, {
-    multipart: {
-      file: {
-        name: "qa-cover.png",
-        mimeType: "image/png",
-        buffer: pngBuffer,
-      },
-    },
-  });
-
-  if (!uploadResponse.ok()) {
-    throw new Error(`Upload failed with HTTP ${uploadResponse.status()}`);
-  }
-
-  const uploadPayload = await uploadResponse.json();
-  const coverPhotoUrl = uploadPayload.asset?.url;
-
-  if (!coverPhotoUrl) {
-    throw new Error("Upload response did not include asset.url");
-  }
-
-  const coverHost = new URL(coverPhotoUrl).hostname;
-  const uploadedCoverHostIsPublic = !["localhost", "127.0.0.1", "0.0.0.0"].includes(coverHost);
   const browser = await chromium.launch({ headless: true });
   const page = await browser.newPage({ viewport: { width: 1440, height: 1100 } });
   const apiResponses = [];
@@ -278,19 +267,19 @@ async function runBrowserFlow() {
       path: path.join(outputDir, "01-season-book-new.png"),
     },
     {
-      title: "Step 2 - Estimate Created",
-      description: "Selected all records, used the uploaded public cover URL, and received the estimate completion UI.",
-      path: path.join(outputDir, "02-estimate-created.png"),
+      title: "Step 2 - Local Cover Uploaded",
+      description: "Uploaded a cover image through the browser UI and confirmed that the preview now points to a local API-hosted asset.",
+      path: path.join(outputDir, "02-cover-uploaded.png"),
     },
     {
       title: "Step 3 - Order Form With Estimate Summary",
-      description: "Navigated from the estimate result into `/order/[projectId]` and verified the order confirmation summary.",
+      description: "Created the estimate and verified that the flow redirected into `/order/[projectId]` with the estimate summary attached.",
       path: path.join(outputDir, "03-order-form.png"),
     },
     {
-      title: "Step 4 - Order Completed",
-      description: "Submitted shipping information and verified the completion card with order and project statuses.",
-      path: path.join(outputDir, "04-order-complete.png"),
+      title: "Step 4 - Order Status Updated",
+      description: "Submitted shipping information and verified the order status page with the updated local project and order states.",
+      path: path.join(outputDir, "04-order-status.png"),
     },
   ];
 
@@ -310,22 +299,63 @@ async function runBrowserFlow() {
       .locator("label")
       .filter({ hasText: "소개문" })
       .locator("textarea")
-      .fill("R2 공개 커버 이미지와 선택 기록으로 시즌북 견적을 만든 뒤 주문까지 이어지는 통합 QA입니다.");
-    await field(page, "커버 사진 URL").fill(coverPhotoUrl);
+      .fill("로컬 업로드 커버 이미지와 선택 기록으로 시즌북 견적을 만든 뒤 주문 상태 화면까지 이어지는 통합 QA입니다.");
 
-    await page.getByRole("button", { name: "시즌북 견적 생성" }).click();
-    await page.getByText("견적 생성이 완료되었습니다.").waitFor({ timeout: 60000 });
-    await page.getByText("예상 금액", { exact: true }).waitFor({ timeout: 10000 });
-    await page.screenshot({
-      path: screenshots[1].path,
-      fullPage: true,
-      mask: [field(page, "커버 사진 URL")],
+    const uploadResponsePromise = page.waitForResponse(
+      (response) =>
+        response.url().endsWith("/uploads/image") &&
+        response.request().method() === "POST",
+    );
+
+    await page.locator('input[type="file"]').setInputFiles({
+      buffer: pngBuffer,
+      mimeType: "image/png",
+      name: "qa-cover.png",
     });
 
-    await page.getByRole("link", { name: "주문 화면으로 이동" }).click();
+    const uploadResponse = await uploadResponsePromise;
+
+    if (uploadResponse.status() !== 201) {
+      throw new Error(`Cover upload failed with HTTP ${uploadResponse.status()}`);
+    }
+
+    await page
+      .getByText(/업로드가 완료되어 커버 이미지로 적용했습니다\./)
+      .waitFor({ timeout: 30000 });
+
+    const uploadedCoverUrl = await page
+      .getByAltText("시즌북 커버 미리보기")
+      .getAttribute("src");
+
+    if (!uploadedCoverUrl) {
+      throw new Error("Cover preview did not expose a source URL");
+    }
+
+    const coverHost = new URL(uploadedCoverUrl).hostname;
+    const uploadedCoverIsLocal = ["localhost", "127.0.0.1", "0.0.0.0"].includes(
+      coverHost,
+    );
+
+    if (!uploadedCoverIsLocal) {
+      throw new Error(
+        `Expected a local-only uploaded cover URL, received host "${coverHost}" instead.`,
+      );
+    }
+
+    await page.screenshot({ path: screenshots[1].path, fullPage: true });
+
+    const estimateResponsePromise = page.waitForResponse(
+      (response) =>
+        response.url().endsWith("/season-books/estimate") &&
+        response.request().method() === "POST",
+    );
+
+    await page.getByRole("button", { name: "시즌북 견적 생성" }).click();
+
+    const estimateResponse = await estimateResponsePromise;
     await page.waitForURL(/\/order\/[^/?]+/, { timeout: 30000 });
-    await page.getByText("주문 전 확인").waitFor({ timeout: 10000 });
-    await page.getByText("예상 금액", { exact: true }).waitFor({ timeout: 10000 });
+    await page.getByText("배송 정보").waitFor({ timeout: 10000 });
+    await page.getByText("주문 확인").waitFor({ timeout: 10000 });
     await page.screenshot({ path: screenshots[2].path, fullPage: true });
 
     await field(page, "수령인 이름").fill("QA 테스터");
@@ -333,28 +363,56 @@ async function runBrowserFlow() {
     await field(page, "우편번호").fill("06236");
     await field(page, "기본 주소").fill("서울특별시 강남구 테헤란로 123");
     await field(page, "상세 주소").fill("4층 QA석");
-    await page.getByRole("button", { name: "시즌북 주문 접수" }).click();
-    await page.getByText("주문이 접수되었습니다.").waitFor({ timeout: 60000 });
-    await page.getByText("CONFIRMED").waitFor({ timeout: 10000 });
-    await page.getByText("ORDERED").waitFor({ timeout: 10000 });
+
+    const orderResponsePromise = page.waitForResponse(
+      (response) =>
+        response.url().endsWith("/season-books/order") &&
+        response.request().method() === "POST",
+    );
+
+    await page.getByRole("button", { name: "주문하기" }).click();
+
+    const orderResponse = await orderResponsePromise;
+    await page.waitForURL(/\/order\/[^/]+\/status/, { timeout: 30000 });
+    await page
+      .getByRole("heading", { name: "주문 정보" })
+      .waitFor({ timeout: 10000 });
+    await page.getByText("주문 완료").waitFor({ timeout: 10000 });
+    await page.getByText("주문 확인").waitFor({ timeout: 10000 });
     await page.screenshot({ path: screenshots[3].path, fullPage: true });
 
-    const estimateResponse = apiResponses.find((response) => response.url.endsWith("/season-books/estimate"));
-    const orderResponse = apiResponses.find((response) => response.url.endsWith("/season-books/order"));
+    apiResponses.push({
+      url: estimateResponse.url().replace(/\?.*$/u, ""),
+      status: estimateResponse.status(),
+    });
+    apiResponses.push({
+      url: orderResponse.url().replace(/\?.*$/u, ""),
+      status: orderResponse.status(),
+    });
+
+    const estimateApiResponse = apiResponses.find((response) =>
+      response.url.endsWith("/season-books/estimate"),
+    );
+    const orderApiResponse = apiResponses.find((response) =>
+      response.url.endsWith("/season-books/order"),
+    );
 
     return {
-      ok: estimateResponse?.status === 201 && orderResponse?.status === 201,
-      uploadedCoverHostIsPublic,
-      estimateStatus: estimateResponse?.status ?? "not observed",
-      orderStatus: orderResponse?.status ?? "not observed",
-      finalOrderStatus: "CONFIRMED",
-      finalProjectStatus: "ORDERED",
-      finalUrl: page.url().replace(/\/order\/[^/?]+/u, "/order/<projectId>"),
+      ok:
+        estimateApiResponse?.status === 201 && orderApiResponse?.status === 201,
+      uploadedCoverIsLocal,
+      estimateStatus: estimateApiResponse?.status ?? "not observed",
+      orderStatus: orderApiResponse?.status ?? "not observed",
+      finalOrderStatus: "주문 확인",
+      finalProjectStatus: "주문 완료",
+      finalUrl: page.url().replace(
+        /\/order\/[^/]+\/status/u,
+        "/order/<projectId>/status",
+      ),
       screenshots,
     };
   } finally {
     await browser.close();
-    await api.dispose();
   }
 }
 
@@ -370,7 +428,11 @@ async function main() {
   try {
     if (!(await canFetch(`${baseApiUrl}/health`))) {
       console.log("Starting QA API server...");
-      const apiServer = spawnLogged(process.execPath, [path.join(webRoot, "scripts", "qa-api-server.cjs")], "api-server");
+      const apiServer = spawnLogged(
+        npmCommand,
+        ["run", "start:prod", "-w", "apps/api"],
+        "api-server",
+      );
       startedProcesses.push(apiServer.child);
       await waitFor(`${baseApiUrl}/health`, "QA API server");
     }
