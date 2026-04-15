@@ -1,9 +1,9 @@
 [
   {
-    "id": "game-lg-2025-09-18",
+    "id": "game-doosan-2025-09-18",
     "seasonYear": 2025,
     "date": "2025-09-18",
-    "favoriteTeam": "LG",
+    "favoriteTeam": "DOOSAN",
     "opponentTeam": "KT",
     "stadium": "Jamsil Baseball Stadium",
     "scoreFor": 6,
@@ -13,11 +13,11 @@
     "source": "SEED"
   },
   {
-    "id": "game-lg-2026-03-22",
+    "id": "game-doosan-2026-03-22",
     "seasonYear": 2026,
     "date": "2026-03-22",
-    "favoriteTeam": "LG",
-    "opponentTeam": "DOOSAN",
+    "favoriteTeam": "DOOSAN",
+    "opponentTeam": "LG",
     "stadium": "Jamsil Baseball Stadium",
     "scoreFor": 5,
     "scoreAgainst": 3,
@@ -26,10 +26,10 @@
     "source": "SEED"
   },
   {
-    "id": "game-lg-2026-04-09",
+    "id": "game-doosan-2026-04-09",
     "seasonYear": 2026,
     "date": "2026-04-09",
-    "favoriteTeam": "LG",
+    "favoriteTeam": "DOOSAN",
     "opponentTeam": "SSG",
     "stadium": "Jamsil Baseball Stadium",
     "scoreFor": 2,
@@ -39,10 +39,10 @@
     "source": "SEED"
   },
   {
-    "id": "game-lg-2026-04-10",
+    "id": "game-doosan-2026-04-10",
     "seasonYear": 2026,
     "date": "2026-04-10",
-    "favoriteTeam": "LG",
+    "favoriteTeam": "DOOSAN",
     "opponentTeam": "SSG",
     "stadium": "Jamsil Baseball Stadium",
     "result": "UNKNOWN",

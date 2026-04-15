@@ -8,22 +8,22 @@ describe('GamesService', () => {
   });
 
   it('filters games by favorite team', () => {
-    const response = gamesService.getGames({ favoriteTeam: 'LG' });
+    const response = gamesService.getGames({ favoriteTeam: 'DOOSAN' });
 
     expect(response.games).toHaveLength(4);
-    expect(response.games.every((game) => game.favoriteTeam === 'LG')).toBe(true);
+    expect(response.games.every((game) => game.favoriteTeam === 'DOOSAN')).toBe(true);
   });
 
   it('filters games by date and season year when provided', () => {
     const response = gamesService.getGames({
-      favoriteTeam: 'LG',
+      favoriteTeam: 'DOOSAN',
       date: '2026-04-10',
       seasonYear: 2026,
     });
 
     expect(response.games).toEqual([
       expect.objectContaining({
-        id: 'game-lg-2026-04-10',
+        id: 'game-doosan-2026-04-10',
         status: 'SCHEDULED',
       }),
     ]);

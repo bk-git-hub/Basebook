@@ -48,7 +48,7 @@ describe('AppController (e2e)', () => {
     return request(baseUrl)
       .get('/games')
       .query({
-        favoriteTeam: 'LG',
+        favoriteTeam: 'DOOSAN',
         seasonYear: '2026',
       })
       .expect(200)
@@ -81,10 +81,10 @@ describe('AppController (e2e)', () => {
 
   it('/entries/:id (GET) returns a single entry', () => {
     return request(baseUrl)
-      .get('/entries/entry-lg-2025-09-18')
+      .get('/entries/entry-doosan-2025-09-18')
       .expect(200)
       .expect(({ body }) => {
-        expect(body.entry.id).toBe('entry-lg-2025-09-18');
+        expect(body.entry.id).toBe('entry-doosan-2025-09-18');
         expect(body.entry.photos).toHaveLength(1);
       });
   });
@@ -95,7 +95,7 @@ describe('AppController (e2e)', () => {
       .send({
         seasonYear: 2026,
         date: '2026-04-11',
-        favoriteTeam: 'LG',
+        favoriteTeam: 'DOOSAN',
         opponentTeam: 'SSG',
         scoreFor: 7,
         scoreAgainst: 4,
@@ -115,14 +115,14 @@ describe('AppController (e2e)', () => {
       .expect(201)
       .expect(({ body }) => {
         expect(body.entry.ownerId).toBe('demo-user-001');
-        expect(body.entry.favoriteTeam).toBe('LG');
+        expect(body.entry.favoriteTeam).toBe('DOOSAN');
         expect(body.entry.photos).toHaveLength(1);
       });
   });
 
   it('/entries/:id (PATCH) updates an existing entry', () => {
     return request(baseUrl)
-      .patch('/entries/entry-lg-2026-03-22')
+      .patch('/entries/entry-doosan-2026-03-22')
       .send({
         highlight: '집관이었지만 끝내기 장면 때문에 소리 질렀다.',
         photos: [
@@ -175,10 +175,10 @@ describe('AppController (e2e)', () => {
       .post('/season-books/estimate')
       .send({
         seasonYear: 2026,
-        title: '2026 LG 직관 기록',
+        title: '2026 두산 직관 기록',
         introText: '올해의 야구 기록을 한 권으로 남긴다.',
         coverPhotoUrl: 'http://localhost:4000/uploads/local/cover-photo.png',
-        selectedEntryIds: ['entry-lg-2026-03-22', 'entry-lg-2026-04-02'],
+        selectedEntryIds: ['entry-doosan-2026-03-22', 'entry-doosan-2026-04-02'],
       })
       .expect(201)
       .expect(({ body }) => {
@@ -209,10 +209,10 @@ describe('AppController (e2e)', () => {
       .post('/season-books/estimate')
       .send({
         seasonYear: 2026,
-        title: '2026 LG 직관 기록',
+        title: '2026 두산 직관 기록',
         introText: '올해의 야구 기록을 한 권으로 남긴다.',
         coverPhotoUrl: 'http://localhost:4000/uploads/local/cover-photo.png',
-        selectedEntryIds: ['entry-lg-2026-03-22', 'entry-lg-2026-04-02'],
+        selectedEntryIds: ['entry-doosan-2026-03-22', 'entry-doosan-2026-04-02'],
       })
       .expect(201);
 
@@ -242,9 +242,9 @@ describe('AppController (e2e)', () => {
       .post('/season-books/estimate')
       .send({
         seasonYear: 2026,
-        title: '2026 LG 직관 기록',
+        title: '2026 두산 직관 기록',
         coverPhotoUrl: 'http://localhost:4000/uploads/local/cover-photo.png',
-        selectedEntryIds: ['entry-lg-2026-03-22'],
+        selectedEntryIds: ['entry-doosan-2026-03-22'],
       })
       .expect(201);
 
@@ -277,9 +277,9 @@ describe('AppController (e2e)', () => {
       .post('/season-books/estimate')
       .send({
         seasonYear: 2026,
-        title: '2026 LG 직관 기록',
+        title: '2026 두산 직관 기록',
         coverPhotoUrl: 'http://localhost:4000/uploads/local/cover-photo.png',
-        selectedEntryIds: ['entry-lg-2026-03-22'],
+        selectedEntryIds: ['entry-doosan-2026-03-22'],
       })
       .expect(201);
 
@@ -331,9 +331,9 @@ describe('AppController (e2e)', () => {
       .post('/season-books/estimate')
       .send({
         seasonYear: 2026,
-        title: '2026 LG 직관 기록',
+        title: '2026 두산 직관 기록',
         coverPhotoUrl: 'http://localhost:4000/uploads/local/cover-photo.png',
-        selectedEntryIds: ['entry-lg-2026-03-22'],
+        selectedEntryIds: ['entry-doosan-2026-03-22'],
       })
       .expect(201);
 
@@ -384,9 +384,9 @@ describe('AppController (e2e)', () => {
       .post('/season-books/estimate')
       .send({
         seasonYear: 2026,
-        title: '2026 LG 직관 기록',
+        title: '2026 두산 직관 기록',
         coverPhotoUrl: 'http://localhost:4000/uploads/local/cover-photo.png',
-        selectedEntryIds: ['entry-lg-2026-03-22'],
+        selectedEntryIds: ['entry-doosan-2026-03-22'],
       })
       .expect(201);
 
@@ -432,9 +432,9 @@ describe('AppController (e2e)', () => {
       .post('/season-books/estimate')
       .send({
         seasonYear: 2026,
-        title: '2026 LG 직관 기록',
+        title: '2026 두산 직관 기록',
         coverPhotoUrl: 'http://localhost:4000/uploads/local/cover-photo.png',
-        selectedEntryIds: ['entry-lg-2026-03-22'],
+        selectedEntryIds: ['entry-doosan-2026-03-22'],
       })
       .expect(201);
 

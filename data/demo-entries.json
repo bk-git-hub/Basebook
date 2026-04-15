@@ -1,24 +1,24 @@
 [
   {
-    "id": "entry-lg-2025-09-18",
+    "id": "entry-doosan-2025-09-18",
     "ownerId": "demo-user-001",
-    "gameId": "game-lg-2025-09-18",
+    "gameId": "game-doosan-2025-09-18",
     "seasonYear": 2025,
     "date": "2025-09-18",
-    "favoriteTeam": "LG",
+    "favoriteTeam": "DOOSAN",
     "opponentTeam": "KT",
     "scoreFor": 6,
     "scoreAgainst": 2,
     "result": "WIN",
     "watchType": "STADIUM",
     "stadium": "Jamsil Baseball Stadium",
-    "seat": "1루 내야 지정석 113블록 7열",
-    "playerOfTheDay": "문보경",
-    "highlight": "9회말 쐐기 적시타가 나오자 잠실이 완전히 뒤집혔다.",
-    "rawMemo": "오랜만에 친구랑 직관 갔는데 경기 흐름이 너무 좋았다. 응원가 따라 부르다가 목이 쉬었다.",
+    "seat": "3루 내야 지정석 214블록 6열",
+    "playerOfTheDay": "양의지",
+    "highlight": "8회말 추가 적시타가 나오자 3루 쪽 응원석이 완전히 들썩였다.",
+    "rawMemo": "오랜만에 친구랑 직관 갔는데 두산 타선 집중력이 정말 좋았다. 응원가 따라 부르다가 목이 쉬었다.",
     "photos": [
       {
-        "id": "photo-entry-lg-2025-09-18-1",
+        "id": "photo-entry-doosan-2025-09-18-1",
         "url": "https://pub-721a4bb10d7944d1891213efbc66e17e.r2.dev/uploads/2026-04-14/74bed418-47d4-4343-9050-ca3abcfe2f5b.jpg",
         "fileName": "IMG_5961.jpg"
       }
@@ -27,24 +27,24 @@
     "updatedAt": "2025-09-18T12:30:00.000Z"
   },
   {
-    "id": "entry-lg-2026-03-22",
+    "id": "entry-doosan-2026-03-22",
     "ownerId": "demo-user-001",
-    "gameId": "game-lg-2026-03-22",
+    "gameId": "game-doosan-2026-03-22",
     "seasonYear": 2026,
     "date": "2026-03-22",
-    "favoriteTeam": "LG",
-    "opponentTeam": "DOOSAN",
+    "favoriteTeam": "DOOSAN",
+    "opponentTeam": "LG",
     "scoreFor": 5,
     "scoreAgainst": 3,
     "result": "WIN",
     "watchType": "TV",
     "stadium": "Jamsil Baseball Stadium",
-    "playerOfTheDay": "오스틴",
+    "playerOfTheDay": "김재환",
     "highlight": "선발이 6이닝을 버텨주고 중심타선이 제때 쳐준 개막 시리즈 느낌의 경기였다.",
     "rawMemo": "집에서 가족이랑 봤는데 7회 역전 분위기가 정말 좋았다.",
     "photos": [
       {
-        "id": "photo-entry-lg-2026-03-22-1",
+        "id": "photo-entry-doosan-2026-03-22-1",
         "url": "https://pub-721a4bb10d7944d1891213efbc66e17e.r2.dev/uploads/2026-04-14/922965ff-3d2c-4b03-ad1c-f98fede56111.jpg",
         "fileName": "KakaoTalk_20260414_154410047.jpg"
       }
@@ -53,11 +53,11 @@
     "updatedAt": "2026-03-22T08:00:00.000Z"
   },
   {
-    "id": "entry-lg-2026-04-02",
+    "id": "entry-doosan-2026-04-02",
     "ownerId": "demo-user-001",
     "seasonYear": 2026,
     "date": "2026-04-02",
-    "favoriteTeam": "LG",
+    "favoriteTeam": "DOOSAN",
     "opponentTeam": "SSG",
     "scoreFor": 4,
     "scoreAgainst": 4,
@@ -67,12 +67,12 @@
     "rawMemo": "지하철에서 끝까지 보다가 내릴 역을 놓칠 뻔했다.",
     "photos": [
       {
-        "id": "photo-entry-lg-2026-04-02-1",
+        "id": "photo-entry-doosan-2026-04-02-1",
         "url": "https://pub-721a4bb10d7944d1891213efbc66e17e.r2.dev/uploads/2026-04-14/a2edf3e9-7c53-44b6-bb75-4764108efc20.jpg",
         "fileName": "KakaoTalk_20260414_154410047_01.jpg"
       },
       {
-        "id": "photo-entry-lg-2026-04-02-2",
+        "id": "photo-entry-doosan-2026-04-02-2",
         "url": "https://pub-721a4bb10d7944d1891213efbc66e17e.r2.dev/uploads/2026-04-14/b81a2fbd-adb8-4ebb-bce6-934800dc0c8f.jpg",
         "fileName": "KakaoTalk_20260414_154410047_02.jpg"
       }
