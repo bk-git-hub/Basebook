@@ -1145,3 +1145,23 @@
 - Status: `approved`
 - Related Docs:
   - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
+
+### WEB-055
+
+- Date: `2026-04-15`
+- Time: `10:32`
+- Agenda: `/about`을 상단 네비게이션이 있는 무거운 소개 랜딩으로 둘지, 최근 홈/기록 화면처럼 가벼운 제품 소개 페이지로 줄일지 결정
+- Participants: User, Codex
+- Options Considered:
+  - 기존처럼 상단 네비게이션과 큰 섹션 블록을 유지한 소개 랜딩 구조를 계속 사용한다
+  - `홈으로 돌아가기`만 남긴 가벼운 셸 위에 핵심 소개, 사용 흐름, 바로가기만 남기는 제품 소개 페이지로 줄인다
+- Decision: `/about`은 `홈으로 돌아가기`만 남긴 가벼운 셸 위에 핵심 소개, 사용 흐름, 바로가기만 남기는 제품 소개 페이지로 줄인다.
+- Rationale: 최근 홈과 기록 작성 화면은 상단 네비게이션보다 바로 행동으로 들어가는 구조가 더 제품답게 정리돼 있다. 반면 현재 `/about`은 소개 랜딩처럼 무겁게 느껴져 다른 화면과 결이 달라 보이므로, 정보량을 줄이고 행동 시작점을 더 앞에 두는 편이 지금 제품 톤과 맞다.
+- Impact:
+  - `/about` 상단의 별도 네비게이션 헤더는 사라지고 `홈으로 돌아가기` 중심의 얇은 셸로 바뀐다
+  - 소개 내용은 핵심 기능, 사용 흐름, 바로가기 중심으로 더 짧고 가볍게 읽히게 된다
+  - 홈과 기록 작성 화면에서 `/about`으로 이동했을 때 제품 전환감이 줄어든다
+- Owner: User
+- Status: `approved`
+- Related Docs:
+  - `docs/planning/FRONTEND_FUNCTIONAL_SPEC.md`
