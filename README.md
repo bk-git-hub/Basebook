@@ -189,7 +189,8 @@ npm run dev
 
 - Web: `http://localhost:3000`
 - API: `http://localhost:4000`
-- Playwright E2E 전용 Web: `http://localhost:3100`
+- Playwright E2E 전용 Web: `http://127.0.0.1:3100`
+- Playwright E2E 전용 API: `http://127.0.0.1:4100`
 
 ### 6. 실행 직후 응답 확인
 
@@ -218,9 +219,10 @@ npm run dev
 
 #### 2) `/entries/new`
 
-- 날짜, 응원팀, 상대팀, 저장 버튼이 보여야 합니다.
+- 날짜, 응원팀, 상대팀, 결과, 관람 형태, 저장 버튼이 보여야 합니다.
 - 로컬 데모 모드에서는 이미지 첨부와 저장 흐름이 동작해야 합니다.
 - 현재 제출 버전의 프론트엔드는 수동 입력 기준으로 동작합니다.
+- 직관일 때만 경기장과 좌석 입력이 보이고, TV/모바일/기타 관람으로 바꾸면 숨겨져야 합니다.
 - 경기 후보 조회 API (`GET /games`)는 백엔드에 구현되어 있지만, 이 화면에는 아직 연결하지 않았습니다.
 
 #### 3) `/entries/[id]`
@@ -275,8 +277,11 @@ npx playwright install
 npm run test:web:e2e
 ```
 
-- Playwright E2E는 개발용 `3000` 포트 대신 전용 `3100` 포트에서 Next.js 프로덕션 서버를 따로 띄워 검증합니다.
-- 이미 `3100` 포트를 점유한 프로세스가 있다면 먼저 종료한 뒤 다시 실행합니다.
+- Playwright E2E는 개발용 `3000/4000` 서버를 재사용하지 않고, 전용 Web/API 서버를 따로 띄워 검증합니다.
+- 전용 Web 주소는 `http://127.0.0.1:3100` 입니다.
+- 전용 API 주소는 `http://127.0.0.1:4100` 입니다.
+- 평소 `npm run dev`로 띄운 `3000/4000` 서버가 살아 있어도 괜찮지만, `3100` 또는 `4100`을 이미 다른 프로세스가 쓰고 있으면 E2E는 실패합니다.
+- Windows 환경에서는 `next start --hostname 127.0.0.1 --port 3100` 기준으로 실행합니다.
 
 ## 수동 검증과 자동 테스트의 차이
 
@@ -289,20 +294,23 @@ npm run test:web:e2e
 ## 문제 발생 시 확인할 항목
 
 - `http://localhost:3000`과 `http://localhost:4000`이 모두 떠 있는지 확인합니다.
-- `npm run test:web:e2e` 실행 시에는 `http://localhost:3100` 포트를 다른 프로세스가 사용 중이지 않은지 확인합니다.
+- `npm run test:web:e2e` 실행 시에는 `http://127.0.0.1:3100`과 `http://127.0.0.1:4100` 포트를 다른 프로세스가 사용 중이지 않은지 확인합니다.
 - `apps/api/.env`를 만들었는지 확인합니다.
 - 로컬 데모 모드만 확인하려는 경우 `SWEETBOOK_API_KEY`가 비어 있어도 되는지 다시 확인합니다.
 - 실제 Sandbox 주문을 기대하고 있다면 `SWEETBOOK_API_KEY`, `SWEETBOOK_ORDER_MODE=sandbox`, 공개 이미지 URL 조건을 모두 만족했는지 확인합니다.
+- 수동 실행 확인은 `3000/4000`, Playwright 자동화 확인은 `3100/4100`으로 분리해서 봅니다.
 - Playwright 실패는 수동 브라우저 점검 실패와 원인이 다를 수 있으므로 별도 자동 테스트 문제로 분리해 봅니다.
 
 ## 주요 화면 경로
 
-- `/` - 랜딩 페이지
+- `/` - 사용자 홈
+- `/about` - 서비스 소개 페이지
 - `/season` - 시즌 대시보드
 - `/entries/new` - 새 경기 일지 작성
 - `/entries/[id]` - 일지 상세
 - `/entries/[id]/edit` - 일지 수정
 - `/season-book/new` - 시즌북 견적 생성
+- `/order` - 주문 내역
 - `/order/[projectId]` - 주문 진입
 - `/order/[projectId]/status` - 주문 상태 조회
 
