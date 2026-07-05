@@ -99,39 +99,6 @@ function runPrismaInit() {
   }
 }
 
-async function ensureSeasonBookProjectColumns() {
-  const prisma = new PrismaClient();
-  const columnsToAdd = [
-    'recipientName',
-    'recipientPhone',
-    'postalCode',
-    'address1',
-    'address2',
-    'shippingMemo',
-  ];
-
-  try {
-    const existingColumns = await prisma.$queryRawUnsafe(
-      'PRAGMA table_info("SeasonBookProject")',
-    );
-    const existingColumnNames = new Set(
-      existingColumns.map((column) => String(column.name)),
-    );
-
-    for (const columnName of columnsToAdd) {
-      if (existingColumnNames.has(columnName)) {
-        continue;
-      }
-
-      await prisma.$executeRawUnsafe(
-        `ALTER TABLE "SeasonBookProject" ADD COLUMN "${columnName}" TEXT`,
-      );
-    }
-  } finally {
-    await prisma.$disconnect();
-  }
-}
-
 async function removeKnownInvalidDemoPhotos() {
   const prisma = new PrismaClient();
 
@@ -186,7 +153,6 @@ async function synchronizeLocalDashboardDemoEntries() {
 async function main() {
   loadEnv();
   runPrismaInit();
-  await ensureSeasonBookProjectColumns();
   await removeKnownInvalidDemoPhotos();
   await synchronizeLocalDashboardDemoEntries();
 }

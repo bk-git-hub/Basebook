@@ -3,9 +3,7 @@ import { Module } from '@nestjs/common';
 import { GamesModule } from './games/games.module';
 import { HealthModule } from './health/health.module';
 import { PrismaModule } from './prisma/prisma.module';
-import { SeasonBooksModule } from './season-books/season-books.module';
 import { UploadModule } from './upload/upload.module';
-import { WebhooksModule } from './webhooks/webhooks.module';
 
 @Module({
   imports: [
@@ -14,8 +12,6 @@ import { WebhooksModule } from './webhooks/webhooks.module';
     GamesModule,
     EntriesModule,
     UploadModule,
-    SeasonBooksModule,
-    WebhooksModule,
   ],
 })
 export class AppModule {}
