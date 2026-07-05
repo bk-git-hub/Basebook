@@ -41,7 +41,6 @@ async function main() {
   const demoEntries = readDemoEntries();
 
   try {
-    await prisma.seasonBookProject.deleteMany();
     await prisma.photo.deleteMany();
     await prisma.diaryEntry.deleteMany();
 
