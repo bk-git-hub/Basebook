@@ -1,14 +1,12 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 
-type AppShellSection = "season" | "entries" | "season-book" | "order";
+type AppShellSection = "season" | "entries";
 type AppShellTone = "default" | "home";
 
 const SECTION_LABELS: Record<AppShellSection, string> = {
   season: "",
   entries: "기록 작성",
-  "season-book": "시즌북 제작",
-  order: "주문 진행",
 };
 
 const TONE_STYLES: Record<

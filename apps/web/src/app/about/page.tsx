@@ -12,13 +12,13 @@ const featureCards = [
     label: "Collect",
     title: "시즌 장면만 다시 고릅니다",
     description:
-      "쌓아 둔 기록 중 다시 보고 싶은 경기만 골라 시즌북 후보로 모읍니다.",
+      "쌓아 둔 기록 중 다시 보고 싶은 경기를 홈과 시즌 화면에서 빠르게 찾습니다.",
   },
   {
-    label: "Make",
-    title: "견적 확인 뒤 바로 주문합니다",
+    label: "Review",
+    title: "응원 흐름을 시즌 단위로 돌아봅니다",
     description:
-      "고른 기록으로 책 분량을 확인하고 바로 주문할 수 있습니다.",
+      "직관 횟수, 승무패, 최근 감상을 한 화면에서 확인할 수 있습니다.",
   },
 ];
 
@@ -35,8 +35,8 @@ const journeySteps = [
   },
   {
     step: "03",
-    title: "시즌북 만들기",
-    description: "남기고 싶은 장면만 골라 책으로 묶고 주문 상태까지 확인합니다.",
+    title: "기억 다시 보기",
+    description: "남겨 둔 경기와 사진을 시즌의 흐름 안에서 다시 꺼내 봅니다.",
   },
 ];
 
@@ -53,17 +53,11 @@ const quickLinks = [
     title: "홈으로 돌아가기",
     description: "응원 팀과 최근 기록 확인하기",
   },
-  {
-    href: "/season-book/new",
-    eyebrow: "Book",
-    title: "시즌북 만들기",
-    description: "담고 싶은 기록 골라 견적 보기",
-  },
 ];
 
 export const metadata: Metadata = {
   title: "서비스 소개 | Basebook",
-  description: "Basebook의 기록, 시즌 요약, 시즌북 제작을 소개하는 화면",
+  description: "Basebook의 기록 작성과 시즌 회고 흐름을 소개하는 화면",
 };
 
 export default function AboutPage() {
@@ -89,11 +83,11 @@ export default function AboutPage() {
                 <h1 className="text-4xl font-semibold leading-[1.06] tracking-tight text-[#11284f] sm:text-5xl">
                   직관의 순간을 남기고,
                   <br />
-                  시즌이 끝나기 전에 책으로 묶습니다.
+                  시즌의 흐름으로 다시 봅니다.
                 </h1>
                 <p className="max-w-2xl text-base leading-8 text-[#4e6284] sm:text-lg">
-                  Basebook은 경기 기록, 사진, 감상을 흩어두지 않고 시즌북
-                  제작까지 자연스럽게 이어 주는 야구 팬 기록 서비스입니다.
+                  Basebook은 경기 기록, 사진, 감상을 흩어두지 않고 시즌
+                  단위로 다시 볼 수 있게 돕는 야구 팬 기록 서비스입니다.
                 </p>
               </div>
 
@@ -103,12 +97,6 @@ export default function AboutPage() {
                   className="inline-flex items-center justify-center rounded-full bg-[#11284f] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#0b1d3b]"
                 >
                   새 기록 시작하기
-                </Link>
-                <Link
-                  href="/season-book/new"
-                  className="inline-flex items-center justify-center rounded-full border border-[#11284f] bg-white px-5 py-3 text-sm font-semibold text-[#11284f] transition hover:bg-[#f8fbff]"
-                >
-                  시즌북 만들기
                 </Link>
               </div>
             </div>
@@ -132,7 +120,7 @@ export default function AboutPage() {
                   시즌 기록을 홈과 시즌 화면에서 다시 보기
                 </div>
                 <div className="rounded-[18px] border border-[#e5ecf6] bg-white px-4 py-3 text-sm text-[#5a6f91]">
-                  고른 기록으로 시즌북 만들고 주문하기
+                  기억하고 싶은 장면을 시즌 화면에서 다시 보기
                 </div>
               </div>
             </div>
@@ -167,8 +155,8 @@ export default function AboutPage() {
               Basebook으로 할 수 있는 일
             </h2>
             <p className="max-w-2xl text-sm leading-7 text-[#5a6f91]">
-              기록을 남기고 시즌을 돌아본 뒤, 필요한 장면만 골라 시즌북으로
-              만듭니다.
+              기록을 남기고 시즌을 돌아본 뒤, 다시 보고 싶은 장면을 빠르게
+              찾아봅니다.
             </p>
           </div>
 

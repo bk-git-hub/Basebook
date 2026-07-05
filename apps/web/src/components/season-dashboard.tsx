@@ -260,12 +260,6 @@ export function SeasonDashboard({ dashboard }: SeasonDashboardProps) {
               >
                 새 일지 남기기
               </Link>
-              <Link
-                href="/season-book/new"
-                className="inline-flex items-center justify-center rounded-full border border-[#11284f] bg-white px-4 py-2.5 text-sm font-semibold text-[#11284f] transition hover:bg-[#f8fbff]"
-              >
-                시즌북 제작
-              </Link>
             </div>
           </aside>
         </div>

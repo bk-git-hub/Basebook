@@ -1,9 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 import {
-  buildOrderPageUrl,
   createEntryViaApi,
-  estimateSeasonBookViaApi,
 } from "./support/local-stack";
 
 test.describe("frontend route regression", () => {
@@ -23,14 +21,11 @@ test.describe("frontend route regression", () => {
 
     await expect(
       page.getByRole("heading", {
-        name: /직관의 순간을 남기고,\s*시즌이 끝나기 전에 책으로 묶습니다\./,
+        name: /직관의 순간을 남기고,\s*시즌의 흐름으로 다시 봅니다\./,
       }),
     ).toBeVisible();
     await expect(
       page.getByRole("link", { name: "새 기록 시작하기", exact: true }),
-    ).toBeVisible();
-    await expect(
-      page.getByRole("link", { name: "시즌북 만들기", exact: true }).first(),
     ).toBeVisible();
   });
 
@@ -84,30 +79,4 @@ test.describe("frontend route regression", () => {
     ).toBeVisible();
   });
 
-  test("season-book builder route renders the composition shell", async ({
-    page,
-  }) => {
-    await page.goto("/season-book/new");
-
-    await expect(
-      page.getByRole("heading", { name: "담을 기록을 고르고 견적까지 이어가세요" }),
-    ).toBeVisible();
-    await expect(page.getByRole("button", { name: "전체 선택" })).toBeVisible();
-    await expect(page.getByLabel("시즌북 제목")).toBeVisible();
-    await expect(page.getByRole("button", { name: "시즌북 견적 생성" })).toBeVisible();
-  });
-
-  test("order form route renders estimate summary for a created project", async ({
-    page,
-    request,
-  }) => {
-    const estimate = await estimateSeasonBookViaApi(request);
-
-    await page.goto(buildOrderPageUrl(estimate));
-
-    await expect(page.getByText("배송 정보")).toBeVisible();
-    await expect(page.getByText("주문 확인")).toBeVisible();
-    await expect(page.getByText(`${estimate.pageCount}p`)).toBeVisible();
-    await expect(page.getByRole("button", { name: "주문하기" })).toBeVisible();
-  });
 });

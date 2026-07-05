@@ -20,42 +20,8 @@ type CreatedEntry = {
   photos: UploadedAsset[];
 };
 
-type CreatedEstimate = {
-  projectId: string;
-  bookUid: string;
-  pageCount: number;
-  totalPrice: number;
-  currency: "KRW";
-  title: string;
-};
-
-type CreatedOrder = {
-  projectId: string;
-  orderUid: string;
-  orderStatus: string;
-  projectStatus: string;
-};
-
-type ShippingPayload = {
-  recipientName: string;
-  recipientPhone: string;
-  postalCode: string;
-  address1: string;
-  address2?: string;
-};
-
 function uniqueSuffix(prefix: string) {
   return `${prefix}-${Date.now()}-${Math.random().toString(16).slice(2, 8)}`;
-}
-
-export function buildOrderPageUrl(estimate: CreatedEstimate) {
-  const params = new URLSearchParams({
-    pageCount: String(estimate.pageCount),
-    totalPrice: String(estimate.totalPrice),
-    currency: estimate.currency,
-  });
-
-  return `/order/${encodeURIComponent(estimate.projectId)}?${params.toString()}`;
 }
 
 export async function uploadImageAsset(
@@ -137,82 +103,4 @@ export async function createEntryViaApi(
   };
 
   return payload.entry;
-}
-
-export async function estimateSeasonBookViaApi(
-  request: APIRequestContext,
-  overrides: Partial<{
-    coverPhotoUrl: string;
-    entryIds: string[];
-    introText: string;
-    title: string;
-  }> = {},
-) {
-  const entryIds =
-    overrides.entryIds ||
-    [
-      (
-        await createEntryViaApi(request, {
-          includePhoto: true,
-          highlight: uniqueSuffix("시즌북 선택 기록"),
-        })
-      ).id,
-    ];
-  const coverPhotoUrl =
-    overrides.coverPhotoUrl || (await uploadImageAsset(request)).url;
-  const title = overrides.title || uniqueSuffix("QA 시즌북");
-  const response = await request.post(`${API_BASE_URL}/season-books/estimate`, {
-    data: {
-      seasonYear: 2026,
-      title,
-      introText:
-        overrides.introText ||
-        "로컬 풀스택 QA에서 시즌북 견적 흐름을 검증합니다.",
-      coverPhotoUrl,
-      selectedEntryIds: entryIds,
-    },
-  });
-
-  expect(response.status()).toBe(201);
-
-  return {
-    ...((await response.json()) as Omit<CreatedEstimate, "title">),
-    title,
-  };
-}
-
-export async function createOrderViaApi(
-  request: APIRequestContext,
-  overrides: Partial<{
-    address1: string;
-    address2: string;
-    postalCode: string;
-    recipientName: string;
-    recipientPhone: string;
-  }> = {},
-) {
-  const estimate = await estimateSeasonBookViaApi(request);
-  const shipping: ShippingPayload = {
-    recipientName: overrides.recipientName || "QA 주문자",
-    recipientPhone: overrides.recipientPhone || "010-1234-5678",
-    postalCode: overrides.postalCode || "06236",
-    address1: overrides.address1 || "서울특별시 강남구 테헤란로 123",
-    address2: overrides.address2 || "4층 QA석",
-  };
-  const response = await request.post(`${API_BASE_URL}/season-books/order`, {
-    data: {
-      projectId: estimate.projectId,
-      ...shipping,
-    },
-  });
-
-  expect(response.status()).toBe(201);
-
-  const order = (await response.json()) as CreatedOrder;
-
-  return {
-    estimate,
-    order,
-    shipping,
-  };
 }

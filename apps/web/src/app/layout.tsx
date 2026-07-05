@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Basebook",
-  description: "한 시즌의 야구 기록을 모아 시즌북으로 남기는 팬 저널 서비스",
+  description: "야구팬의 경기 기록과 시즌 회고를 위한 팬 저널 서비스",
   icons: {
     icon: [{ url: "/basebook.png", type: "image/png" }],
     shortcut: ["/basebook.png"],
