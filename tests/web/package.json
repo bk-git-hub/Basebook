@@ -6,8 +6,7 @@
     "test": "npm run test:unit",
     "test:unit": "vitest run",
     "test:watch": "vitest",
-    "test:e2e": "playwright test",
-    "test:e2e:order-report": "node scripts/order-flow-report.cjs"
+    "test:e2e": "playwright test"
   },
   "devDependencies": {
     "@playwright/test": "^1.55.0",

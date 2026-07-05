@@ -4,8 +4,6 @@ const { spawnSync } = require("node:child_process");
 const { NestFactory } = require("@nestjs/core");
 
 process.env.PORT = "4000";
-process.env.SWEETBOOK_ESTIMATE_MODE = "local";
-process.env.SWEETBOOK_ORDER_MODE = "local";
 process.env.UPLOAD_STORAGE_DRIVER = "local";
 
 const repoRoot = path.resolve(__dirname, "../../..");

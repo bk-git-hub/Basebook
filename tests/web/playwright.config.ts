@@ -56,8 +56,6 @@ export default defineConfig({
         ...baseEnv,
         DATABASE_URL: apiDatabaseUrl,
         PORT: apiServerUrl.port || defaultPlaywrightApiPort,
-        SWEETBOOK_ESTIMATE_MODE: "local",
-        SWEETBOOK_ORDER_MODE: "local",
         UPLOAD_STORAGE_DRIVER: "local",
       },
       reuseExistingServer: false,
