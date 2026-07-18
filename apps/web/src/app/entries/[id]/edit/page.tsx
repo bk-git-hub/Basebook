@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, unstable_rethrow } from "next/navigation";
+import { Suspense } from "react";
 
 import { AppShell } from "@/components/app-shell";
 import { EntryEditForm } from "@/components/entry-edit-form";
 import { EntryEditErrorState } from "@/components/entry-edit-state";
+import { RouteLoadingScreen } from "@/components/route-loading-screen";
 import { getEntry } from "@/lib/api/entries";
 import { ApiClientError } from "@/lib/api/http";
 
@@ -11,8 +13,6 @@ export const metadata: Metadata = {
   title: "기록 수정 | Basebook",
   description: "저장한 경기 기록의 정보와 감상을 수정하는 화면",
 };
-
-export const dynamic = "force-dynamic";
 
 type EntryEditPageProps = {
   params: Promise<{
@@ -27,6 +27,8 @@ async function loadEntry(id: string) {
       data: await getEntry(id),
     };
   } catch (error) {
+    unstable_rethrow(error);
+
     if (error instanceof ApiClientError) {
       if (error.status === 404) {
         notFound();
@@ -46,7 +48,7 @@ async function loadEntry(id: string) {
   }
 }
 
-export default async function EntryEditPage({ params }: EntryEditPageProps) {
+async function EntryEditPageContent({ params }: EntryEditPageProps) {
   const { id } = await params;
   const result = await loadEntry(id);
 
@@ -63,5 +65,13 @@ export default async function EntryEditPage({ params }: EntryEditPageProps) {
         <EntryEditForm entry={result.data.entry} />
       )}
     </AppShell>
+  );
+}
+
+export default function EntryEditPage(props: EntryEditPageProps) {
+  return (
+    <Suspense fallback={<RouteLoadingScreen title="수정 화면을 준비하는 중" />}>
+      <EntryEditPageContent {...props} />
+    </Suspense>
   );
 }

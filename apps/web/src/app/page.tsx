@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { unstable_rethrow } from "next/navigation";
+import { Suspense } from "react";
 
 import type { DiaryEntry, GameResult, TeamCode } from "@basebook/contracts";
 
 import { HomeSeasonOverview } from "@/components/home-season-overview";
 import { HomeStadiumSummary } from "@/components/home-stadium-summary";
+import { RouteLoadingScreen } from "@/components/route-loading-screen";
 import { TeamBadge } from "@/components/team-badge";
 import { getEntries } from "@/lib/api/entries";
 import { ApiClientError } from "@/lib/api/http";
@@ -31,8 +34,6 @@ const RESULT_TONE: Record<GameResult, string> = {
 const PRIMARY_NAVIGATION = [
   { href: "/about", label: "서비스 알아보기" },
 ];
-
-export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "홈 | Basebook",
@@ -292,18 +293,43 @@ function ErrorHomeState({ error }: { error: ApiClientError }) {
   );
 }
 
-export default async function HomePage() {
+async function loadHomeSummary() {
   try {
     const dashboard = await getEntries();
-    const summary = buildHomeSummary(dashboard.entries);
+    return {
+      status: "success" as const,
+      summary: buildHomeSummary(dashboard.entries),
+    };
+  } catch (error) {
+    unstable_rethrow(error);
 
-    if (!summary) {
-      return <EmptyHomeState />;
+    if (error instanceof ApiClientError) {
+      return {
+        status: "error" as const,
+        error,
+      };
     }
 
-    const latestEntry = summary.recentEntries[0];
+    throw error;
+  }
+}
 
-    return (
+async function HomePageContent() {
+  const result = await loadHomeSummary();
+
+  if (result.status === "error") {
+    return <ErrorHomeState error={result.error} />;
+  }
+
+  const { summary } = result;
+
+  if (!summary) {
+    return <EmptyHomeState />;
+  }
+
+  const latestEntry = summary.recentEntries[0];
+
+  return (
       <main className="min-h-screen bg-white text-[#11284f]">
         <HomeHeader />
 
@@ -419,12 +445,13 @@ export default async function HomePage() {
           </div>
         </section>
       </main>
-    );
-  } catch (error) {
-    if (error instanceof ApiClientError) {
-      return <ErrorHomeState error={error} />;
-    }
+  );
+}
 
-    throw error;
-  }
+export default function HomePage() {
+  return (
+    <Suspense fallback={<RouteLoadingScreen title="홈을 준비하는 중" />}>
+      <HomePageContent />
+    </Suspense>
+  );
 }

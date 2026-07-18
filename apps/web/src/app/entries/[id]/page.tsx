@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, unstable_rethrow } from "next/navigation";
+import { Suspense } from "react";
 
 import { AppShell } from "@/components/app-shell";
 import { EntryDetail } from "@/components/entry-detail";
 import { EntryDetailErrorState } from "@/components/entry-detail-state";
+import { RouteLoadingScreen } from "@/components/route-loading-screen";
 import { getEntry } from "@/lib/api/entries";
 import { ApiClientError } from "@/lib/api/http";
 
@@ -11,8 +13,6 @@ export const metadata: Metadata = {
   title: "기록 상세 | Basebook",
   description: "저장한 경기 기록의 요약과 감상, 사진을 확인하는 화면",
 };
-
-export const dynamic = "force-dynamic";
 
 type EntryDetailPageProps = {
   params: Promise<{
@@ -27,6 +27,8 @@ async function loadEntry(id: string) {
       data: await getEntry(id),
     };
   } catch (error) {
+    unstable_rethrow(error);
+
     if (error instanceof ApiClientError) {
       if (error.status === 404) {
         notFound();
@@ -46,7 +48,7 @@ async function loadEntry(id: string) {
   }
 }
 
-export default async function EntryDetailPage({
+async function EntryDetailPageContent({
   params,
 }: EntryDetailPageProps) {
   const { id } = await params;
@@ -64,5 +66,13 @@ export default async function EntryDetailPage({
         <EntryDetail entry={result.data.entry} />
       )}
     </AppShell>
+  );
+}
+
+export default function EntryDetailPage(props: EntryDetailPageProps) {
+  return (
+    <Suspense fallback={<RouteLoadingScreen title="기록을 준비하는 중" />}>
+      <EntryDetailPageContent {...props} />
+    </Suspense>
   );
 }

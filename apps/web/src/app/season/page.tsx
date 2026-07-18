@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
+import { unstable_rethrow } from "next/navigation";
+import { Suspense } from "react";
 
 import { AppShell } from "@/components/app-shell";
 import { SeasonDashboard } from "@/components/season-dashboard";
+import { RouteLoadingScreen } from "@/components/route-loading-screen";
 import {
   SeasonDashboardEmptyState,
   SeasonDashboardErrorState,
@@ -13,8 +16,6 @@ export const metadata: Metadata = {
   title: "시즌 기록 | Basebook",
   description: "최신 시즌의 기록 요약과 최근 일지를 확인하는 화면",
 };
-
-export const dynamic = "force-dynamic";
 
 type SeasonPageProps = {
   searchParams: Promise<{
@@ -41,6 +42,8 @@ async function loadSeasonEntries() {
       data: await getEntries(),
     };
   } catch (error) {
+    unstable_rethrow(error);
+
     if (error instanceof ApiClientError) {
       return {
         status: "error" as const,
@@ -56,7 +59,7 @@ async function loadSeasonEntries() {
   }
 }
 
-export default async function SeasonPage({ searchParams }: SeasonPageProps) {
+async function SeasonPageContent({ searchParams }: SeasonPageProps) {
   const resolvedSearchParams = await searchParams;
   const result = await loadSeasonEntries();
   const deleteNotice = getDeleteNotice(resolvedSearchParams.entryDeleted);
@@ -81,5 +84,15 @@ export default async function SeasonPage({ searchParams }: SeasonPageProps) {
         <SeasonDashboard dashboard={result.data} />
       )}
     </AppShell>
+  );
+}
+
+export default function SeasonPage(props: SeasonPageProps) {
+  return (
+    <Suspense
+      fallback={<RouteLoadingScreen title="시즌 기록을 준비하는 중" />}
+    >
+      <SeasonPageContent {...props} />
+    </Suspense>
   );
 }
