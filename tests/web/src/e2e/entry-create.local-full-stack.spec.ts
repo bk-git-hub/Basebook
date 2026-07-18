@@ -56,24 +56,7 @@ test("creates a new entry through the local-only full-stack QA environment", asy
   expect(uploadedAssetResponse.headers()["content-type"]).toContain("image/");
   expect((await uploadedAssetResponse.body()).byteLength).toBeGreaterThan(0);
 
-  const createResponsePromise = page.waitForResponse(
-    (response) =>
-      response.url().endsWith("/entries") &&
-      response.request().method() === "POST",
-  );
-
   await page.getByRole("button", { name: "새 기록 저장" }).click();
-
-  const createResponse = await createResponsePromise;
-  expect(createResponse.status()).toBe(201);
-
-  const createPayload = (await createResponse.json()) as {
-    entry: { id: string; photos: Array<{ url: string }> };
-  };
-
-  expect(createPayload.entry.photos).toHaveLength(1);
-  expect(createPayload.entry.photos[0]?.url).toBe(uploadedUrl);
-
   await page.waitForURL(/\/entries\/[^/]+$/);
   await expect(page.getByText(highlight)).toBeVisible();
   await expect(page.getByRole("link", { name: "원본 열기" })).toHaveAttribute(
@@ -81,9 +64,10 @@ test("creates a new entry through the local-only full-stack QA environment", asy
     uploadedUrl,
   );
 
-  const entryResponse = await request.get(
-    `${apiBaseUrl}/entries/${createPayload.entry.id}`,
-  );
+  const entryId = new URL(page.url()).pathname.split("/").at(-1);
+  expect(entryId).toBeTruthy();
+
+  const entryResponse = await request.get(`${apiBaseUrl}/entries/${entryId}`);
 
   expect(entryResponse.ok()).toBeTruthy();
 
@@ -92,5 +76,6 @@ test("creates a new entry through the local-only full-stack QA environment", asy
   };
 
   expect(entryPayload.entry.highlight).toBe(highlight);
+  expect(entryPayload.entry.photos).toHaveLength(1);
   expect(entryPayload.entry.photos[0]?.url).toBe(uploadedUrl);
 });

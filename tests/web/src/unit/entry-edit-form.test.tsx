@@ -6,24 +6,21 @@ import { EntryEditForm } from "@/components/entry-edit-form";
 import { createEntry } from "../fixtures/entries";
 
 const push = vi.fn();
-const refresh = vi.fn();
 const updateEntryMock = vi.fn();
 
 vi.mock("next/navigation", () => ({
   useRouter: () => ({
     push,
-    refresh,
   }),
 }));
 
-vi.mock("@/lib/api/entries", () => ({
-  updateEntry: (...args: unknown[]) => updateEntryMock(...args),
+vi.mock("@/app/actions/entries", () => ({
+  updateEntryAction: (...args: unknown[]) => updateEntryMock(...args),
 }));
 
 describe("Entry edit QA smoke", () => {
   beforeEach(() => {
     push.mockReset();
-    refresh.mockReset();
     updateEntryMock.mockReset();
   });
 
@@ -47,9 +44,8 @@ describe("Entry edit QA smoke", () => {
     const entry = createEntry();
 
     updateEntryMock.mockResolvedValue({
-      entry: createEntry({
-        highlight: "수정된 QA smoke highlight",
-      }),
+      ok: true,
+      entryId: entry.id,
     });
 
     render(<EntryEditForm entry={entry} />);
@@ -69,6 +65,5 @@ describe("Entry edit QA smoke", () => {
     await waitFor(() =>
       expect(push).toHaveBeenCalledWith(`/entries/${entry.id}`),
     );
-    expect(refresh).toHaveBeenCalled();
   });
 });

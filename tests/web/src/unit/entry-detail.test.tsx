@@ -6,10 +6,13 @@ import { EntryDetailErrorState } from "@/components/entry-detail-state";
 
 import { createEntry } from "../fixtures/entries";
 
+vi.mock("@/app/actions/entries", () => ({
+  deleteEntryAction: vi.fn(),
+}));
+
 vi.mock("next/navigation", () => ({
   useRouter: () => ({
     push: vi.fn(),
-    refresh: vi.fn(),
   }),
 }));
 

@@ -4,8 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { startTransition, useState } from "react";
 
-import { deleteEntry } from "@/lib/api/entries";
-import { ApiClientError } from "@/lib/api/http";
+import { deleteEntryAction } from "@/app/actions/entries";
 
 const PRIMARY_BUTTON_CLASS =
   "inline-flex items-center justify-center rounded-full bg-[#11284f] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#0b1d3b]";
@@ -56,27 +55,20 @@ export function EntryDetailActions({ entryId }: EntryDetailActionsProps) {
     setIsDeleting(true);
 
     try {
-      await deleteEntry(entryId);
-      startTransition(() => {
-        router.push(buildSeasonRedirect("success"));
-        router.refresh();
-      });
-    } catch (error) {
-      if (error instanceof ApiClientError && error.status === 404) {
-        startTransition(() => {
-          router.push(buildSeasonRedirect("missing"));
-          router.refresh();
-        });
+      const result = await deleteEntryAction(entryId);
+
+      if (!result.ok) {
+        setDeleteError(result.error.message);
         return;
       }
 
-      if (error instanceof ApiClientError) {
-        setDeleteError(error.message);
-      } else {
-        setDeleteError(
-          "예상하지 못한 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.",
-        );
-      }
+      startTransition(() => {
+        router.push(buildSeasonRedirect(result.result));
+      });
+    } catch {
+      setDeleteError(
+        "예상하지 못한 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.",
+      );
     } finally {
       setIsDeleting(false);
     }

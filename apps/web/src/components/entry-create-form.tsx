@@ -12,7 +12,7 @@ import type {
   WatchType,
 } from "@basebook/contracts";
 
-import { createEntry } from "@/lib/api/entries";
+import { createEntryAction } from "@/app/actions/entries";
 import { ApiClientError } from "@/lib/api/http";
 import { KBO_STADIUM_OPTIONS } from "@/lib/stadium-meta";
 import { uploadImage } from "@/lib/api/uploads";
@@ -328,11 +328,16 @@ export function EntryCreateForm() {
 
     try {
       const entryInput = buildCreateInput(values, uploadedPhotos);
-      const response = await createEntry(entryInput);
+      const result = await createEntryAction(entryInput);
+
+      if (!result.ok) {
+        setSubmitError(result.error.message);
+        return;
+      }
+
       setStatusMessage("기록을 저장했습니다. 생성된 상세 화면으로 이동합니다.");
       startTransition(() => {
-        router.push(`/entries/${response.entry.id}`);
-        router.refresh();
+        router.push(`/entries/${result.entryId}`);
       });
     } catch (error) {
       if (error instanceof ApiClientError) {

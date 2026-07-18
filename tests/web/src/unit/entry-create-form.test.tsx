@@ -3,23 +3,19 @@ import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { EntryCreateForm } from "@/components/entry-create-form";
-import { ApiClientError } from "@/lib/api/http";
-import { createEntry } from "../fixtures/entries";
 
 const push = vi.fn();
-const refresh = vi.fn();
 const createEntryMock = vi.fn();
 const uploadImageMock = vi.fn();
 
 vi.mock("next/navigation", () => ({
   useRouter: () => ({
     push,
-    refresh,
   }),
 }));
 
-vi.mock("@/lib/api/entries", () => ({
-  createEntry: (...args: unknown[]) => createEntryMock(...args),
+vi.mock("@/app/actions/entries", () => ({
+  createEntryAction: (...args: unknown[]) => createEntryMock(...args),
 }));
 
 vi.mock("@/lib/api/uploads", () => ({
@@ -69,7 +65,6 @@ function createDeferred<T>() {
 describe("Entry create QA smoke", () => {
   beforeEach(() => {
     push.mockReset();
-    refresh.mockReset();
     createEntryMock.mockReset();
     uploadImageMock.mockReset();
     uploadImageMock.mockImplementation((file: File) =>
@@ -244,12 +239,8 @@ describe("Entry create QA smoke", () => {
       },
     });
     createEntryMock.mockResolvedValue({
-      entry: createEntry({
-        id: "entry-created-by-test",
-        favoriteTeam: "DOOSAN",
-        opponentTeam: "SSG",
-        highlight: "QA smoke test created entry",
-      }),
+      ok: true,
+      entryId: "entry-created-by-test",
     });
 
     render(<EntryCreateForm />);
@@ -307,15 +298,18 @@ describe("Entry create QA smoke", () => {
     await waitFor(() =>
       expect(push).toHaveBeenCalledWith("/entries/entry-created-by-test"),
     );
-    expect(refresh).toHaveBeenCalled();
   });
 
   it("shows an API error and preserves the entered values", async () => {
     const user = userEvent.setup();
 
-    createEntryMock.mockRejectedValue(
-      new ApiClientError("기록 저장에 실패했습니다.", { status: 500 }),
-    );
+    createEntryMock.mockResolvedValue({
+      ok: false,
+      error: {
+        message: "기록 저장에 실패했습니다.",
+        status: 500,
+      },
+    });
 
     render(<EntryCreateForm />);
 

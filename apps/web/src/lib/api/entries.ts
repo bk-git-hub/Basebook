@@ -1,5 +1,6 @@
 import type {
   CreateDiaryEntryInput,
+  DeleteEntryResponse,
   GetEntryResponse,
   GetEntriesQuery,
   GetEntriesResponse,
@@ -47,8 +48,8 @@ export async function createEntry(
   });
 }
 
-export async function deleteEntry(id: string): Promise<GetEntryResponse> {
-  return fetchJson<GetEntryResponse>(`/entries/${id}`, {
+export async function deleteEntry(id: string): Promise<DeleteEntryResponse> {
+  return fetchJson<DeleteEntryResponse>(`/entries/${id}`, {
     init: {
       method: "DELETE",
     },

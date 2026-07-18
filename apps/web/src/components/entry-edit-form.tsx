@@ -12,8 +12,7 @@ import type {
   WatchType,
 } from "@basebook/contracts";
 
-import { updateEntry } from "@/lib/api/entries";
-import { ApiClientError } from "@/lib/api/http";
+import { updateEntryAction } from "@/app/actions/entries";
 import { KBO_STADIUM_OPTIONS } from "@/lib/stadium-meta";
 import { getTeamLabel } from "@/lib/team-meta";
 import { TeamPicker } from "@/components/team-picker";
@@ -295,19 +294,20 @@ export function EntryEditForm({ entry }: EntryEditFormProps) {
     setIsSubmitting(true);
 
     try {
-      const response = await updateEntry(entry.id, updateInput);
-      startTransition(() => {
-        router.push(`/entries/${response.entry.id}`);
-        router.refresh();
-      });
-    } catch (error) {
-      if (error instanceof ApiClientError) {
-        setSubmitError(error.message);
-      } else {
-        setSubmitError(
-          "예상하지 못한 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.",
-        );
+      const result = await updateEntryAction(entry.id, updateInput);
+
+      if (!result.ok) {
+        setSubmitError(result.error.message);
+        return;
       }
+
+      startTransition(() => {
+        router.push(`/entries/${result.entryId}`);
+      });
+    } catch {
+      setSubmitError(
+        "예상하지 못한 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.",
+      );
     } finally {
       setIsSubmitting(false);
     }
