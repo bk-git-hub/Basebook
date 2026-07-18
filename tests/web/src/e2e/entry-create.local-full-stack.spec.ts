@@ -14,6 +14,9 @@ test("creates a new entry through the local-only full-stack QA environment", asy
   const apiBaseUrl =
     process.env.PLAYWRIGHT_API_BASE_URL || "http://127.0.0.1:4100";
 
+  await page.goto("/season");
+  await expect(page.getByText("전체 기록")).toBeVisible();
+
   await page.goto("/entries/new");
 
   await page.getByLabel("관람 날짜").fill("2026-04-15");
@@ -78,4 +81,7 @@ test("creates a new entry through the local-only full-stack QA environment", asy
   expect(entryPayload.entry.highlight).toBe(highlight);
   expect(entryPayload.entry.photos).toHaveLength(1);
   expect(entryPayload.entry.photos[0]?.url).toBe(uploadedUrl);
+
+  await page.goto("/season");
+  await expect(page.getByText(highlight)).toBeVisible();
 });

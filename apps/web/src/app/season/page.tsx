@@ -9,7 +9,7 @@ import {
   SeasonDashboardEmptyState,
   SeasonDashboardErrorState,
 } from "@/components/season-dashboard-state";
-import { getEntries } from "@/lib/api/entries";
+import { getCachedEntries } from "@/lib/api/entries-read.server";
 import { ApiClientError } from "@/lib/api/http";
 
 export const metadata: Metadata = {
@@ -39,7 +39,7 @@ async function loadSeasonEntries() {
   try {
     return {
       status: "success" as const,
-      data: await getEntries(),
+      data: await getCachedEntries(),
     };
   } catch (error) {
     unstable_rethrow(error);

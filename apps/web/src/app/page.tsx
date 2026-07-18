@@ -10,7 +10,7 @@ import { HomeContentSkeleton } from "@/components/home-content-skeleton";
 import { HomeSeasonOverview } from "@/components/home-season-overview";
 import { HomeStadiumSummary } from "@/components/home-stadium-summary";
 import { TeamBadge } from "@/components/team-badge";
-import { getEntries } from "@/lib/api/entries";
+import { getCachedEntries } from "@/lib/api/entries-read.server";
 import { ApiClientError } from "@/lib/api/http";
 import { formatMonthDay, formatMonthDayWithWeekday } from "@/lib/date-format";
 import { getTeamLabel } from "@/lib/team-meta";
@@ -289,7 +289,7 @@ function ErrorHomeState({ error }: { error: ApiClientError }) {
 
 async function loadHomeSummary() {
   try {
-    const dashboard = await getEntries();
+    const dashboard = await getCachedEntries();
     return {
       status: "success" as const,
       summary: buildHomeSummary(dashboard.entries),
