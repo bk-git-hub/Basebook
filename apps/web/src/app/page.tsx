@@ -6,9 +6,9 @@ import { Suspense } from "react";
 
 import type { DiaryEntry, GameResult, TeamCode } from "@basebook/contracts";
 
+import { HomeContentSkeleton } from "@/components/home-content-skeleton";
 import { HomeSeasonOverview } from "@/components/home-season-overview";
 import { HomeStadiumSummary } from "@/components/home-stadium-summary";
-import { RouteLoadingScreen } from "@/components/route-loading-screen";
 import { TeamBadge } from "@/components/team-badge";
 import { getEntries } from "@/lib/api/entries";
 import { ApiClientError } from "@/lib/api/http";
@@ -197,9 +197,7 @@ function HomeHeader() {
 
 function EmptyHomeState() {
   return (
-    <main className="min-h-screen bg-white text-[#11284f]">
-      <HomeHeader />
-      <section className="mx-auto max-w-5xl px-6 py-16 sm:px-10 sm:py-24">
+    <section className="mx-auto max-w-5xl px-6 py-16 sm:px-10 sm:py-24">
         <div className="rounded-[40px] border border-[#e5ecf6] bg-white p-8 shadow-[0_24px_60px_rgba(17,40,79,0.06)] sm:p-12">
           <div className="grid gap-8 lg:grid-cols-[minmax(0,1.15fr)_18rem] lg:items-center">
             <div className="space-y-5">
@@ -243,16 +241,13 @@ function EmptyHomeState() {
             </div>
           </div>
         </div>
-      </section>
-    </main>
+    </section>
   );
 }
 
 function ErrorHomeState({ error }: { error: ApiClientError }) {
   return (
-    <main className="min-h-screen bg-white text-[#11284f]">
-      <HomeHeader />
-      <section className="mx-auto max-w-5xl px-6 py-16 sm:px-10 sm:py-24">
+    <section className="mx-auto max-w-5xl px-6 py-16 sm:px-10 sm:py-24">
         <div className="rounded-[36px] border border-[#f1d6da] bg-[#fff7f8] p-8 shadow-[0_20px_60px_rgba(17,40,79,0.05)] sm:p-10">
           <span className="inline-flex rounded-full border border-[#f3c9cf] bg-white px-4 py-1.5 text-xs font-semibold tracking-[0.18em] text-[#c42d3c] uppercase">
             home unavailable
@@ -288,8 +283,7 @@ function ErrorHomeState({ error }: { error: ApiClientError }) {
             </Link>
           </div>
         </div>
-      </section>
-    </main>
+    </section>
   );
 }
 
@@ -330,9 +324,7 @@ async function HomePageContent() {
   const latestEntry = summary.recentEntries[0];
 
   return (
-      <main className="min-h-screen bg-white text-[#11284f]">
-        <HomeHeader />
-
+    <>
         <section className="mx-auto max-w-7xl px-5 py-5 sm:px-10 sm:py-14">
           <div className="grid gap-4 md:gap-6 lg:grid-cols-[minmax(0,1.18fr)_minmax(20rem,0.82fr)]">
             <div className="order-2 lg:order-none">
@@ -444,14 +436,17 @@ async function HomePageContent() {
             ))}
           </div>
         </section>
-      </main>
+    </>
   );
 }
 
 export default function HomePage() {
   return (
-    <Suspense fallback={<RouteLoadingScreen title="홈을 준비하는 중" />}>
-      <HomePageContent />
-    </Suspense>
+    <main className="min-h-screen bg-white text-[#11284f]">
+      <HomeHeader />
+      <Suspense fallback={<HomeContentSkeleton />}>
+        <HomePageContent />
+      </Suspense>
+    </main>
   );
 }

@@ -4,7 +4,7 @@ import { Suspense } from "react";
 
 import { AppShell } from "@/components/app-shell";
 import { SeasonDashboard } from "@/components/season-dashboard";
-import { RouteLoadingScreen } from "@/components/route-loading-screen";
+import { SeasonDashboardSkeleton } from "@/components/season-dashboard-skeleton";
 import {
   SeasonDashboardEmptyState,
   SeasonDashboardErrorState,
@@ -59,40 +59,48 @@ async function loadSeasonEntries() {
   }
 }
 
-async function SeasonPageContent({ searchParams }: SeasonPageProps) {
+async function DeleteNotice({ searchParams }: SeasonPageProps) {
   const resolvedSearchParams = await searchParams;
-  const result = await loadSeasonEntries();
   const deleteNotice = getDeleteNotice(resolvedSearchParams.entryDeleted);
 
+  if (!deleteNotice) {
+    return null;
+  }
+
+  return (
+    <section className="rounded-[24px] border border-[#dbe6f5] bg-[#eff4fb] px-5 py-4 shadow-[0_12px_30px_rgba(17,40,79,0.05)]">
+      <p className="text-sm font-semibold text-[#11284f]">{deleteNotice}</p>
+    </section>
+  );
+}
+
+async function SeasonDashboardContent() {
+  const result = await loadSeasonEntries();
+
+  if (result.status === "error") {
+    return <SeasonDashboardErrorState message={result.message} />;
+  }
+
+  if (result.data.entries.length === 0) {
+    return <SeasonDashboardEmptyState />;
+  }
+
+  return <SeasonDashboard dashboard={result.data} />;
+}
+
+export default function SeasonPage(props: SeasonPageProps) {
   return (
     <AppShell
       activeSection="season"
       title="시즌 기록"
       tone="home"
     >
-      {deleteNotice ? (
-        <section className="rounded-[24px] border border-[#dbe6f5] bg-[#eff4fb] px-5 py-4 shadow-[0_12px_30px_rgba(17,40,79,0.05)]">
-          <p className="text-sm font-semibold text-[#11284f]">{deleteNotice}</p>
-        </section>
-      ) : null}
-
-      {result.status === "error" ? (
-        <SeasonDashboardErrorState message={result.message} />
-      ) : result.data.entries.length === 0 ? (
-        <SeasonDashboardEmptyState />
-      ) : (
-        <SeasonDashboard dashboard={result.data} />
-      )}
+      <Suspense fallback={null}>
+        <DeleteNotice {...props} />
+      </Suspense>
+      <Suspense fallback={<SeasonDashboardSkeleton />}>
+        <SeasonDashboardContent />
+      </Suspense>
     </AppShell>
-  );
-}
-
-export default function SeasonPage(props: SeasonPageProps) {
-  return (
-    <Suspense
-      fallback={<RouteLoadingScreen title="시즌 기록을 준비하는 중" />}
-    >
-      <SeasonPageContent {...props} />
-    </Suspense>
   );
 }

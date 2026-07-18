@@ -1,7 +1,10 @@
-import { RouteLoadingScreen } from "@/components/route-loading-screen";
+import { AppShell } from "@/components/app-shell";
+import { SeasonDashboardSkeleton } from "@/components/season-dashboard-skeleton";
 
 export default function SeasonLoading() {
   return (
-    <RouteLoadingScreen title="시즌 기록을 불러오는 중" />
+    <AppShell activeSection="season" title="시즌 기록" tone="home">
+      <SeasonDashboardSkeleton />
+    </AppShell>
   );
 }
