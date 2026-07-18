@@ -6,7 +6,7 @@ import { AppShell } from "@/components/app-shell";
 import { EntryEditForm } from "@/components/entry-edit-form";
 import { EntryEditErrorState } from "@/components/entry-edit-state";
 import { RouteLoadingScreen } from "@/components/route-loading-screen";
-import { getEntry } from "@/lib/api/entries";
+import { getFreshEntry } from "@/lib/api/entries-read.server";
 import { ApiClientError } from "@/lib/api/http";
 
 export const metadata: Metadata = {
@@ -24,7 +24,7 @@ async function loadEntry(id: string) {
   try {
     return {
       status: "success" as const,
-      data: await getEntry(id),
+      data: await getFreshEntry(id),
     };
   } catch (error) {
     unstable_rethrow(error);
